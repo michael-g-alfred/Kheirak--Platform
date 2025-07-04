@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap");
 @import "tailwindcss";
 :root {
   /* Primary Colors */
@@ -40,4 +41,5 @@
 html,
 body {
   background-color: var(--color-bg-base);
+  font-family: "Cairo", sans-serif;
 }

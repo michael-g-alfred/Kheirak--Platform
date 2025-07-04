@@ -15,7 +15,7 @@ const Navbar = () => {
     { id: "contact", label: "تواصل معنا" },
   ];
 
-  const guestTabs = [{ id: "login", label: "تسجيل الدخول" }, ...baseTabs];
+  const guestTabs = [...baseTabs, { id: "login", label: "تسجيل الدخول" }];
 
   const neededTabs = [...baseTabs, { id: "logout", label: "تسجيل الخروج" }];
 
@@ -37,7 +37,7 @@ const Navbar = () => {
     ...baseTabs,
   ];
 
-  let tabs = donorTabs;
+  let tabs = guestTabs;
   if (isAuthenticated) {
     if (user && user.type === "admin") {
       tabs = adminTabs;
