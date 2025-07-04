@@ -37,7 +37,7 @@ const Navbar = () => {
     ...baseTabs,
   ];
 
-  let tabs = donorTabs;
+  let tabs = guestTabs;
   if (isAuthenticated) {
     if (user && user.type === "admin") {
       tabs = adminTabs;

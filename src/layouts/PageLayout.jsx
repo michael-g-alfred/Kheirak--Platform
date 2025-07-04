@@ -9,7 +9,7 @@ export default function PageLayout({ children }) {
         display: "flex",
         flexDirection: "column",
         gap: "1rem",
-        padding: "4rem",
+        padding: "2rem 4rem",
       }}>
       {children}
     </div>
