@@ -15,7 +15,7 @@ const Navbar = () => {
     { id: "contact", label: "تواصل معنا" },
   ];
 
-  const guestTabs = [{ id: "login", label: "تسجيل الدخول" }, ...baseTabs];
+  const guestTabs = [...baseTabs, { id: "login", label: "تسجيل الدخول" }];
 
   const neededTabs = [...baseTabs, { id: "logout", label: "تسجيل الخروج" }];
 
