@@ -51,12 +51,7 @@ const Navbar = () => {
   return (
     <nav
       dir="rtl"
-      className="shadow-md border-b"
-      style={{
-        backgroundColor: "var(--color-bg-base)",
-        borderColor: "var(--color-bg-divider)",
-        borderBottomWidth: ".0625rem",
-      }}>
+      className="shadow-md border-b border-[var(--color-bg-divider)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Navigation Tabs */}
@@ -67,11 +62,7 @@ const Navbar = () => {
                   <span
                     key={tab.id}
                     onClick={logout}
-                    className="cursor-pointer px-2 py-2 text-sm font-medium transition-colors duration-200 rounded-sm"
-                    style={{
-                      backgroundColor: "var(--color-danger-dark)",
-                      color: "var(--color-bg-text)",
-                    }}
+                    className="cursor-pointer px-2 py-2 text-sm font-medium transition-colors duration-200 rounded-sm bg-[var(--color-danger-dark)] text-[var(--color-bg-text)] hover:bg-[var(--color-danger-dark-plus)]"
                     onMouseEnter={(e) =>
                       (e.currentTarget.style.backgroundColor =
                         "var(--color-danger-dark-plus)")
@@ -136,8 +127,7 @@ const Navbar = () => {
             <img
               src={Logo}
               alt="Logo"
-              className="h-12 w-12 transition-transform duration-200 hover:scale-110"
-              style={{ cursor: "pointer" }}
+              className="h-12 w-12 transition-transform duration-200 hover:scale-110 cursor-pointer"
             />
           </NavLink>
         </div>
@@ -146,9 +136,7 @@ const Navbar = () => {
       {/* Mobile menu */}
       {isMenuOpen && (
         <div className="md:hidden">
-          <div
-            className="px-2 pt-2 pb-3 space-y-1 sm:px-3"
-            style={{ backgroundColor: "var(--color-bg-base)" }}>
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-[var(--color-bg-base)]">
             {tabs
               .filter((tab) => tab.id !== "logout")
               .map((tab) => (
@@ -177,12 +165,7 @@ const Navbar = () => {
                     logout();
                     setIsMenuOpen(false);
                   }}
-                  className="block px-2 py-2 text-base font-medium w-full text-left cursor-pointer transition-colors duration-200 rounded-sm"
-                  style={{
-                    marginTop: ".5rem",
-                    backgroundColor: "var(--color-danger-dark)",
-                    color: "var(--color-bg-text)",
-                  }}
+                  className="block px-2 py-2 text-base font-medium w-full text-left cursor-pointer transition-colors duration-200 rounded-sm bg-[var(--color-danger-dark)] text-[var(--color-bg-text)] hover:bg-[var(--color-danger-dark-plus)] mt-2"
                   onMouseEnter={(e) =>
                     (e.currentTarget.style.backgroundColor =
                       "var(--color-danger-dark-plus)")
