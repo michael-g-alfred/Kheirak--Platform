@@ -8,6 +8,7 @@ import Portfolio from "../pages/Portfolio";
 import Contact from "../pages/Contact";
 import NotFound from "../pages/NotFound";
 import Login from "../pages/Login";
+import Register from "../pages/Register";
 
 export default function GuestRoutes() {
   return (
@@ -21,6 +22,7 @@ export default function GuestRoutes() {
       <Route path="/portfolio" element={<Portfolio />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
