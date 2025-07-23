@@ -5,7 +5,7 @@ export default function NotFound() {
   const [hover, setHover] = useState(false);
 
   return (
-    <PageLayout>
+    <PageLayout x="center" y="center">
       <h1 style={{ fontSize: "5rem" }}>😭</h1>
       <h2 style={{ fontSize: "2rem", color: "var(--color-bg-text)" }}>
         .404 - الصفحة غير موجودة
