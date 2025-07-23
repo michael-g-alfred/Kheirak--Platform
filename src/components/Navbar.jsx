@@ -2,6 +2,8 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Logo from "../assets/logo.svg";
+import CloseIcon from "../icons/CloseIcon";
+import MenuIcon from "../icons/MenuIcon";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -15,7 +17,10 @@ const Navbar = () => {
     { id: "contact", label: "تواصل معنا" },
   ];
 
-  const guestTabs = [...baseTabs, { id: "login", label: "تسجيل الدخول" }];
+  const guestTabs = [
+    ...baseTabs,
+    { id: "registration", label: "تسجيل الدخول" },
+  ];
 
   const neededTabs = [...baseTabs, { id: "logout", label: "تسجيل الخروج" }];
 
@@ -97,27 +102,7 @@ const Navbar = () => {
             <button
               className="text-[var(--color-bg-text)] hover:text-gray-300 focus:outline-none focus:text-gray-300"
               onClick={() => setIsMenuOpen(!isMenuOpen)}>
-              <svg
-                className="h-6 w-6 transition duration-800 ease-in-out"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor">
-                {isMenuOpen ? (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                ) : (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                )}
-              </svg>
+              {isMenuOpen ? <CloseIcon /> : <MenuIcon />}
             </button>
           </div>
           {/* Logo */}
