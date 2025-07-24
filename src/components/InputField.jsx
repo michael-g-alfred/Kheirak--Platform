@@ -28,7 +28,7 @@ const InputField = ({
         <select
           id={id}
           {...register}
-          className={`w-full px-4 py-2 rounded-lg border bg-transparent text-[var(--color-bg-text)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] ${
+          className={`w-full px-4 py-2 rounded-lg border-1 bg-transparent text-[var(--color-bg-text)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] ${
             error
               ? "border-[var(--color-danger-dark-plus)]"
               : "border-[var(--color-bg-divider)]"
@@ -44,7 +44,7 @@ const InputField = ({
           id={id}
           placeholder={placeholder}
           {...register}
-          className={`w-full px-4 py-2 rounded-lg border bg-transparent text-[var(--color-bg-text)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] ${
+          className={`w-full px-4 py-2 rounded-lg border-1 bg-transparent text-[var(--color-bg-text)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] ${
             error
               ? "border-[var(--color-danger-dark-plus)]"
               : "border-[var(--color-bg-divider)]"
@@ -55,7 +55,7 @@ const InputField = ({
           id={id}
           type="file"
           {...register}
-          className={`w-full px-4 py-2 rounded-lg border text-[var(--color-bg-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] ${
+          className={`w-full px-4 py-2 rounded-lg border-2 border-dashed text-[var(--color-bg-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] ${
             error
               ? "border-[var(--color-danger-dark-plus)]"
               : "border-[var(--color-bg-divider)]"
@@ -68,7 +68,7 @@ const InputField = ({
             type={inputType}
             placeholder={placeholder}
             {...register}
-            className={`w-full px-4 py-2 rounded-lg border bg-transparent text-[var(--color-bg-text)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] ${
+            className={`w-full px-4 py-2 rounded-lg border-1 bg-transparent text-[var(--color-bg-text)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] ${
               error
                 ? "border-[var(--color-danger-dark-plus)]"
                 : "border-[var(--color-bg-divider)]"
