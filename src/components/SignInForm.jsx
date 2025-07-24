@@ -1,7 +1,11 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import InputField from "./InputField";
 import FormLayout from "../layouts/FormLayout";
+import { useState } from "react";
+import { doSignInWithEmailAndPassword } from "../Firebase/auth";
+import { getDoc, doc } from "firebase/firestore";
+import { db } from "../Firebase/Firebase";
 
 export default function SignInForm() {
   const {
@@ -10,8 +14,33 @@ export default function SignInForm() {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = ({ email, password }) => {
-    console.log("تم إرسال البيانات:", { email, password });
+  const [msg, setMsg] = useState("");
+  const navigate = useNavigate();
+
+  const onSubmit = async ({ email, password }) => {
+    try {
+      const userCredential = await doSignInWithEmailAndPassword(
+        email,
+        password
+      );
+      const uid = userCredential.user.uid;
+      const userDoc = await getDoc(doc(db, "users", uid));
+      if (userDoc.exists()) {
+        const role = userDoc.data().role;
+
+        setMsg("✅ تم تسجيل الدخول بنجاح");
+
+        if (role === "donor") navigate("/donor-profile");
+        else if (role === "needy") navigate("/");
+        else if (role === "organization") navigate("/");
+        else navigate("/");
+      } else {
+        setMsg("❌ لم يتم العثور على بيانات المستخدم");
+      }
+    } catch (err) {
+      console.error(err.message);
+      setMsg("❌ فشل في تسجيل الدخول: " + err.message);
+    }
   };
 
   return (
@@ -44,7 +73,6 @@ export default function SignInForm() {
           })}
           error={errors.password}
         />
-
         {/* زر الدخول */}
         <button
           type="submit"
@@ -56,9 +84,13 @@ export default function SignInForm() {
           onMouseLeave={(e) =>
             (e.currentTarget.style.backgroundColor =
               "var(--color-primary-base)")
-          }>
+          }
+        >
           تسجيل الدخول
         </button>
+
+        {/* عرض رسالة الخطأ أو النجاح */}
+        {msg && <p className="text-center mt-3">{msg}</p>}
       </form>
     </FormLayout>
   );

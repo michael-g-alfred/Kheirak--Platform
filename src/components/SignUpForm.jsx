@@ -3,7 +3,10 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import InputField from "./InputField";
 import FormLayout from "../layouts/FormLayout";
-import { NavLink } from "react-router-dom";
+import { doCreateUserWithEmailAndPassword } from "../Firebase/auth";
+import { db } from "../Firebase/Firebase";
+import { collection, setDoc, doc } from "firebase/firestore";
+import { useState } from "react";
 
 const schema = yup.object().shape({
   username: yup.string().required("اسم المستخدم مطلوب"),
@@ -23,16 +26,28 @@ const SignUpForm = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    resolver: yupResolver(schema),
-  });
+  } = useForm({ resolver: yupResolver(schema) });
+  const [msg, setMsg] = useState("");
 
-  const onSubmit = ({ username, email, password, role }) => {
-    alert(`تم التسجيل بنجاح
-اسم المستخدم: ${username}
-البريد: ${email}
-كلمة المرور: ${password}
-النوع: ${role}`);
+  const onSubmit = async ({ username, email, password, role }) => {
+    try {
+      const userCredential = await doCreateUserWithEmailAndPassword(
+        email,
+        password
+      );
+      const user = userCredential.user;
+
+      await setDoc(doc(db, "users", user.uid), {
+        username,
+        email,
+        role,
+        createdAt: new Date(),
+      });
+
+      setMsg("✅ تم إنشاء الحساب بنجاح!");
+    } catch (error) {
+      setMsg("❌ " + error.message);
+    }
   };
 
   return (
@@ -78,7 +93,6 @@ const SignUpForm = () => {
           ]}
         />
 
-        {/* زر التسجيل */}
         <button
           type="submit"
           className="w-full text-[var(--color-secondary-base)] font-bold py-2 px-4 rounded-md transition cursor-pointer bg-[var(--color-primary-base)]"
@@ -89,9 +103,11 @@ const SignUpForm = () => {
           onMouseLeave={(e) =>
             (e.currentTarget.style.backgroundColor =
               "var(--color-primary-base)")
-          }>
+          }
+        >
           إنشاء حساب
         </button>
+        {msg && <p className="text-center mt-2">{msg}</p>}
       </form>
     </FormLayout>
   );
