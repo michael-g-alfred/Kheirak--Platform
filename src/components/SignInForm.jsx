@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import InputField from "./InputField";
 import FormLayout from "../layouts/FormLayout";
 import { useState } from "react";
+import SubmitButton from "./SubmitButton";
 import { doSignInWithEmailAndPassword } from "../Firebase/auth";
 import { getDoc, doc } from "firebase/firestore";
 import { db } from "../Firebase/Firebase";
@@ -15,9 +16,11 @@ export default function SignInForm() {
   } = useForm();
 
   const [msg, setMsg] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const onSubmit = async ({ email, password }) => {
+    setIsLoading(true);
     try {
       const userCredential = await doSignInWithEmailAndPassword(
         email,
@@ -27,19 +30,17 @@ export default function SignInForm() {
       const userDoc = await getDoc(doc(db, "users", uid));
       if (userDoc.exists()) {
         const role = userDoc.data().role;
-
         setMsg("✅ تم تسجيل الدخول بنجاح");
-
-        if (role === "donor") navigate("/donor-profile");
-        else if (role === "needy") navigate("/");
-        else if (role === "organization") navigate("/");
-        else navigate("/");
+        setIsLoading(false);
+        navigate("/");
       } else {
         setMsg("❌ لم يتم العثور على بيانات المستخدم");
+        setIsLoading(false);
       }
     } catch (err) {
       console.error(err.message);
       setMsg("❌ فشل في تسجيل الدخول: " + err.message);
+      setIsLoading(false);
     }
   };
 
@@ -74,20 +75,7 @@ export default function SignInForm() {
           error={errors.password}
         />
         {/* زر الدخول */}
-        <button
-          type="submit"
-          className="w-full text-[var(--color-secondary-base)] font-bold py-2 px-4 rounded-md transition cursor-pointer bg-[var(--color-primary-base)]"
-          onMouseEnter={(e) =>
-            (e.currentTarget.style.backgroundColor =
-              "var(--color-primary-hover)")
-          }
-          onMouseLeave={(e) =>
-            (e.currentTarget.style.backgroundColor =
-              "var(--color-primary-base)")
-          }
-        >
-          تسجيل الدخول
-        </button>
+        <SubmitButton buttonTitle="تسجيل الدخول" isLoading={isLoading} />
 
         {/* عرض رسالة الخطأ أو النجاح */}
         {msg && <p className="text-center mt-3">{msg}</p>}

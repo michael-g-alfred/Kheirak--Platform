@@ -7,6 +7,8 @@ import { doCreateUserWithEmailAndPassword } from "../Firebase/auth";
 import { db } from "../Firebase/Firebase";
 import { collection, setDoc, doc } from "firebase/firestore";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import SubmitButton from "./SubmitButton";
 
 const schema = yup.object().shape({
   username: yup.string().required("اسم المستخدم مطلوب"),
@@ -28,9 +30,13 @@ const SignUpForm = () => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
   const [msg, setMsg] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const onSubmit = async ({ username, email, password, role }) => {
     try {
+      setIsLoading(true);
       const userCredential = await doCreateUserWithEmailAndPassword(
         email,
         password
@@ -45,14 +51,18 @@ const SignUpForm = () => {
       });
 
       setMsg("✅ تم إنشاء الحساب بنجاح!");
+      setIsLoading(false);
+      navigate("/");
     } catch (error) {
       setMsg("❌ " + error.message);
+      setIsLoading(false);
     }
   };
 
   return (
     <FormLayout formTitle={"إنشاء حساب"}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {/* اسم المستخدم*/}
         <InputField
           label="اسم المستخدم"
           id="username"
@@ -61,6 +71,7 @@ const SignUpForm = () => {
           error={errors.username}
         />
 
+        {/* البريد الإلكترونى */}
         <InputField
           label="البريد الإلكتروني"
           id="email"
@@ -70,6 +81,7 @@ const SignUpForm = () => {
           error={errors.email}
         />
 
+        {/* كلمة المرور */}
         <InputField
           label="كلمة المرور"
           id="password"
@@ -79,6 +91,7 @@ const SignUpForm = () => {
           error={errors.password}
         />
 
+        {/* نوع المستخدم */}
         <InputField
           label="نوع المستخدم"
           id="role"
@@ -93,20 +106,10 @@ const SignUpForm = () => {
           ]}
         />
 
-        <button
-          type="submit"
-          className="w-full text-[var(--color-secondary-base)] font-bold py-2 px-4 rounded-md transition cursor-pointer bg-[var(--color-primary-base)]"
-          onMouseEnter={(e) =>
-            (e.currentTarget.style.backgroundColor =
-              "var(--color-primary-hover)")
-          }
-          onMouseLeave={(e) =>
-            (e.currentTarget.style.backgroundColor =
-              "var(--color-primary-base)")
-          }
-        >
-          إنشاء حساب
-        </button>
+        {/* زر الدخول */}
+        <SubmitButton buttonTitle="إنشاء حساب" isLoading={isLoading} />
+
+        {/* عرض رسالة الخطأ أو النجاح */}
         {msg && <p className="text-center mt-2">{msg}</p>}
       </form>
     </FormLayout>
