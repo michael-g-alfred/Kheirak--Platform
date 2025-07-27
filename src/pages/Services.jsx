@@ -1,6 +1,7 @@
 import React from "react";
 import PageLayout from "../layouts/PageLayout";
 import Header_Subheader from "../components/Header_Subheader";
+import CardsLayout from "../layouts/CardsLayout";
 
 export default function Services() {
   const services = [
@@ -27,23 +28,8 @@ export default function Services() {
     <PageLayout>
       <Header_Subheader
         h1="خدماتنا"
-        p="نقدم مجموعة من الخدمات التي تهدف إلى تسهيل عملية التبرع وضمان وصول الدعم لمستحقيه بأفضل الطرق وأكثرها أمانًا.">
-        {services.map((service, index) => (
-          <div
-            key={index}
-            className="rounded-lg shadow p-6 border border-[var(--color-bg-divider)] hover:shadow-md transition"
-            style={{
-              backgroundColor: "var(--color-bg-card)",
-            }}>
-            <h2 className="text-2xl font-semibold mb-2 text-[var(--color-primary-base)]">
-              {service.title}
-            </h2>
-            <p className="text-base leading-loose text-[var(--color-bg-text)]">
-              {service.description}
-            </p>
-          </div>
-        ))}
-      </Header_Subheader>
+        p="نقدم مجموعة من الخدمات التي تهدف إلى تسهيل عملية التبرع وضمان وصول الدعم لمستحقيه بأفضل الطرق وأكثرها أمانًا."></Header_Subheader>
+      <CardsLayout list={services} colNum={3} />
     </PageLayout>
   );
 }

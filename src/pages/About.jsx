@@ -1,6 +1,7 @@
 import React from "react";
 import PageLayout from "../layouts/PageLayout";
 import Header_Subheader from "../components/Header_Subheader";
+import CardsLayout from "../layouts/CardsLayout";
 
 export default function About() {
   const sections = [
@@ -25,23 +26,8 @@ export default function About() {
     <PageLayout>
       <Header_Subheader
         h1="من نحن؟"
-        p="نحن منصة تهدف إلى تسهيل التبرعات والربط بين المتبرعين والجهات المحتاجة، من خلال واجهة سهلة وآمنة تضمن وصول المساعدات إلى مستحقيها.">
-        {sections.map((section, index) => (
-          <div
-            key={index}
-            className="rounded-lg shadow p-6 border border-[var(--color-bg-divider)] hover:shadow-md transition"
-            style={{
-              backgroundColor: "var(--color-bg-card)",
-            }}>
-            <h2 className="text-2xl font-semibold mb-2 text-[var(--color-primary-base)]">
-              {section.title}
-            </h2>
-            <p className="text-base leading-loose text-[var(--color-bg-text)]">
-              {section.description}
-            </p>
-          </div>
-        ))}
-      </Header_Subheader>
+        p="نحن منصة تهدف إلى تسهيل التبرعات والربط بين المتبرعين والجهات المحتاجة، من خلال واجهة سهلة وآمنة تضمن وصول المساعدات إلى مستحقيها."></Header_Subheader>
+      <CardsLayout list={sections} colNum={3} />
     </PageLayout>
   );
 }
