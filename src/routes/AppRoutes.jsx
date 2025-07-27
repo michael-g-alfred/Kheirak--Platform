@@ -29,7 +29,7 @@ export default function AppRoutes() {
       {/* Guest */}
       <Route path="/registration" element={<Registration />} />
       {/* Admin */}
-      <Route path="/dashboard" element={<OrgProfile />} />
+      <Route path="/dashboard" element={<AdminDashboard />} />
       {/* Donor */}
       <Route path="/donor-profile" element={<DonorProfile />} />
       {/* Org */}
