@@ -23,7 +23,7 @@
   --color-bg-divider: #a3b9ae;
 
   /* Danger Colors */
-  --color-danger-light: #fdf3f4;
+  --color-danger-light: #e9828d;
   --color-danger-dark: #c50f1f;
   --color-danger-dark-plus: #960b18;
 
@@ -33,7 +33,7 @@
   --color-warning-dark-plus: #bc4b09;
 
   /* Success Colors */
-  --color-success-light: #f1faf1;
+  --color-success-light: #1b9e1b;
   --color-success-dark: #107c10;
   --color-success-dark-plus: #052505;
 }
