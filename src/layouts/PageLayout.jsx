@@ -4,7 +4,7 @@ export default function PageLayout({ children, x = "start", y = "" }) {
   return (
     <div
       dir="rtl"
-      className={`min-h-screen flex flex-col justify-${x} items-${y} gap-4 px-4 py-8 sm:px-8 md:px-16`}>
+      className={`min-h-screen flex flex-col justify-${x} items-${y} gap-4 w-full mx-auto p-8 overflow-x-hidden`}>
       {children}
     </div>
   );

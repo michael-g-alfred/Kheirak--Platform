@@ -18,28 +18,51 @@
   /* Background Colors */
   --color-bg-base: #122117;
   --color-bg-card: #366347;
-  --color-bg-text: #e2f3ea;
-  --color-bg-muted-text: #a3b9ae;
-  --color-bg-divider: #a3b9ae;
+  --color-bg-text: #ffffff;
+  --color-bg-muted-text: #d1e3d6;
+  --color-bg-divider: #5b8f72;
 
   /* Danger Colors */
-  --color-danger-light: #e9828d;
-  --color-danger-dark: #c50f1f;
-  --color-danger-dark-plus: #960b18;
-
-  /* Warning Colors */
-  --color-warning-light: #fff9f5;
-  --color-warning-dark: #f7630c;
-  --color-warning-dark-plus: #bc4b09;
+  --color-danger-light: #e02b2b;
+  --color-danger-dark: #a41616;
+  --color-danger-dark-plus: #a41616;
 
   /* Success Colors */
   --color-success-light: #1b9e1b;
   --color-success-dark: #107c10;
   --color-success-dark-plus: #052505;
+
+  /* Warning Colors */
+  --color-warning-light: #fff9f5;
+  --color-warning-dark: #f7630c;
+  --color-warning-dark-plus: #bc4b09;
 }
 
 html,
 body {
   background-color: var(--color-bg-base);
   font-family: "Cairo", sans-serif;
+}
+
+/* Utility classes for success and danger states */
+.success {
+  background-color: var(--color-success-light);
+  color: var(--color-bg-text);
+}
+.success:hover {
+  background-color: var(--color-success-dark);
+}
+.success:active {
+  background-color: var(--color-success-dark-plus);
+}
+
+.danger {
+  background-color: var(--color-danger-light);
+  color: var(--color-bg-text);
+}
+.danger:hover {
+  background-color: var(--color-danger-dark);
+}
+.danger:active {
+  background-color: var(--color-danger-dark-plus);
 }

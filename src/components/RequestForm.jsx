@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import uploadImageToCloudinary from "../utils/cloudinary";
 import { useForm } from "react-hook-form";
 import InputField from "./InputField";
 import SubmitButton from "./SubmitButton";
@@ -12,8 +13,26 @@ export default function RequestForm({ onClose }) {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log("Form Data:", data);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const onSubmit = async (data) => {
+    setIsLoading(true);
+    try {
+      const file = data.file[0]; // Get the uploaded file
+      const imageUrl = await uploadImageToCloudinary(file); // Upload to Cloudinary
+
+      const submittedData = {
+        ...data,
+        file: imageUrl, // Replace file with Cloudinary URL
+      };
+
+      console.log("Submitted Data:", submittedData);
+      onClose(); // Close the form
+    } catch (error) {
+      console.error("File upload failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -24,7 +43,7 @@ export default function RequestForm({ onClose }) {
         <div className="flex justify-end">
           <button
             onClick={onClose}
-            className="p-2 bg-[var(--color-danger-light)] text-[var(--color-danger-dark)] hover:bg-[var(--color-danger-dark)] hover:text-[var(--color-danger-light)] font-bold rounded-full focus:outline-none"
+            className="p-2 danger font-bold rounded-full focus:outline-none"
             aria-label="Close form">
             <CloseIcon />
           </button>
@@ -63,7 +82,7 @@ export default function RequestForm({ onClose }) {
           error={errors.moneyAmount}
         />
 
-        <SubmitButton buttonTitle={"إرسال الطلب"} />
+        <SubmitButton buttonTitle={"إرسال الطلب"} isLoading={isLoading} />
       </form>
     </FormLayout>
   );

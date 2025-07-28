@@ -78,7 +78,11 @@ export default function SignInForm() {
         <SubmitButton buttonTitle="تسجيل الدخول" isLoading={isLoading} />
 
         {/* عرض رسالة الخطأ أو النجاح */}
-        {msg && <p className="text-center mt-3">{msg}</p>}
+        {msg && (
+          <p className="w-full flex justify-center items-center border-2 border-[var(--color-bg-divider)] bg-[var(--color-bg-card)] text-[var(--color-bg-text)] p-1 rounded-full text-center mt-2">
+            {msg}
+          </p>
+        )}
       </form>
     </FormLayout>
   );

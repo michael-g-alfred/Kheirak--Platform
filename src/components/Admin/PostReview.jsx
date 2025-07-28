@@ -107,12 +107,12 @@ export default function PostReview() {
           <div className="flex gap-2 mt-4">
             <button
               onClick={() => handleApprove(post.id)}
-              className="bg-[var(--color-success-light)] hover:bg-[var(--color-success-dark)] text-[var(--color-bg-text)] px-6 py-3 rounded text-md">
+              className="success px-6 py-3 rounded text-md">
               قبول
             </button>
             <button
               onClick={() => handleReject(post.id)}
-              className="bg-[var(--color-danger-dark)] hover:bg-[var(--color-danger-dark-plus)] text-[var(--color-bg-text)] px-6 py-3 rounded text-md">
+              className="danger px-6 py-3 rounded text-md">
               رفض
             </button>
           </div>
