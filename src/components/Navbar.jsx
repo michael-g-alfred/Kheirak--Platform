@@ -22,7 +22,10 @@ const Navbar = () => {
     { id: "registration", label: "تسجيل الدخول" },
   ];
 
-  const neededTabs = [...baseTabs, { id: "logout", label: "تسجيل الخروج" }];
+  const beneficiaryTabs = [
+    ...baseTabs,
+    { id: "logout", label: "تسجيل الخروج" },
+  ];
 
   const donorTabs = [
     { id: "logout", label: "تسجيل الخروج" },
@@ -43,15 +46,17 @@ const Navbar = () => {
   ];
 
   let tabs = guestTabs;
-  if (isAuthenticated) {
-    if (user && user.type === "admin") {
-      tabs = adminTabs;
-    } else if (user && user.type === "donor") {
-      tabs = donorTabs;
-    } else if (user && user.type === "org") {
-      tabs = orgTabs;
-    }
-  }
+  // if (isAuthenticated) {
+  //   if (user && user.type === "admin") {
+  //     tabs = adminTabs;
+  //   } else if (user && user.type === "beneficiary") {
+  //     tabs = beneficiaryTabs;
+  //   } else if (user && user.type === "donor") {
+  //     tabs = donorTabs;
+  //   } else if (user && user.type === "org") {
+  //     tabs = orgTabs;
+  //   }
+  // }
 
   return (
     <nav

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import CreatePostTrigger from "../components/CreatePostTrigger";
 import RequestForm from "../components/RequestForm";
-import AlertIcon from "../icons/AlertIcon";
+import NoData from "../components/NoData";
 
 export default function Posts() {
   const [showRequestFrom, setShowRequestFrom] = useState(false);
@@ -17,14 +17,7 @@ export default function Posts() {
         </div>
       )}
       <hr className="my-4 border-[var(--color-bg-divider)] border-.5 rounded" />
-      <div className="bg-[var(--color-bg-card)] rounded-2xl shadow-md p-6 border border-[var(--color-bg-divider)] hover:shadow-lg transition-all text-center">
-        <div className="flex justify-center text-2xl font-bold mb-3 text-[var(--color-bg-muted-text)]">
-          <AlertIcon />
-        </div>
-        <h2 className="text-2xl font-bold mb-3 text-[var(--color-bg-muted-text)]">
-          لا توجد طلبات تبرع متاحة الآن.
-        </h2>
-      </div>
+      <NoData h2={"لا توجد طلبات تبرع متاحة الآن"} />
     </>
   );
 }

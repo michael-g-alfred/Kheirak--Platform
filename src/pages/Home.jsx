@@ -7,7 +7,6 @@ import Posts from "./Posts"; // adjust the path if necessary
 export default function Home() {
   const [activeTab, setActiveTab] = useState("posts");
   const location = useLocation();
-  console.log(location.pathname);
 
   return (
     <PageLayout>

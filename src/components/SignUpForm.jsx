@@ -101,8 +101,8 @@ const SignUpForm = () => {
           options={[
             { value: "", label: "اختر نوع المستخدم" },
             { value: "donor", label: "متبرع" },
-            { value: "needy", label: "محتاج" },
-            { value: "organization", label: "مؤسسة" },
+            { value: "beneficiary", label: "مستفيد" },
+            { value: "org", label: "مؤسسة" },
           ]}
         />
 
@@ -110,7 +110,11 @@ const SignUpForm = () => {
         <SubmitButton buttonTitle="إنشاء حساب" isLoading={isLoading} />
 
         {/* عرض رسالة الخطأ أو النجاح */}
-        {msg && <p className="text-center mt-2">{msg}</p>}
+        {msg && (
+          <p className="w-full flex justify-center items-center border-2 border-[var(--color-bg-divider)] bg-[var(--color-bg-card)] text-[var(--color-bg-text)] p-1 rounded-full text-center mt-2">
+            {msg}
+          </p>
+        )}
       </form>
     </FormLayout>
   );
