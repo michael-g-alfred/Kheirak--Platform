@@ -1,5 +1,3 @@
-import React from "react";
-
 export default function CardLayout({
   title,
   description,
@@ -7,7 +5,7 @@ export default function CardLayout({
   clampTitle,
 }) {
   return (
-    <div className="rounded-lg p-6 border border-[var(--color-bg-divider)] bg-[var(--color-bg-card)]">
+    <div className="rounded-lg p-4 border border-[var(--color-bg-divider)] bg-[var(--color-bg-card)]">
       <h2
         className={`text-2xl font-semibold mb-2 text-[var(--color-primary-base)] ${
           clampTitle ? "line-clamp-1" : ""
@@ -22,7 +20,7 @@ export default function CardLayout({
           {description}
         </p>
       )}
-      {children && <div className="mt-4">{children}</div>}
+      {children && <div>{children}</div>}
     </div>
   );
 }

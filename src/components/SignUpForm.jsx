@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import SubmitButton from "./SubmitButton";
 
 const schema = yup.object().shape({
-  username: yup.string().required("اسم المستخدم مطلوب"),
+  userName: yup.string().required("اسم المستخدم مطلوب"),
   email: yup.string().email("صيغة البريد غير صحيحة").required("البريد مطلوب"),
   password: yup
     .string()
@@ -19,7 +19,7 @@ const schema = yup.object().shape({
     .required("كلمة المرور مطلوبة"),
   role: yup
     .string()
-    .oneOf(["donor", "beneficiary", "organization"], "نوع المستخدم غير صالح")
+    .oneOf(["متبرع", "مستفيد", "مؤسسة", "مشرف"], "نوع المستخدم غير صالح")
     .required("نوع المستخدم مطلوب"),
 });
 
@@ -34,7 +34,7 @@ const SignUpForm = () => {
 
   const navigate = useNavigate();
 
-  const onSubmit = async ({ username, email, password, role }) => {
+  const onSubmit = async ({ userName, email, password, role }) => {
     try {
       setIsLoading(true);
       const userCredential = await doCreateUserWithEmailAndPassword(
@@ -43,8 +43,8 @@ const SignUpForm = () => {
       );
       const user = userCredential.user;
 
-      await setDoc(doc(db, "users", user.uid), {
-        username,
+      await setDoc(doc(db, "Users", user.uid), {
+        userName,
         email,
         role,
         createdAt: new Date(),
@@ -65,10 +65,10 @@ const SignUpForm = () => {
         {/* اسم المستخدم*/}
         <InputField
           label="اسم المستخدم"
-          id="username"
+          id="userName"
           placeholder="اسم المستخدم"
-          register={register("username")}
-          error={errors.username}
+          register={register("userName")}
+          error={errors.userName}
         />
 
         {/* البريد الإلكترونى */}
@@ -101,9 +101,10 @@ const SignUpForm = () => {
           error={errors.role}
           options={[
             { value: "", label: "اختر نوع المستخدم" },
-            { value: "donor", label: "متبرع" },
-            { value: "beneficiary", label: "مستفيد" },
-            { value: "organization", label: "مؤسسة" },
+            { value: "متبرع", label: "متبرع" },
+            { value: "مستفيد", label: "مستفيد" },
+            { value: "مؤسسة", label: "مؤسسة" },
+            { value: "مشرف", label: "مشرف" },
           ]}
         />
 

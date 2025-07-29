@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import uploadImageToCloudinary from "../utils/cloudinary";
 import { useForm } from "react-hook-form";
 import InputField from "./InputField";
@@ -49,7 +49,7 @@ export default function RequestForm({ onClose }) {
       await updateDoc(docRef, {
         id: docRef.id,
       });
-      toast.success("تم إرسال الطلب بنجاح!");
+      toast.success("تم إرسال الطلب بنجاح للمراجعة");
       console.log("تم رفع الطلب:", newPost);
       onClose();
     } catch (error) {
@@ -64,15 +64,13 @@ export default function RequestForm({ onClose }) {
     <FormLayout>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="space-y-4 max-w-md mx-auto"
-      >
+        className="space-y-4 max-w-md mx-auto">
         <div className="flex justify-end">
           <button
             onClick={onClose}
             className="p-2 danger font-bold rounded-full focus:outline-none"
             aria-label="Close form"
-            type="button"
-          >
+            type="button">
             <CloseIcon />
           </button>
         </div>

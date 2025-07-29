@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import CardsLayout from "../../layouts/CardsLayout";
 import Loader from "../Loader";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../Firebase/Firebase";
 
 export default function Stats() {
   const [stats, setStats] = useState({
@@ -17,27 +19,55 @@ export default function Stats() {
   const [lastUpdated, setLastUpdated] = useState(null);
 
   useEffect(() => {
-    setIsLoading(true);
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const usersSnapshot = await getDocs(collection(db, "Users"));
+        const postsSnapshot = await getDocs(collection(db, "Posts"));
 
-    // محاكاة جلب البيانات من قاعدة البيانات
-    setTimeout(() => {
-      setStats({
-        users: 124,
-        donors: 87,
-        orgs: 14,
-        requests: 203,
-        completedRequests: 160,
-        pendingRequests: 43,
-        offers: 38,
-      });
-      setLastUpdated(
-        new Date().toLocaleString("ar-EG", {
-          dateStyle: "full",
-          timeStyle: "short",
-        })
-      );
-      setIsLoading(false);
-    }, 1000);
+        const usersData = usersSnapshot.docs.map((doc) => doc.data());
+        const postsData = postsSnapshot.docs.map((doc) => doc.data());
+
+        const users = usersData.filter((user) => user.role === "مستفيد").length;
+        const donors = usersData.filter((user) => user.role === "متبرع").length;
+        const orgs = usersData.filter((user) => user.role === "مؤسسة").length;
+        const requests = postsData.length;
+        const completedRequests = postsData.filter(
+          (post) => post.status === "مكتمل"
+        ).length;
+        const pendingRequests = postsData.filter(
+          (post) => post.status !== "مكتمل"
+        ).length;
+        const offers = 0; // يمكنك تغييره إذا كان هناك كولكشن للعروض
+
+        setStats({
+          users,
+          donors,
+          orgs,
+          requests,
+          completedRequests,
+          pendingRequests,
+          offers,
+        });
+
+        setLastUpdated(
+          new Date().toLocaleString("ar-EG", {
+            dateStyle: "full",
+            timeStyle: "short",
+          })
+        );
+      } catch (error) {
+        console.error("خطأ في جلب البيانات:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData(); // أول مرة
+
+    const intervalId = setInterval(fetchData, 30000); // تحديث كل 30 ثانية
+
+    return () => clearInterval(intervalId); // تنظيف عند الخروج
   }, []);
 
   if (isLoading) {
@@ -58,44 +88,30 @@ export default function Stats() {
           {
             title: "عدد المستفيدين",
             description: stats.users,
-            icon: "👤",
-            color: "green",
           },
           {
             title: "عدد المتبرعين",
             description: stats.donors,
-            icon: "💰",
-            color: "blue",
           },
           {
             title: "عدد المؤسسات",
             description: stats.orgs,
-            icon: "🏢",
-            color: "purple",
           },
           {
             title: "عدد الطلبات",
             description: stats.requests,
-            icon: "📦",
-            color: "gray",
           },
           {
             title: "عدد الطلبات المكتملة",
             description: stats.completedRequests,
-            icon: "✅",
-            color: "emerald",
           },
           {
             title: "عدد الطلبات الغير مكتملة",
             description: stats.pendingRequests,
-            icon: "⏳",
-            color: "red",
           },
           {
             title: "عدد العروض المتاحة",
             description: stats.offers,
-            icon: "🎁",
-            color: "yellow",
           },
         ]}
       />

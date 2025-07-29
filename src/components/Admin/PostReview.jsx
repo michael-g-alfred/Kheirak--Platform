@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 import { db } from "../../Firebase/Firebase";
 import CardLayout from "../../layouts/CardLayout";
 import CardsLayout from "../../layouts/CardsLayout";
+import NoData from "../NoData";
 
 export default function PostReview() {
   const [posts, setPosts] = useState([]);
@@ -56,23 +57,14 @@ export default function PostReview() {
   return (
     <CardsLayout colNum={4}>
       {posts.length === 0 ? (
-        <p className="text-center col-span-4">لا توجد طلبات حالياً</p>
+        <NoData h2={"لا توجد طلبات تبرع متاحة الآن"} />
       ) : (
         posts.map((post) => (
           <CardLayout
             key={post.id}
-            title={`#${post.id.slice(0, 5)} - ${post.requestTitle}`}
-            description={post.details || post.description}
-          >
-            <div className="text-md text-[var(--color-bg-text)] space-y-1 text-right">
-              {/* <p>
-                <strong>المرفقات: </strong>{" "}
-                {post.attachedFiles
-                  ? Array.isArray(post.attachedFiles)
-                    ? post.attachedFiles.join("، ")
-                    : post.attachedFiles
-                  : "لا يوجد"}
-              </p> */}
+            title={`${post.requestTitle}`}
+            description={post.details || post.description}>
+            <div className="text-sm text-[var(--color-bg-text)] space-y-1 text-right">
               <p>
                 <strong>المرفقات: </strong>
                 {post.attachedFiles ? (
@@ -84,8 +76,7 @@ export default function PostReview() {
                             href={file}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-500 break-all hover:underline"
-                          >
+                            className="text-blue-500 break-all hover:underline">
                             {file}
                           </a>
                         </li>
@@ -96,8 +87,7 @@ export default function PostReview() {
                       href={post.attachedFiles}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-500 break-all hover:underline"
-                    >
+                      className="text-blue-500 break-all hover:underline">
                       {post.attachedFiles}
                     </a>
                   )
@@ -110,24 +100,28 @@ export default function PostReview() {
                 <strong>المبلغ المطلوب: </strong>{" "}
                 {post.requestedAmount || post.amount}
               </p>
+
               <p>
-                <strong>الحالة: </strong> {post.status}
+                <strong>الحالة: </strong>
+                {post.status}
               </p>
             </div>
-            <div className="flex gap-2 mt-4">
-              <button
-                onClick={() => handleApprove(post.id)}
-                className="success px-6 py-3 rounded text-md"
-              >
-                قبول
-              </button>
-              <button
-                onClick={() => handleReject(post.id)}
-                className="danger px-6 py-3 rounded text-md"
-              >
-                رفض
-              </button>
-            </div>
+            {post.status !== "مكتمل" ? (
+              <div className="flex gap-2 mt-4">
+                <button
+                  onClick={() => handleApprove(post.id)}
+                  className="success px-6 py-3 rounded text-md">
+                  قبول
+                </button>
+                <button
+                  onClick={() => handleReject(post.id)}
+                  className="danger px-6 py-3 rounded text-md">
+                  رفض
+                </button>
+              </div>
+            ) : (
+              ""
+            )}
           </CardLayout>
         ))
       )}

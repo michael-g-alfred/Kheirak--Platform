@@ -27,7 +27,7 @@ export default function SignInForm() {
         password
       );
       const uid = userCredential.user.uid;
-      const userDoc = await getDoc(doc(db, "users", uid));
+      const userDoc = await getDoc(doc(db, "Users", uid));
       if (userDoc.exists()) {
         const role = userDoc.data().role;
         setMsg("✅ تم تسجيل الدخول بنجاح");
