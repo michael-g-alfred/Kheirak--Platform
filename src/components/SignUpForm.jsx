@@ -19,7 +19,7 @@ const schema = yup.object().shape({
     .required("كلمة المرور مطلوبة"),
   role: yup
     .string()
-    .oneOf(["donor", "needy", "organization"], "نوع المستخدم غير صالح")
+    .oneOf(["donor", "beneficiary", "organization"], "نوع المستخدم غير صالح")
     .required("نوع المستخدم مطلوب"),
 });
 
@@ -92,6 +92,7 @@ const SignUpForm = () => {
         />
 
         {/* نوع المستخدم */}
+
         <InputField
           label="نوع المستخدم"
           id="role"
@@ -102,7 +103,7 @@ const SignUpForm = () => {
             { value: "", label: "اختر نوع المستخدم" },
             { value: "donor", label: "متبرع" },
             { value: "beneficiary", label: "مستفيد" },
-            { value: "org", label: "مؤسسة" },
+            { value: "organization", label: "مؤسسة" },
           ]}
         />
 

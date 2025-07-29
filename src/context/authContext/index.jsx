@@ -3,6 +3,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import { auth, db } from "../../Firebase/Firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { monitorAuthState } from "../../Firebase/auth";
+import { doSignOut } from "../../Firebase/auth";
 
 const AuthContext = createContext();
 
@@ -11,6 +12,20 @@ export const AuthProvider = ({ children }) => {
   const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+
+  const isAuthenticated = !!currentUser;
+  const role = userData?.role || "guest";
+  const username = userData?.username || "guest";
+
+  const logout = async () => {
+    try {
+      await doSignOut();
+      setCurrentUser(null);
+      setUserData(null);
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -43,7 +58,17 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ currentUser, userData }}>
+    <AuthContext.Provider
+      value={{
+        currentUser,
+        userData,
+        isAuthenticated,
+        role,
+        logout,
+        loading,
+        username,
+      }}
+    >
       {!loading && children}
     </AuthContext.Provider>
   );

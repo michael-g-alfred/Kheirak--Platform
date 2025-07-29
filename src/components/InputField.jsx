@@ -32,7 +32,8 @@ const InputField = ({
             error
               ? "border-[var(--color-danger-dark-plus)]"
               : "border-[var(--color-bg-divider)]"
-          }`}>
+          }`}
+        >
           {options.map((opt) => (
             <option key={opt.value} value={opt.value}>
               {opt.label}
@@ -77,7 +78,8 @@ const InputField = ({
           {isPassword && (
             <div
               className="absolute inset-y-0 left-3 flex items-center cursor-pointer text-[var(--color-bg-muted-text)]"
-              onClick={() => setShowPassword((prev) => !prev)}>
+              onClick={() => setShowPassword((prev) => !prev)}
+            >
               {showPassword ? <EyeOffIcon /> : <EyeIcon />}
             </div>
           )}

@@ -1,5 +1,4 @@
 import { auth } from "./Firebase";
-
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -17,10 +16,12 @@ export const monitorAuthState = (callback) => {
 };
 
 export const doCreateUserWithEmailAndPassword = async (email, password) => {
+  console.log("creating user");
   return createUserWithEmailAndPassword(auth, email, password);
 };
 
 export const doSignInWithEmailAndPassword = async (email, password) => {
+  console.log("signing in");
   return signInWithEmailAndPassword(auth, email, password);
 };
 
@@ -32,6 +33,7 @@ export const doSignInWithGoogle = async () => {
 };
 
 export const doSignOut = async () => {
+  console.log("signing out");
   return signOut(auth);
 };
 
