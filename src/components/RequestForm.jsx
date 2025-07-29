@@ -5,31 +5,56 @@ import InputField from "./InputField";
 import SubmitButton from "./SubmitButton";
 import FormLayout from "../layouts/FormLayout";
 import CloseIcon from "../icons/CloseIcon";
+import { db } from "../Firebase/Firebase";
+import {
+  collection,
+  addDoc,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
+import { useAuth } from "../context/authContext";
+import toast from "react-hot-toast";
 
 export default function RequestForm({ onClose }) {
+  const { currentUser, userData, username } = useAuth();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-
   const [isLoading, setIsLoading] = useState(false);
-
   const onSubmit = async (data) => {
     setIsLoading(true);
     try {
-      const file = data.file[0]; // Get the uploaded file
-      const imageUrl = await uploadImageToCloudinary(file); // Upload to Cloudinary
-
-      const submittedData = {
-        ...data,
-        file: imageUrl, // Replace file with Cloudinary URL
+      const file = data.file[0];
+      const imageUrl = await uploadImageToCloudinary(file);
+      const newPost = {
+        requestTitle: data.title,
+        details: data.description,
+        attachedFiles: imageUrl,
+        requestedAmount: parseFloat(data.moneyAmount),
+        totalDonated: 0,
+        status: "قيد المراجعة",
+        timestamp: serverTimestamp(),
+        submittedBy: {
+          userName: username || "مستخدم",
+          userId: currentUser.uid,
+          email: currentUser.email,
+          userPhoto: userData?.photoURL || "",
+        },
+        donors: [],
       };
-
-      console.log("Submitted Data:", submittedData);
-      onClose(); // Close the form
+      const docRef = await addDoc(collection(db, "Posts"), newPost);
+      await updateDoc(docRef, {
+        id: docRef.id,
+      });
+      toast.success("تم إرسال الطلب بنجاح!");
+      console.log("تم رفع الطلب:", newPost);
+      onClose();
     } catch (error) {
-      console.error("File upload failed:", error);
+      console.error("فشل الرفع:", error);
+      toast.error("حدث خطأ أثناء إرسال الطلب");
     } finally {
       setIsLoading(false);
     }
@@ -39,15 +64,19 @@ export default function RequestForm({ onClose }) {
     <FormLayout>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="space-y-4 max-w-md mx-auto">
+        className="space-y-4 max-w-md mx-auto"
+      >
         <div className="flex justify-end">
           <button
             onClick={onClose}
             className="p-2 danger font-bold rounded-full focus:outline-none"
-            aria-label="Close form">
+            aria-label="Close form"
+            type="button"
+          >
             <CloseIcon />
           </button>
         </div>
+
         <InputField
           label="اسم الطلب"
           id="title"
@@ -82,7 +111,7 @@ export default function RequestForm({ onClose }) {
           error={errors.moneyAmount}
         />
 
-        <SubmitButton buttonTitle={"إرسال الطلب"} isLoading={isLoading} />
+        <SubmitButton buttonTitle="إرسال الطلب" isLoading={isLoading} />
       </form>
     </FormLayout>
   );

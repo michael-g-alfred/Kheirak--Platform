@@ -1,23 +1,43 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import CardLayout from "../layouts/CardLayout";
 import ImageIcon from "../icons/ImageIcon";
 import FormLayout from "../layouts/FormLayout";
+import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { db } from "../Firebase/Firebase";
 
 const PostCard = ({ newPost }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [selectedAmount, setSelectedAmount] = useState(null);
+  // const [totalDonated, setTotalDonated] = useState(0);
+
   const [totalDonated, setTotalDonated] = useState(0);
 
-  const requestedAmount = Number(newPost.requestedAmount);
+  useEffect(() => {
+    if (!newPost?.id) return;
+
+    const postRef = doc(db, "Posts", newPost.id);
+    const unsubscribe = onSnapshot(postRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setTotalDonated(Number(data.totalDonated || 0));
+      }
+    });
+
+    return () => unsubscribe();
+  }, [newPost?.id]);
+
+  const requestedAmount = Number(newPost.requestedAmount || 0);
   const isDisabled = totalDonated >= requestedAmount;
 
   const formattedTime = newPost.timestamp
-    ? formatDistanceToNow(new Date(newPost.timestamp), {
-        addSuffix: true,
-        locale: ar,
-      })
+    ? formatDistanceToNow(
+        newPost.timestamp?.toDate
+          ? newPost.timestamp.toDate()
+          : new Date(newPost.timestamp),
+        { addSuffix: true, locale: ar }
+      )
     : "";
 
   const donationPercentage = Math.min(
@@ -35,17 +55,35 @@ const PostCard = ({ newPost }) => {
     setSelectedAmount(null);
   };
 
-  const handleConfirmDonation = () => {
+  // const handleConfirmDonation = () => {
+  //   const newTotal = totalDonated + Number(selectedAmount);
+  //   if (newTotal > requestedAmount) {
+  //     alert("المبلغ يتجاوز القيمة المطلوبة.");
+  //     closePopup();
+  //     return;
+  //   }
+  //   setTotalDonated(newTotal);
+  //   alert(`تم التبرع بـ ${selectedAmount} ج.م`);
+  //   closePopup();
+  // };
+
+  const handleConfirmDonation = async () => {
     const newTotal = totalDonated + Number(selectedAmount);
     if (newTotal > requestedAmount) {
-      alert(
-        "المبلغ الذي تحاول التبرع به يتجاوز القيمة المطلوبة. يرجى إدخال مبلغ أقل."
-      );
+      alert("المبلغ يتجاوز القيمة المطلوبة.");
       closePopup();
       return;
     }
-    setTotalDonated(newTotal);
-    alert(`تم تأكيد تحويل ${selectedAmount} جنيه`);
+    try {
+      const postRef = doc(db, "Posts", newPost.id);
+      await updateDoc(postRef, {
+        totalDonated: newTotal,
+      });
+      alert(`تم التبرع بـ ${selectedAmount} ج.م`);
+    } catch (error) {
+      console.error("خطأ في تحديث التبرع:", error);
+      alert("حدث خطأ أثناء تنفيذ التبرع.");
+    }
     closePopup();
   };
 
@@ -55,7 +93,7 @@ const PostCard = ({ newPost }) => {
         {/* Header */}
         <div className="flex items-center gap-2 mb-2">
           <div className="flex-shrink-0">
-            {newPost.submittedBy.userPhoto ? (
+            {newPost.submittedBy?.userPhoto ? (
               <img
                 src={newPost.submittedBy.userPhoto}
                 alt="profile"
@@ -69,7 +107,7 @@ const PostCard = ({ newPost }) => {
           </div>
           <div className="flex flex-col items-start flex-1">
             <span className="font-bold text-lg text-[var(--color-primary-base)]">
-              {newPost.submittedBy.userName || "اسم المستخدم"}
+              {newPost.submittedBy?.userName || "اسم المستخدم"}
             </span>
             <span className="text-xs text-[var(--color-bg-text)]">
               {formattedTime}
@@ -79,9 +117,9 @@ const PostCard = ({ newPost }) => {
 
         {/* Attached Image */}
         <div className="mb-2">
-          {newPost.attachedImgUrl ? (
+          {newPost.attachedFiles ? (
             <img
-              src={newPost.attachedImgUrl}
+              src={newPost.attachedFiles}
               alt="attachment"
               className="w-full h-100 object-cover rounded-lg border border-[var(--color-bg-divider)]"
             />
@@ -113,25 +151,26 @@ const PostCard = ({ newPost }) => {
             <button
               key={index}
               onClick={() => handleDonateClick(amount)}
-              className={`w-full flex justify-center items-center p-2 rounded font-bold text-sm transition ${
+              className={`w-full p-2 rounded font-bold text-sm transition ${
                 isDisabled
                   ? "bg-[var(--color-secondary-disabled)] text-[var(--color-bg-muted-text)] cursor-not-allowed"
                   : "bg-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] text-[var(--color-secondary-base)]"
               }`}
-              disabled={isDisabled}>
+              disabled={isDisabled}
+            >
               {amount} ج.م
             </button>
           ))}
 
-          {/* مبلغ آخر - Input بدل contentEditable */}
+          {/* مبلغ آخر */}
           <input
             type="text"
             inputMode="numeric"
             disabled={isDisabled}
             placeholder="مبلغ آخر"
-            className={`w-full flex flex-wrap justify-center items-center text-center p-2 rounded font-bold text-sm transition outline-none ${
+            className={`w-full text-center p-2 rounded font-bold text-sm transition outline-none ${
               isDisabled
-                ? "bg-[var(--color-secondary-disabled)] text-[var(--color-bg-muted-text)] cursor-not-allowed"
+                ? "bg-[var(--color-secondary-disabled)] text-[var(--color-bg-muted-text)]"
                 : "bg-[var(--color-secondary-base)] hover:bg-[var(--color-secondary-hover)] text-[var(--color-bg-text)] border-2 border-[var(--color-bg-divider)]"
             }`}
             onKeyDown={(e) => {
@@ -158,13 +197,14 @@ const PostCard = ({ newPost }) => {
           <div className="w-full h-6 rounded bg-[var(--color-secondary-disabled)] border-2 border-[var(--color-secondary-base)] overflow-hidden relative">
             <div
               className="h-full bg-[var(--color-primary-base)] transition-all duration-300 text-md font-bold text-[var(--color-secondary-base)] flex items-center justify-center"
-              style={{ width: `${donationPercentage}%` }}>
+              style={{ width: `${donationPercentage}%` }}
+            >
               {Math.round(donationPercentage)}%
             </div>
           </div>
           <p className="text-md font-bold text-[var(--color-bg-muted-text)] text-center mt-1">
             {!isDisabled
-              ? `${totalDonated} / ${requestedAmount} ج.م — المبلغ المتبقي: ${
+              ? `${totalDonated} / ${requestedAmount} ج.م — المتبقي: ${
                   requestedAmount - totalDonated
                 } ج.م`
               : "المبلغ مكتمل"}
@@ -178,22 +218,25 @@ const PostCard = ({ newPost }) => {
           <FormLayout
             formTitle={
               <span>
-                هل أنت متأكد من تحويل{" "}
+                تأكيد تحويل{" "}
                 <strong className="text-[var(--color-bg-text)] underline">
                   {selectedAmount} ج.م
                 </strong>{" "}
-                من حسابك؟
+                ؟
               </span>
-            }>
+            }
+          >
             <div className="flex justify-center gap-4 mt-4">
               <button
                 className="success px-6 py-2 rounded font-semibold"
-                onClick={handleConfirmDonation}>
+                onClick={handleConfirmDonation}
+              >
                 تأكيد
               </button>
               <button
                 className="danger px-6 py-2 rounded font-semibold"
-                onClick={closePopup}>
+                onClick={closePopup}
+              >
                 إغلاق
               </button>
             </div>

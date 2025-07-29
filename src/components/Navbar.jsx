@@ -1,13 +1,23 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/authContext";
 import Logo from "../assets/logo.svg";
 import CloseIcon from "../icons/CloseIcon";
 import MenuIcon from "../icons/MenuIcon";
 
 const Navbar = () => {
+  const {
+    currentUser,
+    userData,
+    isAuthenticated,
+    role,
+    logout,
+    loading,
+    username,
+  } = useAuth();
+  // const { currentUser, userData, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user, isAuthenticated, logout } = useAuth();
+  // const { user, isAuthenticated, logout } = useAuth();
 
   const baseTabs = [
     { id: "home", label: "الرئيسية" },
@@ -45,23 +55,58 @@ const Navbar = () => {
     ...baseTabs,
   ];
 
+  // let tabs = guestTabs;
+  // note: condition to check if user is logged in and has a role
   let tabs = guestTabs;
-  // if (isAuthenticated) {
-  //   if (user && user.type === "admin") {
-  //     tabs = adminTabs;
-  //   } else if (user && user.type === "beneficiary") {
-  //     tabs = beneficiaryTabs;
-  //   } else if (user && user.type === "donor") {
-  //     tabs = donorTabs;
-  //   } else if (user && user.type === "org") {
-  //     tabs = orgTabs;
+
+  if (isAuthenticated) {
+    switch (role) {
+      case "admin":
+        tabs = adminTabs;
+        console.log("admin");
+        break;
+      case "beneficiary":
+        tabs = beneficiaryTabs;
+        console.log("needy");
+        break;
+      case "donor":
+        tabs = donorTabs;
+        console.log("donor");
+        break;
+      case "organization":
+        tabs = orgTabs;
+        console.log("org");
+        break;
+      default:
+        tabs = guestTabs;
+    }
+  }
+
+  // if (currentUser && userData?.role) {
+  //   switch (userData.role) {
+  //     case "admin":
+  //       tabs = adminTabs;
+  //       break;
+  //     case "beneficiary":
+  //     case "needy":
+  //       tabs = beneficiaryTabs;
+  //       break;
+  //     case "donor":
+  //       tabs = donorTabs;
+  //       break;
+  //     case "organization":
+  //       tabs = orgTabs;
+  //       break;
+  //     default:
+  //       tabs = guestTabs;
   //   }
   // }
 
   return (
     <nav
       dir="rtl"
-      className="shadow-md border-b border-[var(--color-bg-divider)]">
+      className="shadow-md border-b border-[var(--color-bg-divider)]"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Navigation Tabs */}
@@ -80,7 +125,8 @@ const Navbar = () => {
                     onMouseLeave={(e) =>
                       (e.currentTarget.style.backgroundColor =
                         "var(--color-danger-dark)")
-                    }>
+                    }
+                  >
                     {tab.label}
                   </span>
                 ) : (
@@ -95,7 +141,8 @@ const Navbar = () => {
                           ? "bg-[var(--color-primary-base)] text-[var(--color-secondary-base)]"
                           : "text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)]"
                       }`
-                    }>
+                    }
+                  >
                     {tab.label}
                   </NavLink>
                 )
@@ -106,14 +153,16 @@ const Navbar = () => {
           <div className="md:hidden">
             <button
               className="text-[var(--color-bg-text)] hover:text-gray-300 focus:outline-none focus:text-gray-300"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
               {isMenuOpen ? <CloseIcon /> : <MenuIcon />}
             </button>
           </div>
           {/* Logo */}
           <NavLink
             to="/"
-            className="flex-shrink-0 flex items-center cursor-pointer">
+            className="flex-shrink-0 flex items-center cursor-pointer"
+          >
             <img
               src={Logo}
               alt="Logo"
@@ -142,7 +191,8 @@ const Navbar = () => {
                         ? "bg-[var(--color-primary-base)] text-[var(--color-secondary-base)]"
                         : "text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)]"
                     }`
-                  }>
+                  }
+                >
                   {tab.label}
                 </NavLink>
               ))}
@@ -151,9 +201,12 @@ const Navbar = () => {
                 <hr className="mt-8 border-t border-[var(--color-bg-divider)] rounded-full" />
                 <span
                   key="logout"
+                  // onClick={() => {
+                  //   setIsMenuOpen(false);
+                  // }}
                   onClick={() => {
-                    logout();
                     setIsMenuOpen(false);
+                    logout();
                   }}
                   className="block px-2 py-2 text-base font-medium w-full text-left cursor-pointer transition-colors duration-200 rounded-sm bg-[var(--color-danger-dark)] text-[var(--color-bg-text)] hover:bg-[var(--color-danger-dark-plus)] mt-2"
                   onMouseEnter={(e) =>
@@ -163,7 +216,8 @@ const Navbar = () => {
                   onMouseLeave={(e) =>
                     (e.currentTarget.style.backgroundColor =
                       "var(--color-danger-dark)")
-                  }>
+                  }
+                >
                   {tabs.find((tab) => tab.id === "logout").label}
                 </span>
               </>
