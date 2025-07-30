@@ -1,23 +1,14 @@
-import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { useState, useMemo } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import Logo from "../assets/logo.svg";
 import CloseIcon from "../icons/CloseIcon";
 import MenuIcon from "../icons/MenuIcon";
 
 const Navbar = () => {
-  const {
-    currentUser,
-    userData,
-    isAuthenticated,
-    role,
-    logout,
-    loading,
-    username,
-  } = useAuth();
-  // const { currentUser, userData, logout } = useAuth();
+  const { role, logout, loading } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  // const { user, isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
 
   const baseTabs = [
     { id: "home", label: "الرئيسية" },
@@ -33,74 +24,47 @@ const Navbar = () => {
   ];
 
   const beneficiaryTabs = [
+    { id: "notifications", label: "الإشعارات" },
     ...baseTabs,
     { id: "logout", label: "تسجيل الخروج" },
   ];
 
   const donorTabs = [
-    { id: "logout", label: "تسجيل الخروج" },
-    { id: "profile", label: "الملف الشخصي" },
+    { id: "donor-profile", label: "الملف الشخصي" },
+    { id: "notifications", label: "الإشعارات" },
     ...baseTabs,
+    { id: "logout", label: "تسجيل الخروج" },
   ];
 
   const orgTabs = [
-    { id: "logout", label: "تسجيل الخروج" },
-    { id: "profile", label: "الملف الشخصي" },
+    { id: "org-profile", label: "الملف الشخصي" },
+    { id: "notifications", label: "الإشعارات" },
     ...baseTabs,
+    { id: "logout", label: "تسجيل الخروج" },
   ];
 
   const adminTabs = [
-    { id: "logout", label: "تسجيل الخروج" },
     { id: "dashboard", label: "لوحة التحكم" },
     ...baseTabs,
+    { id: "logout", label: "تسجيل الخروج" },
   ];
 
-  // let tabs = guestTabs;
-  // note: condition to check if user is logged in and has a role
-  let tabs = guestTabs;
-
-  if (isAuthenticated) {
+  const tabs = useMemo(() => {
     switch (role) {
-      case "admin":
-        tabs = adminTabs;
-        console.log("admin");
-        break;
-      case "beneficiary":
-        tabs = beneficiaryTabs;
-        console.log("needy");
-        break;
-      case "donor":
-        tabs = donorTabs;
-        console.log("donor");
-        break;
-      case "organization":
-        tabs = orgTabs;
-        console.log("org");
-        break;
+      case "مشرف":
+        return adminTabs;
+      case "مستفيد":
+        return beneficiaryTabs;
+      case "متبرع":
+        return donorTabs;
+      case "مؤسسة":
+        return orgTabs;
       default:
-        tabs = guestTabs;
+        return guestTabs;
     }
-  }
+  }, [role]);
 
-  // if (currentUser && userData?.role) {
-  //   switch (userData.role) {
-  //     case "admin":
-  //       tabs = adminTabs;
-  //       break;
-  //     case "beneficiary":
-  //     case "needy":
-  //       tabs = beneficiaryTabs;
-  //       break;
-  //     case "donor":
-  //       tabs = donorTabs;
-  //       break;
-  //     case "organization":
-  //       tabs = orgTabs;
-  //       break;
-  //     default:
-  //       tabs = guestTabs;
-  //   }
-  // }
+  if (loading || role === null) return null;
 
   return (
     <nav
@@ -110,21 +74,16 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Navigation Tabs */}
           <div className="hidden md:block">
-            <div className="flex items-baseline space-x-1">
+            <div className="flex items-center justify-center space-x-1">
               {tabs.map((tab) =>
                 tab.id === "logout" ? (
                   <span
                     key={tab.id}
-                    onClick={logout}
-                    className="cursor-pointer px-2 py-2 text-sm font-medium transition-colors duration-200 rounded-sm bg-[var(--color-danger-dark)] text-[var(--color-bg-text)] hover:bg-[var(--color-danger-dark-plus)]"
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.style.backgroundColor =
-                        "var(--color-danger-dark-plus)")
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.backgroundColor =
-                        "var(--color-danger-dark)")
-                    }>
+                    onClick={async () => {
+                      await logout();
+                      navigate("/");
+                    }}
+                    className="cursor-pointer px-2 py-2 text-sm font-medium transition-colors duration-200 rounded-sm danger">
                     {tab.label}
                   </span>
                 ) : (
@@ -176,7 +135,11 @@ const Navbar = () => {
               .map((tab) => (
                 <NavLink
                   key={tab.id}
-                  to={tab.id === "home" ? "/" : `/${tab.id}`}
+                  to={
+                    tab.id === "home" || tab.id === "logout"
+                      ? "/"
+                      : `/${tab.id}`
+                  }
                   onClick={() => setIsMenuOpen(false)}
                   className={({ isActive }) =>
                     `block px-2 py-2 text-base font-medium w-full text-left transition-colors duration-200 rounded-sm ${
@@ -192,25 +155,14 @@ const Navbar = () => {
               ))}
             {tabs.find((tab) => tab.id === "logout") && (
               <>
-                <hr className="mt-8 border-t border-[var(--color-bg-divider)] rounded-full" />
                 <span
                   key="logout"
-                  // onClick={() => {
-                  //   setIsMenuOpen(false);
-                  // }}
-                  onClick={() => {
+                  onClick={async () => {
                     setIsMenuOpen(false);
-                    logout();
+                    await logout();
+                    navigate("/");
                   }}
-                  className="block px-2 py-2 text-base font-medium w-full text-left cursor-pointer transition-colors duration-200 rounded-sm bg-[var(--color-danger-dark)] text-[var(--color-bg-text)] hover:bg-[var(--color-danger-dark-plus)] mt-2"
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.backgroundColor =
-                      "var(--color-danger-dark-plus)")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.backgroundColor =
-                      "var(--color-danger-dark)")
-                  }>
+                  className="block px-2 py-2 text-base font-medium w-full text-left cursor-pointer transition-colors duration-200 rounded-sm danger mt-2">
                   {tabs.find((tab) => tab.id === "logout").label}
                 </span>
               </>

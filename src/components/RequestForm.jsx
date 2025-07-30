@@ -16,7 +16,7 @@ import { useAuth } from "../context/authContext";
 import toast from "react-hot-toast";
 
 export default function RequestForm({ onClose }) {
-  const { currentUser, userData, username } = useAuth();
+  const { currentUser, userData, userName } = useAuth();
 
   const {
     register,
@@ -38,7 +38,7 @@ export default function RequestForm({ onClose }) {
         status: "قيد المراجعة",
         timestamp: serverTimestamp(),
         submittedBy: {
-          userName: username || "مستخدم",
+          userName: userName || "مستخدم",
           userId: currentUser.uid,
           email: currentUser.email,
           userPhoto: userData?.photoURL || "",
