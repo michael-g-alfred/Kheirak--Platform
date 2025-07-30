@@ -64,10 +64,6 @@ export default function Stats() {
     };
 
     fetchData(); // أول مرة
-
-    const intervalId = setInterval(fetchData, 30000); // تحديث كل 30 ثانية
-
-    return () => clearInterval(intervalId); // تنظيف عند الخروج
   }, []);
 
   if (isLoading) {

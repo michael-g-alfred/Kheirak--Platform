@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
 
   const isAuthenticated = !!currentUser;
   const role = userData?.role || "guest";
-  const username = userData?.username || "guest";
+  const userName = userData?.userName || "guest";
 
   const logout = async () => {
     try {
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }) => {
 
       if (user) {
         try {
-          const userDoc = await getDoc(doc(db, "users", user.uid));
+          const userDoc = await getDoc(doc(db, "Users", user.uid));
           if (userDoc.exists()) {
             setUserData(userDoc.data());
           }
@@ -66,7 +66,7 @@ export const AuthProvider = ({ children }) => {
         role,
         logout,
         loading,
-        username,
+        userName,
       }}>
       {!loading && children}
     </AuthContext.Provider>

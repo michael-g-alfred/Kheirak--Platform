@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useAuth } from "../context/authContext";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import CardLayout from "../layouts/CardLayout";
@@ -11,6 +12,8 @@ const PostCard = ({ newPost }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [selectedAmount, setSelectedAmount] = useState(null);
   const [totalDonated, setTotalDonated] = useState(0);
+
+  const { role } = useAuth();
 
   useEffect(() => {
     if (!newPost?.id) return;
@@ -137,50 +140,52 @@ const PostCard = ({ newPost }) => {
         </p>
 
         {/* Buttons */}
-        <div className="flex justify-between gap-1">
-          {[50, 100, 500, requestedAmount].map((amount, index) => (
-            <button
-              key={index}
-              onClick={() => handleDonateClick(amount)}
-              className={`w-full p-2 rounded font-bold text-sm transition ${
-                isCompleted
-                  ? "bg-[var(--color-secondary-disabled)] text-[var(--color-bg-muted-text)] cursor-not-allowed"
-                  : "bg-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] text-[var(--color-secondary-base)]"
-              }`}
-              disabled={isCompleted}>
-              {amount} ج.م
-            </button>
-          ))}
+        {role === "متبرع" && (
+          <div className="flex justify-between gap-1">
+            {[50, 100, 500, requestedAmount].map((amount, index) => (
+              <button
+                key={index}
+                onClick={() => handleDonateClick(amount)}
+                className={`w-full p-2 rounded font-bold text-sm transition ${
+                  isCompleted
+                    ? "bg-[var(--color-secondary-disabled)] text-[var(--color-bg-muted-text)] cursor-not-allowed"
+                    : "bg-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] text-[var(--color-secondary-base)]"
+                }`}
+                disabled={isCompleted}>
+                {amount} ج.م
+              </button>
+            ))}
 
-          {/* مبلغ آخر */}
-          <input
-            type="text"
-            inputMode="numeric"
-            disabled={isCompleted}
-            placeholder="مبلغ آخر"
-            className={`w-full text-center p-2 rounded font-bold text-sm transition outline-none ${
-              isCompleted
-                ? "bg-[var(--color-secondary-disabled)] text-[var(--color-bg-muted-text)]"
-                : "bg-[var(--color-secondary-base)] hover:bg-[var(--color-secondary-hover)] text-[var(--color-bg-text)] border-2 border-[var(--color-bg-divider)]"
-            }`}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
+            {/* مبلغ آخر */}
+            <input
+              type="text"
+              inputMode="numeric"
+              disabled={isCompleted}
+              placeholder="مبلغ آخر"
+              className={`w-full text-center p-2 rounded font-bold text-sm transition outline-none ${
+                isCompleted
+                  ? "bg-[var(--color-secondary-disabled)] text-[var(--color-bg-muted-text)]"
+                  : "bg-[var(--color-secondary-base)] hover:bg-[var(--color-secondary-hover)] text-[var(--color-bg-text)] border-2 border-[var(--color-bg-divider)]"
+              }`}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  const value = e.target.value.trim();
+                  if (value && !isNaN(value)) {
+                    handleDonateClick(value);
+                    e.target.value = "";
+                  }
+                }
+              }}
+              onBlur={(e) => {
                 const value = e.target.value.trim();
                 if (value && !isNaN(value)) {
                   handleDonateClick(value);
                   e.target.value = "";
                 }
-              }
-            }}
-            onBlur={(e) => {
-              const value = e.target.value.trim();
-              if (value && !isNaN(value)) {
-                handleDonateClick(value);
-                e.target.value = "";
-              }
-            }}
-          />
-        </div>
+              }}
+            />
+          </div>
+        )}
 
         {/* Progress Bar */}
         <div className="w-full mt-2">

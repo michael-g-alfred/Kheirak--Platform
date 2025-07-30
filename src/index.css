@@ -48,6 +48,7 @@ body {
 .success {
   background-color: var(--color-success-light);
   color: var(--color-bg-text);
+  cursor: pointer;
 }
 .success:hover {
   background-color: var(--color-success-dark);
@@ -55,14 +56,24 @@ body {
 .success:active {
   background-color: var(--color-success-dark-plus);
 }
-
+.success:disabled {
+  background-color: var(--color-secondary-disabled);
+  color: var(--color-bg-muted-text);
+  cursor: not-allowed;
+}
 .danger {
   background-color: var(--color-danger-light);
   color: var(--color-bg-text);
+  cursor: pointer;
 }
 .danger:hover {
   background-color: var(--color-danger-dark);
 }
 .danger:active {
   background-color: var(--color-danger-dark-plus);
+}
+.danger:disabled {
+  background-color: var(--color-secondary-disabled);
+  color: var(--color-bg-muted-text);
+  cursor: not-allowed;
 }

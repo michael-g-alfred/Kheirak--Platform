@@ -1,3 +1,5 @@
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "./Firebase";
 import { auth } from "./Firebase";
 import {
   createUserWithEmailAndPassword,
@@ -22,7 +24,17 @@ export const doCreateUserWithEmailAndPassword = async (email, password) => {
 
 export const doSignInWithEmailAndPassword = async (email, password) => {
   console.log("signing in");
-  return signInWithEmailAndPassword(auth, email, password);
+  const res = await signInWithEmailAndPassword(auth, email, password);
+
+  const userRef = doc(db, "Users", res.user.uid);
+  const userSnap = await getDoc(userRef);
+  if (userSnap.exists()) {
+    console.log("User role:", userSnap.data().role);
+  } else {
+    console.log("No such user document!");
+  }
+
+  return res;
 };
 
 export const doSignInWithGoogle = async () => {
