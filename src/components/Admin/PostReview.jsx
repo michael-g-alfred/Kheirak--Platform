@@ -4,21 +4,26 @@ import { db } from "../../Firebase/Firebase";
 import CardLayout from "../../layouts/CardLayout";
 import CardsLayout from "../../layouts/CardsLayout";
 import NoData from "../NoData";
+import Loader from "../../components/Loader";
 
 export default function PostReview() {
   const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchPosts = async () => {
     try {
+      setIsLoading(true);
       const snapshot = await getDocs(collection(db, "Posts"));
       const fetchedPosts = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
       setPosts(fetchedPosts);
+      setIsLoading(false);
       console.log(fetchedPosts);
     } catch (error) {
       console.error("خطأ أثناء تحميل البوستات:", error);
+      setIsLoading(false);
     }
   };
 
@@ -53,6 +58,14 @@ export default function PostReview() {
   useEffect(() => {
     fetchPosts();
   }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center text-[var(--color-bg-text)]">
+        <Loader />
+      </div>
+    );
+  }
 
   return posts.length === 0 ? (
     <NoData h2={"لا توجد طلبات تبرع متاحة الآن"} />

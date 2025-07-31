@@ -2,9 +2,28 @@ import React, { useEffect, useState } from "react";
 import CardLayout from "../../layouts/CardLayout";
 import CardsLayout from "../../layouts/CardsLayout";
 import NoData from "../NoData";
+import Loader from "../../components/Loader";
 
 export default function CouponReview() {
   const [coupons, setCoupons] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchCoupons = async () => {
+    try {
+      setIsLoading(true);
+      const snapshot = await getDocs(collection(db, "Coupons"));
+      const fetchedCoupons = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setPosts(fetchedCoupons);
+      setIsLoading(false);
+      console.log(fetchedCoupons);
+    } catch (error) {
+      console.error("خطأ أثناء تحميل الكوبونات:", error);
+      setIsLoading(false);
+    }
+  };
 
   const handleApprove = (id) => {
     setCoupons((prev) =>
@@ -21,6 +40,18 @@ export default function CouponReview() {
       )
     );
   };
+
+  useEffect(() => {
+    fetchCoupons();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center text-[var(--color-bg-text)]">
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     <>
