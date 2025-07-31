@@ -32,7 +32,7 @@ export default function Posts() {
             const bDate = new Date(b.createdAt?.seconds * 1000 || 0);
             return bDate - aDate;
           })
-          .filter((post) => post.status === "مقبول" || post.status === "مكتمل");
+          .filter((post) => post.status === "مقبول");
         setPosts(fetchedPosts);
       } catch (error) {
         console.error("Error fetching posts:", error);

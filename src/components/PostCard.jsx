@@ -7,11 +7,13 @@ import ImageIcon from "../icons/ImageIcon";
 import FormLayout from "../layouts/FormLayout";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../Firebase/Firebase";
+import Loader from "./Loader";
 
 const PostCard = ({ newPost }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [selectedAmount, setSelectedAmount] = useState(null);
   const [totalDonated, setTotalDonated] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { role } = useAuth();
 
@@ -57,27 +59,55 @@ const PostCard = ({ newPost }) => {
   };
 
   const handleConfirmDonation = async () => {
+    setIsLoading(true);
     const newTotal = totalDonated + Number(selectedAmount);
     if (newTotal > requestedAmount) {
       alert("المبلغ يتجاوز القيمة المطلوبة.");
+      setIsLoading(false);
       closePopup();
       return;
     }
+
     try {
+      const { doc, updateDoc, arrayUnion, getDoc } = await import(
+        "firebase/firestore"
+      );
+      const { getAuth } = await import("firebase/auth");
       const postRef = doc(db, "Posts", newPost.id);
-      const updateData = { totalDonated: newTotal };
+      const auth = getAuth();
+      const user = auth.currentUser;
 
-      if (newTotal >= requestedAmount) {
-        updateData.status = "مكتمل";
-      }
-
-      await updateDoc(postRef, updateData);
+      await updateDoc(postRef, {
+        totalDonated: newTotal,
+        donors: arrayUnion({
+          email: user?.email || "unknown",
+          amount: Number(selectedAmount),
+          date: new Date().toISOString(),
+        }),
+        isCompleted: newTotal >= requestedAmount,
+      });
 
       alert(`تم التبرع بـ ${selectedAmount} ج.م`);
+      if (typeof onDonation === "function") onDonation();
+
+      // التحقق من الاكتمال وإرسال إشعار
+      if (newTotal >= requestedAmount) {
+        const snapshot = await getDoc(postRef);
+        const data = snapshot.data();
+        const donorEmails = (data?.donors || []).map((d) => d.email);
+        console.log("سيتم إرسال إشعار إلى:", donorEmails);
+
+        //استخدم بؤة اجبارى ارسال notification بدل console (FCM)
+      }
     } catch (error) {
       console.error("خطأ في تحديث التبرع:", error);
       alert("حدث خطأ أثناء تنفيذ التبرع.");
+      setIsLoading(false);
+      closePopup();
+      return;
     }
+
+    setIsLoading(false);
     closePopup();
   };
 
@@ -223,7 +253,7 @@ const PostCard = ({ newPost }) => {
               <button
                 className="success px-6 py-2 rounded font-semibold"
                 onClick={handleConfirmDonation}>
-                تأكيد
+                {isLoading ? <Loader /> : "تأكيد"}
               </button>
               <button
                 className="danger px-6 py-2 rounded font-semibold"
