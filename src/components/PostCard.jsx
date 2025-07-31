@@ -77,7 +77,7 @@ const PostCard = ({ newPost }) => {
       const auth = getAuth();
       const user = auth.currentUser;
 
-      await updateDoc(postRef, {
+      const updateData = {
         totalDonated: newTotal,
         donors: arrayUnion({
           email: user?.email || "unknown",
@@ -85,7 +85,13 @@ const PostCard = ({ newPost }) => {
           date: new Date().toISOString(),
         }),
         isCompleted: newTotal >= requestedAmount,
-      });
+      };
+
+      if (newTotal >= requestedAmount) {
+        updateData.status = "مكتمل";
+      }
+
+      await updateDoc(postRef, updateData);
 
       alert(`تم التبرع بـ ${selectedAmount} ج.م`);
       if (typeof onDonation === "function") onDonation();
