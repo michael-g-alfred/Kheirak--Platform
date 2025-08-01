@@ -6,16 +6,11 @@ import SubmitButton from "./SubmitButton";
 import FormLayout from "../layouts/FormLayout";
 import CloseIcon from "../icons/CloseIcon";
 import { db } from "../Firebase/Firebase";
-import {
-  collection,
-  addDoc,
-  serverTimestamp,
-  updateDoc,
-} from "firebase/firestore";
+import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { useAuth } from "../context/authContext";
 import toast from "react-hot-toast";
 
-export default function RequestForm({ onClose }) {
+export default function PostForm({ onClose }) {
   const { currentUser, userData, userName } = useAuth();
 
   const {
@@ -28,12 +23,35 @@ export default function RequestForm({ onClose }) {
     setIsLoading(true);
     try {
       const file = data.file[0];
+
+      // Check file type
+      if (!file.type.startsWith("image/")) {
+        toast.error("الملف يجب أن يكون صورة");
+        setIsLoading(false);
+        return;
+      }
+      // Check file size (max 2MB)
+      const maxSizeMB = 2;
+      if (file.size > maxSizeMB * 1024 * 1024) {
+        toast.error(`حجم الصورة يجب ألا يتجاوز ${maxSizeMB} ميجا`);
+        setIsLoading(false);
+        return;
+      }
+
+      // Confirm dialog
+      if (!window.confirm("هل أنت متأكد من إرسال الطلب؟")) {
+        setIsLoading(false);
+        return;
+      }
+
       const imageUrl = await uploadImageToCloudinary(file);
+      const docRef = doc(collection(db, "Posts"));
       const newPost = {
-        requestTitle: data.title,
+        id: docRef.id,
+        title: data.title,
         details: data.description,
         attachedFiles: imageUrl,
-        requestedAmount: parseFloat(data.moneyAmount),
+        amount: parseFloat(data.amount),
         totalDonated: 0,
         status: "قيد المراجعة",
         timestamp: serverTimestamp(),
@@ -45,15 +63,10 @@ export default function RequestForm({ onClose }) {
         },
         donors: [],
       };
-      const docRef = await addDoc(collection(db, "Posts"), newPost);
-      await updateDoc(docRef, {
-        id: docRef.id,
-      });
+      await setDoc(docRef, newPost);
       toast.success("تم إرسال الطلب بنجاح للمراجعة");
-      console.log("تم رفع الطلب:", newPost);
       onClose();
     } catch (error) {
-      console.error("فشل الرفع:", error);
       toast.error("حدث خطأ أثناء إرسال الطلب");
     } finally {
       setIsLoading(false);
@@ -102,14 +115,18 @@ export default function RequestForm({ onClose }) {
 
         <InputField
           label="المبلغ المطلوب"
-          id="moneyAmount"
+          id="amount"
           type="number"
           placeholder="اكتب المبلغ المطلوب"
-          register={register("moneyAmount", { required: "هذا الحقل مطلوب" })}
-          error={errors.moneyAmount}
+          register={register("amount", { required: "هذا الحقل مطلوب" })}
+          error={errors.amount}
         />
 
-        <SubmitButton buttonTitle="إرسال الطلب" isLoading={isLoading} />
+        <SubmitButton
+          buttonTitle="إرسال الطلب"
+          isLoading={isLoading}
+          disabled={isLoading}
+        />
       </form>
     </FormLayout>
   );
