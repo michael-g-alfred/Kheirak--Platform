@@ -58,6 +58,18 @@ export default function CouponReview() {
     }
   };
 
+  useEffect(() => {
+    fetchCoupons();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center text-[var(--color-bg-text)]">
+        <Loader />
+      </div>
+    );
+  }
+
   return (
     <>
       {isLoading ? (
