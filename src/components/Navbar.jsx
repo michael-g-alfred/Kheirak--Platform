@@ -83,7 +83,7 @@ const Navbar = () => {
                       await logout();
                       navigate("/");
                     }}
-                    className="cursor-pointer px-2 py-2 text-sm font-medium transition-colors duration-200 rounded-sm danger">
+                    className="cursor-pointer px-2 py-2 text-sm font-bold transition-colors duration-200 rounded-sm danger">
                     {tab.label}
                   </span>
                 ) : (
@@ -91,7 +91,7 @@ const Navbar = () => {
                     key={tab.id}
                     to={tab.id === "home" ? "/" : `/${tab.id}`}
                     className={({ isActive }) =>
-                      `px-3 py-2 text-sm font-medium transition-colors duration-200 rounded-sm ${
+                      `px-3 py-2 text-sm font-bold transition-colors duration-200 rounded-sm ${
                         tab.id === "login"
                           ? "text-[var(--color-primary-base)] hover:text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)]"
                           : isActive
@@ -142,7 +142,7 @@ const Navbar = () => {
                   }
                   onClick={() => setIsMenuOpen(false)}
                   className={({ isActive }) =>
-                    `block px-2 py-2 text-base font-medium w-full text-left transition-colors duration-200 rounded-sm ${
+                    `block px-2 py-2 text-base font-bold w-full text-left transition-colors duration-200 rounded-sm ${
                       tab.id === "login"
                         ? "text-[var(--color-primary-base)] hover:text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)]"
                         : isActive
@@ -162,7 +162,7 @@ const Navbar = () => {
                     await logout();
                     navigate("/");
                   }}
-                  className="block px-2 py-2 text-base font-medium w-full text-left cursor-pointer transition-colors duration-200 rounded-sm danger mt-2">
+                  className="block px-2 py-2 text-base font-bold w-full text-left cursor-pointer transition-colors duration-200 rounded-sm danger mt-2">
                   {tabs.find((tab) => tab.id === "logout").label}
                 </span>
               </>
