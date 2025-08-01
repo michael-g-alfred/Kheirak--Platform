@@ -12,7 +12,9 @@ export default function Stats() {
     requests: 0,
     completedRequests: 0,
     pendingRequests: 0,
-    offers: 0,
+    coupons: 0,
+    completedCoupons: 0,
+    pendingCoupons: 0,
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -24,30 +26,40 @@ export default function Stats() {
       try {
         const usersSnapshot = await getDocs(collection(db, "Users"));
         const postsSnapshot = await getDocs(collection(db, "Posts"));
+        const couponsSnapshot = await getDocs(collection(db, "Coupons"));
 
         const usersData = usersSnapshot.docs.map((doc) => doc.data());
         const postsData = postsSnapshot.docs.map((doc) => doc.data());
+        const couponsData = couponsSnapshot.docs.map((doc) => doc.data());
 
         const users = usersData.filter((user) => user.role === "مستفيد").length;
         const donors = usersData.filter((user) => user.role === "متبرع").length;
         const orgs = usersData.filter((user) => user.role === "مؤسسة").length;
-        const requests = postsData.length;
-        const completedRequests = postsData.filter(
+        const posts = postsData.length;
+        const completedPosts = postsData.filter(
           (post) => post.status === "مكتمل"
         ).length;
-        const pendingRequests = postsData.filter(
+        const pendingPosts = postsData.filter(
           (post) => post.status !== "مكتمل"
         ).length;
-        const offers = 0; // يمكنك تغييره إذا كان هناك كولكشن للعروض
+        const coupons = couponsData.length;
+        const completedCoupons = couponsData.filter(
+          (coupon) => coupon.status === "مكتمل"
+        ).length;
+        const pendingCoupons = couponsData.filter(
+          (coupon) => coupon.status !== "مكتمل"
+        ).length;
 
         setStats({
           users,
           donors,
           orgs,
-          requests,
-          completedRequests,
-          pendingRequests,
-          offers,
+          requests: posts,
+          completedRequests: completedPosts,
+          pendingRequests: pendingPosts,
+          coupons,
+          completedCoupons,
+          pendingCoupons,
         });
 
         setLastUpdated(
@@ -63,7 +75,7 @@ export default function Stats() {
       }
     };
 
-    fetchData(); // أول مرة
+    fetchData();
   }, []);
 
   if (isLoading) {
@@ -106,8 +118,16 @@ export default function Stats() {
             description: stats.pendingRequests,
           },
           {
-            title: "عدد العروض المتاحة",
-            description: stats.offers,
+            title: "عدد الكوبونات",
+            description: stats.coupons,
+          },
+          {
+            title: "عدد الكوبونات المكتملة",
+            description: stats.completedCoupons,
+          },
+          {
+            title: "عدد الكوبونات الغير مكتملة",
+            description: stats.pendingCoupons,
           },
         ]}
       />

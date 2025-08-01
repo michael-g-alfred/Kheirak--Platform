@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "../Firebase/Firebase";
 import CreatePostTrigger from "../components/CreatePostTrigger";
-import RequestForm from "../components/RequestForm";
+import PostForm from "../components/PostForm";
 import NoData from "../components/NoData";
 import PostCard from "../components/PostCard";
 import CardsLayout from "../layouts/CardsLayout";
@@ -11,17 +11,18 @@ import { useAuth } from "../context/authContext";
 
 export default function Posts() {
   const { role, loading } = useAuth();
-  const [showRequestForm, setShowRequestForm] = useState(false);
+  const [showPostForm, setShowPostForm] = useState(false);
   const [posts, setPosts] = useState([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
+
   const handleCloseForm = () => {
-    setShowRequestForm(false);
+    setShowPostForm(false);
   };
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const snapshot = await getDocs(collection(db, "Posts"));
+    const unsubscribe = onSnapshot(
+      collection(db, "Posts"),
+      (snapshot) => {
         const fetchedPosts = snapshot.docs
           .map((doc) => ({
             id: doc.id,
@@ -33,16 +34,18 @@ export default function Posts() {
             return bDate - aDate;
           })
           .filter((post) => post.status === "مقبول");
+
         setPosts(fetchedPosts);
-      } catch (error) {
+        setLoadingPosts(false);
+      },
+      (error) => {
         console.error("Error fetching posts:", error);
-      } finally {
         setLoadingPosts(false);
       }
-    };
+    );
 
-    fetchPosts();
-  }, [posts]);
+    return () => unsubscribe();
+  }, []);
 
   if (loading || role === null) return null;
 
@@ -50,13 +53,14 @@ export default function Posts() {
     <>
       {role === "مستفيد" && (
         <CreatePostTrigger
-          onClick={() => setShowRequestForm((prev) => !prev)}
+          title={"ما هو طلب التبرع اليوم؟"}
+          onClick={() => setShowPostForm((prev) => !prev)}
         />
       )}
 
-      {showRequestForm && (
+      {showPostForm && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-950/90 backdrop-blur-md z-50">
-          <RequestForm onClose={handleCloseForm} />
+          <PostForm onClose={handleCloseForm} />
         </div>
       )}
       <hr className="my-4 border-[var(--color-bg-divider)] border-.5 rounded" />
