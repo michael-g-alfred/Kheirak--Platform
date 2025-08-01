@@ -32,35 +32,16 @@ export default function CouponReview() {
     return () => unsubscribe();
   }, []);
 
-  const handleApprove = async (id) => {
+  const handleUpdateStatus = async (id, status) => {
     try {
       setUpdatingId(id);
-      await updateDoc(doc(db, "Coupons", id), {
-        status: "مقبول",
-      });
-      setUpdatingId(null);
-    } catch (error) {
-      toast.error("خطأ أثناء قبول الكوبون");
+      await updateDoc(doc(db, "Coupons", id), { status });
+    } catch {
+      toast.error(`خطأ أثناء ${status === "مقبول" ? "قبول" : "رفض"} الكوبون`);
+    } finally {
       setUpdatingId(null);
     }
   };
-
-  const handleReject = async (id) => {
-    try {
-      setUpdatingId(id);
-      await updateDoc(doc(db, "Coupons", id), {
-        status: "مرفوض",
-      });
-      setUpdatingId(null);
-    } catch (error) {
-      toast.error("خطأ أثناء رفض الكوبون");
-      setUpdatingId(null);
-    }
-  };
-
-  useEffect(() => {
-    fetchCoupons();
-  }, []);
 
   if (isLoading) {
     return (
@@ -72,13 +53,7 @@ export default function CouponReview() {
 
   return (
     <>
-      {isLoading ? (
-        <div className="w-full flex justify-center py-8">
-          <div className="text-[var(--color-bg-text)] font-bold">
-            <Loader />
-          </div>
-        </div>
-      ) : coupons.length > 0 ? (
+      {coupons.length > 0 ? (
         <CardsLayout colNum={4}>
           {coupons.map((coupon) => (
             <CardLayout key={coupon.id} title={`${coupon.title}`}>
@@ -87,8 +62,7 @@ export default function CouponReview() {
                   <strong>المؤسسة: </strong> {coupon.submittedBy.userName}
                 </p>
                 <p>
-                  <strong>الكمية المتوفرة: </strong>
-                  {coupon.stock}
+                  <strong>الكمية المتوفرة: </strong> {coupon.stock}
                 </p>
                 <p>
                   <strong>المرفقات: </strong>
@@ -128,7 +102,7 @@ export default function CouponReview() {
               {coupon.status !== "مكتمل" && (
                 <div className="flex gap-2 mt-4">
                   <button
-                    onClick={() => handleApprove(coupon.id)}
+                    onClick={() => handleUpdateStatus(coupon.id, "مقبول")}
                     className="success px-6 py-3 rounded text-md"
                     disabled={
                       coupon.status === "مقبول" || updatingId === coupon.id
@@ -136,7 +110,7 @@ export default function CouponReview() {
                     قبول
                   </button>
                   <button
-                    onClick={() => handleReject(coupon.id)}
+                    onClick={() => handleUpdateStatus(coupon.id, "مرفوض")}
                     className="danger px-6 py-3 rounded text-md"
                     disabled={
                       coupon.status === "مرفوض" || updatingId === coupon.id

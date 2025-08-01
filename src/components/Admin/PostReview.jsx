@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import { collection, doc, updateDoc, onSnapshot } from "firebase/firestore";
 import { db } from "../../Firebase/Firebase";
 
-export default function postReview() {
+export default function PostReview() {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState(null);
@@ -32,28 +32,13 @@ export default function postReview() {
     return () => unsubscribe();
   }, []);
 
-  const handleApprove = async (id) => {
+  const handleUpdateStatus = async (id, status) => {
     try {
       setUpdatingId(id);
-      await updateDoc(doc(db, "Posts", id), {
-        status: "مقبول",
-      });
-      setUpdatingId(null);
-    } catch (error) {
-      toast.error("خطأ أثناء قبول الطلب");
-      setUpdatingId(null);
-    }
-  };
-
-  const handleReject = async (id) => {
-    try {
-      setUpdatingId(id);
-      await updateDoc(doc(db, "Posts", id), {
-        status: "مرفوض",
-      });
-      setUpdatingId(null);
-    } catch (error) {
-      toast.error("خطأ أثناء رفض الطلب");
+      await updateDoc(doc(db, "Posts", id), { status });
+    } catch {
+      toast.error(`خطأ أثناء ${status === "مقبول" ? "قبول" : "رفض"} الطلب`);
+    } finally {
       setUpdatingId(null);
     }
   };
@@ -75,8 +60,7 @@ export default function postReview() {
                   <strong>المؤسسة: </strong> {post.submittedBy.userName}
                 </p>
                 <p>
-                  <strong>الكمية المتوفرة: </strong>
-                  {post.amount}
+                  <strong>الكمية المتوفرة: </strong> {post.amount}
                 </p>
                 <p>
                   <strong>المرفقات: </strong>
@@ -116,7 +100,7 @@ export default function postReview() {
               {post.status !== "مكتمل" && (
                 <div className="flex gap-2 mt-4">
                   <button
-                    onClick={() => handleApprove(post.id)}
+                    onClick={() => handleUpdateStatus(post.id, "مقبول")}
                     className="success px-6 py-3 rounded text-md"
                     disabled={
                       post.status === "مقبول" || updatingId === post.id
@@ -124,7 +108,7 @@ export default function postReview() {
                     قبول
                   </button>
                   <button
-                    onClick={() => handleReject(post.id)}
+                    onClick={() => handleUpdateStatus(post.id, "مرفوض")}
                     className="danger px-6 py-3 rounded text-md"
                     disabled={
                       post.status === "مرفوض" || updatingId === post.id
