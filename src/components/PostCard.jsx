@@ -13,6 +13,7 @@ import FormLayout from "../layouts/FormLayout";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../Firebase/Firebase";
 import Loader from "./Loader";
+import { toast } from "react-hot-toast";
 
 // -------------------------
 // PostCard component
@@ -95,11 +96,13 @@ const PostCard = ({ newPost }) => {
 
   // Confirm donation and update Firestore with new totals and donor info
   const handleConfirmDonation = async () => {
+    toast.loading("جاري تنفيذ التبرع...");
     setIsLoading(true);
     const newTotal = totalDonated + Number(selectedAmount);
 
     // Prevent donation exceeding requested amount
     if (newTotal > amount) {
+      toast.dismiss();
       alert("المبلغ يتجاوز القيمة المطلوبة.");
       setIsLoading(false);
       closePopup();
@@ -136,7 +139,8 @@ const PostCard = ({ newPost }) => {
       // Apply updates to Firestore document
       await updateDoc(postRef, updateData);
 
-      alert(`تم التبرع بـ ${selectedAmount} ج.م`);
+      toast.dismiss();
+      toast.success(`تم التبرع بـ ${selectedAmount} ج.م`);
       if (typeof onDonation === "function") onDonation();
 
       // If donation goal reached, log donor emails for notification (placeholder)
@@ -149,7 +153,8 @@ const PostCard = ({ newPost }) => {
         // TODO: Implement forced notification sending via FCM instead of console.log
       }
     } catch (error) {
-      console.error("خطأ في تحديث التبرع:", error);
+      toast.dismiss();
+      toast.error("حدث خطأ أثناء تنفيذ التبرع.");
       alert("حدث خطأ أثناء تنفيذ التبرع.");
       setIsLoading(false);
       closePopup();
@@ -295,30 +300,29 @@ const PostCard = ({ newPost }) => {
           </p>
         </div>
       </CardLayout>
-
       {/* Donation confirmation popup */}
       {showPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-950/90 backdrop-blur-md z-50">
           <FormLayout
             formTitle={
               <span>
-                Confirm transfer{" "}
+                تأكيد تحويل{" "}
                 <strong className="text-[var(--color-bg-text)] underline">
                   {selectedAmount} ج.م
                 </strong>{" "}
-                ?
+                ؟
               </span>
             }>
             <div className="flex justify-center gap-4 mt-4">
               <button
                 className="success px-6 py-2 rounded font-semibold"
                 onClick={handleConfirmDonation}>
-                {isLoading ? <Loader /> : "Confirm"}
+                {isLoading ? <Loader /> : "تأكيد"}
               </button>
               <button
                 className="danger px-6 py-2 rounded font-semibold"
                 onClick={closePopup}>
-                Close
+                إغلاق
               </button>
             </div>
           </FormLayout>

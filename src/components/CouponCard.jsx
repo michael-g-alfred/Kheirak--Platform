@@ -1,5 +1,4 @@
 // CouponCard component displays coupon details, manages coupon redemption logic, and shows real-time usage updates.
-
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { useAuth } from "../context/authContext";
@@ -7,6 +6,7 @@ import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import CardLayout from "../layouts/CardLayout";
 import ImageIcon from "../icons/ImageIcon";
+import FormLayout from "../layouts/FormLayout";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
 import { db } from "../Firebase/Firebase";
 
@@ -17,6 +17,64 @@ const CouponCard = ({ newCoupon }) => {
   const [totalCouponUsed, setTotalCouponUsed] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [beneficiaries, setBeneficiaries] = useState([]);
+
+  const [showPopup, setShowPopup] = useState(false);
+  const [selectedAmount, setSelectedAmount] = useState(0);
+
+  const handleConfirmDonation = async () => {
+    setShowPopup(false);
+    toast.loading("جاري تنفيذ استخدام الكوبون...");
+    setIsLoading(true);
+    const newTotal = totalCouponUsed + 1;
+
+    try {
+      const { doc, updateDoc, arrayUnion, getDoc } = await import(
+        "firebase/firestore"
+      );
+      const { getAuth } = await import("firebase/auth");
+      const couponRef = doc(db, "Coupons", newCoupon.id);
+      const auth = getAuth();
+      const user = auth.currentUser;
+
+      const updateData = {
+        totalCouponUsed: newTotal,
+        beneficiaries: arrayUnion({
+          email: user?.email || "unknown",
+          stock: 1,
+          date: new Date().toISOString(),
+        }),
+        isCompleted: newTotal >= stock,
+      };
+
+      if (newTotal >= stock) {
+        updateData.status = "مكتمل";
+      }
+
+      await updateDoc(couponRef, updateData);
+      toast.dismiss();
+      toast.success("تم استخدام الكوبون بنجاح. شكراً لك!");
+
+      if (newTotal >= stock) {
+        const snapshot = await getDoc(couponRef);
+        const data = snapshot.data();
+        const beneficiaryEmails = (data?.beneficiaries || []).map(
+          (d) => d.email
+        );
+        console.log("Notification will be sent to:", beneficiaryEmails);
+      }
+    } catch (error) {
+      toast.dismiss();
+      toast.error("حدث خطأ أثناء تنفيذ استخدام الكوبون.");
+      setIsLoading(false);
+      return;
+    }
+
+    setIsLoading(false);
+  };
+
+  const closePopup = () => {
+    setShowPopup(false);
+  };
 
   // ------------------------- //
   // Context
@@ -64,7 +122,7 @@ const CouponCard = ({ newCoupon }) => {
   // ------------------------- //
   // Event handlers
   // ------------------------- //
-  const handleUseCoupon = async () => {
+  const handleUseCoupon = () => {
     if (hasUsed) {
       toast.error("لقد استخدمت هذا الكوبون مسبقاً.");
       return;
@@ -75,52 +133,8 @@ const CouponCard = ({ newCoupon }) => {
       return;
     }
 
-    setIsLoading(true);
-    const newTotal = totalCouponUsed + 1;
-
-    try {
-      const { doc, updateDoc, arrayUnion, getDoc } = await import(
-        "firebase/firestore"
-      );
-      const { getAuth } = await import("firebase/auth");
-      const couponRef = doc(db, "Coupons", newCoupon.id);
-      const auth = getAuth();
-      const user = auth.currentUser;
-
-      const updateData = {
-        totalCouponUsed: newTotal,
-        beneficiaries: arrayUnion({
-          email: user?.email || "unknown",
-          stock: 1,
-          date: new Date().toISOString(),
-        }),
-        isCompleted: newTotal >= stock,
-      };
-
-      if (newTotal >= stock) {
-        updateData.status = "مكتمل";
-      }
-
-      await updateDoc(couponRef, updateData);
-
-      toast.success("تم استخدام الكوبون بنجاح. شكراً لك!");
-
-      if (newTotal >= stock) {
-        const snapshot = await getDoc(couponRef);
-        const data = snapshot.data();
-        const beneficiaryEmails = (data?.beneficiaries || []).map(
-          (d) => d.email
-        );
-        // Placeholder for notification logic
-        console.log("Notification will be sent to:", beneficiaryEmails);
-      }
-    } catch (error) {
-      toast.error("حدث خطأ أثناء تنفيذ استخدام الكوبون.");
-      setIsLoading(false);
-      return;
-    }
-
-    setIsLoading(false);
+    setSelectedAmount(newCoupon.amount || 0);
+    setShowPopup(true);
   };
 
   const donationPercentage = Math.min((totalCouponUsed / stock) * 100, 100);
@@ -219,6 +233,28 @@ const CouponCard = ({ newCoupon }) => {
           </p>
         </div>
       </CardLayout>
+      <>
+        {/* Use confirmation popup */}
+        {showPopup && (
+          <div className="w-full fixed inset-0 flex items-center justify-center bg-gray-950/90 backdrop-blur-md z-50">
+            <FormLayout
+              formTitle={<span>هل أنت متأكد من استخدام الكوبون؟</span>}>
+              <div className="flex justify-center gap-4 mt-4">
+                <button
+                  className="success px-6 py-2 rounded font-semibold"
+                  onClick={handleConfirmDonation}>
+                  {isLoading ? <Loader /> : "تأكيد"}
+                </button>
+                <button
+                  className="danger px-6 py-2 rounded font-semibold"
+                  onClick={closePopup}>
+                  إغلاق
+                </button>
+              </div>
+            </FormLayout>
+          </div>
+        )}
+      </>
     </>
   );
 };
