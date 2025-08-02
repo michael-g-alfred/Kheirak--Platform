@@ -64,10 +64,14 @@ export default function PostForm({ onClose }) {
         donors: [],
       };
       await setDoc(docRef, newPost);
-      toast.success("تم إرسال الطلب بنجاح للمراجعة");
+      toast.success("تم إرسال الطلب بنجاح للمراجعة", {
+        position: "bottom-center",
+      });
       onClose();
     } catch (error) {
-      toast.error("حدث خطأ أثناء إرسال الطلب");
+      toast.error("حدث خطأ أثناء إرسال الطلب", {
+        position: "bottom-center",
+      });
     } finally {
       setIsLoading(false);
     }

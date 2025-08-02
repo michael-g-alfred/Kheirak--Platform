@@ -4,9 +4,10 @@ import { useAuth } from "../context/authContext";
 import Logo from "../assets/logo.svg";
 import CloseIcon from "../icons/CloseIcon";
 import MenuIcon from "../icons/MenuIcon";
+import NotificationBadge from "./NotificationBadge";
 
 const Navbar = () => {
-  const { role, logout, loading } = useAuth();
+  const { role, logout, loading, currentUser } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -24,21 +25,52 @@ const Navbar = () => {
   ];
 
   const beneficiaryTabs = [
-    { id: "notifications", label: "الإشعارات" },
+    {
+      id: currentUser?.email
+        ? `beneficiary-profile/${currentUser.email}`
+        : "beneficiary-profile",
+      label: "الملف الشخصي",
+    },
+    {
+      id: currentUser?.email
+        ? `notifications/${currentUser.email}`
+        : "notifications",
+      label: <NotificationBadge />,
+    },
     ...baseTabs,
     { id: "logout", label: "تسجيل الخروج" },
   ];
 
   const donorTabs = [
-    { id: "donor-profile", label: "الملف الشخصي" },
-    { id: "notifications", label: "الإشعارات" },
+    {
+      id: currentUser?.email
+        ? `donor-profile/${currentUser.email}`
+        : "donor-profile",
+      label: "الملف الشخصي",
+    },
+    {
+      id: currentUser?.email
+        ? `notifications/${currentUser.email}`
+        : "notifications",
+      label: <NotificationBadge />,
+    },
     ...baseTabs,
     { id: "logout", label: "تسجيل الخروج" },
   ];
 
   const orgTabs = [
-    { id: "org-profile", label: "الملف الشخصي" },
-    { id: "notifications", label: "الإشعارات" },
+    {
+      id: currentUser?.email
+        ? `org-profile/${currentUser.email}`
+        : "org-profile",
+      label: "الملف الشخصي",
+    },
+    {
+      id: currentUser?.email
+        ? `notifications/${currentUser.email}`
+        : "notifications",
+      label: <NotificationBadge />,
+    },
     ...baseTabs,
     { id: "logout", label: "تسجيل الخروج" },
   ];
@@ -62,7 +94,7 @@ const Navbar = () => {
       default:
         return guestTabs;
     }
-  }, [role]);
+  }, [role, currentUser?.email]);
 
   if (loading || role === null) return null;
 
@@ -71,10 +103,10 @@ const Navbar = () => {
       dir="rtl"
       className="shadow-md border-b border-[var(--color-bg-divider)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-20">
           {/* Navigation Tabs */}
           <div className="hidden md:block">
-            <div className="flex items-center justify-center space-x-1">
+            <div className="flex items-center justify-center space-x-2">
               {tabs.map((tab) =>
                 tab.id === "logout" ? (
                   <span
@@ -83,7 +115,7 @@ const Navbar = () => {
                       await logout();
                       navigate("/");
                     }}
-                    className="cursor-pointer px-2 py-2 text-sm font-bold transition-colors duration-200 rounded-sm danger">
+                    className="cursor-pointer p-2 text-sm md:text-md lg:text-lg font-bold transition-colors duration-200 rounded-sm danger">
                     {tab.label}
                   </span>
                 ) : (
@@ -91,7 +123,7 @@ const Navbar = () => {
                     key={tab.id}
                     to={tab.id === "home" ? "/" : `/${tab.id}`}
                     className={({ isActive }) =>
-                      `px-3 py-2 text-sm font-bold transition-colors duration-200 rounded-sm ${
+                      `                    className="cursor-pointer p-1.5 text-sm md:text-md lg:text-lg font-bold transition-colors duration-200 rounded-sm ${
                         tab.id === "login"
                           ? "text-[var(--color-primary-base)] hover:text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)]"
                           : isActive
