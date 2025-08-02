@@ -1,3 +1,4 @@
+import { toast } from "react-hot-toast";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "./Firebase";
 import { auth } from "./Firebase";
@@ -18,20 +19,16 @@ export const monitorAuthState = (callback) => {
 };
 
 export const doCreateUserWithEmailAndPassword = async (email, password) => {
-  console.log("creating user");
   return createUserWithEmailAndPassword(auth, email, password);
 };
 
 export const doSignInWithEmailAndPassword = async (email, password) => {
-  console.log("signing in");
   const res = await signInWithEmailAndPassword(auth, email, password);
 
   const userRef = doc(db, "Users", res.user.uid);
   const userSnap = await getDoc(userRef);
   if (userSnap.exists()) {
-    console.log("User role:", userSnap.data().role);
   } else {
-    console.log("No such user document!");
   }
 
   return res;
@@ -45,7 +42,6 @@ export const doSignInWithGoogle = async () => {
 };
 
 export const doSignOut = async () => {
-  console.log("signing out");
   return signOut(auth);
 };
 

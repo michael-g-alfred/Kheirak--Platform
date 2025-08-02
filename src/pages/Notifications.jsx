@@ -1,100 +1,115 @@
-/*export default function Notifications() {
-  return <div>Notifications</div>;
-}*/
-/*import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { db } from "../Firebase/Firebase";
-import { collection, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  deleteDoc,
+  getDocs,
+  doc,
+} from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import { toast } from "react-hot-toast";
+
+import PageLayout from "../layouts/PageLayout";
+import Header_Subheader from "../components/Header_Subheader";
+import Loader from "../components/Loader";
+import NoData from "../components/NoData";
+import CardLayout from "../layouts/CardLayout";
+import CardsLayout from "../layouts/CardsLayout";
 
 export default function NotificationsPage() {
   const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
   const auth = getAuth();
   const user = auth.currentUser;
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      setLoading(false);
+      return;
+    }
 
-    const notifRef = collection(db, "notifications", user.email, "user_notifications");
+    const notifRef = collection(
+      db,
+      "Notifications",
+      user.email,
+      "user_Notifications"
+    );
+
     const unsubscribe = onSnapshot(notifRef, (snapshot) => {
-      const notifs = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      setNotifications(notifs.sort((a, b) => b.timestamp.localeCompare(a.timestamp)));
+      const notifs = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      const sorted = notifs.sort((a, b) =>
+        b.timestamp.localeCompare(a.timestamp)
+      );
+      setNotifications(sorted);
+      setLoading(false);
     });
 
     return () => unsubscribe();
   }, [user]);
 
-  return (
-    <div>
-      <h2> الإشعارات</h2>
-      {notifications.length === 0 ? (
-        <p>لا توجد إشعارات</p>
-      ) : (
-        <ul>
-          {notifications.map((notif) => (
-            <li key={notif.id}>
-              <h4>{notif.title}</h4>
-              <p>{notif.message}</p>
-              <small>{new Date(notif.timestamp).toLocaleString()}</small>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-}*/
-import { useEffect, useState } from "react";
-import { db } from "../Firebase/Firebase";
-import { collection, onSnapshot } from "firebase/firestore";
-import { getAuth } from "firebase/auth";
-import { onAuthStateChanged } from "firebase/auth";
+  const handleDeleteAll = async () => {
+    if (!user) return;
+    const confirmDelete = window.confirm(
+      "هل أنت متأكد أنك تريد حذف كل الإشعارات؟"
+    );
+    if (!confirmDelete) return;
 
-export default function NotificationsPage() {
-  const [notifications, setNotifications] = useState([]);
-  const [userEmail, setUserEmail] = useState(null);
-
-  useEffect(() => {
-    const auth = getAuth();
-    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUserEmail(user.email);
-      }
-    });
-
-    return () => unsubscribeAuth();
-  }, []);
-
-  useEffect(() => {
-    if (!userEmail) return;
-
-    const notifRef = collection(db, "notifications", userEmail, "user_notifications");
-    const unsubscribe = onSnapshot(notifRef, (snapshot) => {
-      const notifs = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      setNotifications(
-        notifs.sort((a, b) => b.timestamp.localeCompare(a.timestamp))
-      );
-    });
-
-    return () => unsubscribe();
-  }, [userEmail]);
+    const notifRef = collection(
+      db,
+      "Notifications",
+      user.email,
+      "user_Notifications"
+    );
+    const snapshot = await getDocs(notifRef);
+    const deletions = snapshot.docs.map((docItem) =>
+      deleteDoc(
+        doc(db, "Notifications", user.email, "user_Notifications", docItem.id)
+      )
+    );
+    await Promise.all(deletions);
+    toast.success("تم حذف جميع الإشعارات بنجاح");
+  };
 
   return (
-    <div>
-      <h2>الإشعارات</h2>
-      {notifications.length === 0 ? (
-        <p>لا توجد إشعارات</p>
-      ) : (
-        <ul>
-          {notifications.map((notif) => (
-            <li key={notif.id}>
-              <h4>{notif.title}</h4>
-              <p>{notif.message}</p>
-              <small>{new Date(notif.timestamp).toLocaleString()}</small>
-            </li>
-          ))}
-        </ul>
+    <PageLayout>
+      <Header_Subheader
+        h1="الإشعارات"
+        p="هنا تجد كل الإشعارات المتعلقة بحسابك."
+      />
+      {notifications.length > 0 && !loading && (
+        <div className="flex justify-end">
+          <button
+            onClick={handleDeleteAll}
+            className="px-6 py-2 danger rounded">
+            حذف كل الإشعارات
+          </button>
+        </div>
       )}
-    </div>
+
+      {loading ? (
+        <div className="flex justify-center items-center text-[var(--color-bg-text)]">
+          <Loader />
+        </div>
+      ) : notifications.length === 0 ? (
+        <NoData h2="لا توجد إشعارات" />
+      ) : (
+        <CardsLayout colNum={2} fixedCol={2}>
+          {notifications.map((notif) => (
+            <CardLayout key={notif.id} title={notif.title}>
+              <div className="text-md text-[var(--color-bg-text)] space-y-1 text-right">
+                <p>{notif.message}</p>
+                <p className="text-sm text-[var(--color-muted)]">
+                  {new Date(notif.timestamp).toLocaleString()}
+                </p>
+              </div>
+            </CardLayout>
+          ))}
+        </CardsLayout>
+      )}
+    </PageLayout>
   );
 }
-
-

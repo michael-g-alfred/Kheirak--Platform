@@ -9,6 +9,8 @@ import { collection, setDoc, doc } from "firebase/firestore";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SubmitButton from "./SubmitButton";
+import { toast } from "react-hot-toast";
+import { updateProfile } from "firebase/auth";
 
 const schema = yup.object().shape({
   userName: yup.string().required("اسم المستخدم مطلوب"),
@@ -23,13 +25,27 @@ const schema = yup.object().shape({
     .required("نوع المستخدم مطلوب"),
 });
 
+const getFriendlyFirebaseError = (code) => {
+  switch (code) {
+    case "auth/email-already-in-use":
+      return "البريد الإلكتروني مستخدم بالفعل.";
+    case "auth/invalid-email":
+      return "صيغة البريد الإلكتروني غير صحيحة.";
+    case "auth/weak-password":
+      return "كلمة المرور ضعيفة جداً.";
+    case "auth/network-request-failed":
+      return "تحقق من اتصال الإنترنت.";
+    default:
+      return "حدث خطأ غير متوقع. حاول مرة أخرى.";
+  }
+};
+
 const SignUpForm = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
-  const [msg, setMsg] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -43,6 +59,8 @@ const SignUpForm = () => {
       );
       const user = userCredential.user;
 
+      await updateProfile(user, { displayName: userName });
+
       await setDoc(doc(db, "Users", user.uid), {
         userName,
         email,
@@ -50,11 +68,12 @@ const SignUpForm = () => {
         createdAt: new Date(),
       });
 
-      setMsg("✅ تم إنشاء الحساب بنجاح!");
+      toast.success("تم إنشاء الحساب بنجاح!");
       setIsLoading(false);
       navigate("/");
     } catch (error) {
-      setMsg("❌ " + error.message);
+      const friendlyMsg = getFriendlyFirebaseError(error.code);
+      toast.error(friendlyMsg);
       setIsLoading(false);
     }
   };
@@ -100,7 +119,6 @@ const SignUpForm = () => {
           register={register("role")}
           error={errors.role}
           options={[
-            { value: "", label: "اختر نوع المستخدم" },
             { value: "متبرع", label: "متبرع" },
             { value: "مستفيد", label: "مستفيد" },
             { value: "مؤسسة", label: "مؤسسة" },
@@ -109,13 +127,6 @@ const SignUpForm = () => {
 
         {/* زر الدخول */}
         <SubmitButton buttonTitle="إنشاء حساب" isLoading={isLoading} />
-
-        {/* عرض رسالة الخطأ أو النجاح */}
-        {msg && (
-          <p className="w-full flex justify-center items-center border-2 border-[var(--color-bg-divider)] bg-[var(--color-bg-card)] text-[var(--color-bg-text)] p-1 rounded-full text-center mt-2">
-            {msg}
-          </p>
-        )}
       </form>
     </FormLayout>
   );

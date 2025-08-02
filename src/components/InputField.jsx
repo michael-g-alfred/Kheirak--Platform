@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import EyeIcon from "../icons/EyeIcon";
 import EyeOffIcon from "../icons/EyeOffIcon";
+import ArrowBadgeDownIcon from "../icons/ArrowBadgeDownIcon";
 
 const InputField = ({
   label,
@@ -25,27 +26,37 @@ const InputField = ({
       )}
 
       {select ? (
-        <select
-          id={id}
-          {...register}
-          className={`w-full px-4 py-2 rounded-lg border-1 bg-transparent text-[var(--color-bg-text)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] ${
-            error
-              ? "border-[var(--color-danger-dark-plus)]"
-              : "border-[var(--color-bg-divider)]"
-          }`}
-        >
-          {options.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
+        <div className="relative">
+          <select
+            id={id}
+            {...register}
+            className={`w-full px-4 py-2 rounded-lg bg-[var(--color-bg-base)] appearance-none text-[var(--color-bg-text)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] cursor-pointer ${
+              error
+                ? "border-[var(--color-danger-dark-plus)]"
+                : "border-[var(--color-bg-divider)]"
+            } border relative`}>
+            <option value="" disabled hidden>
+              {placeholder || "اختر نوع المستخدم"}
             </option>
-          ))}
-        </select>
+            {options.map((opt) => (
+              <option
+                key={opt.value}
+                value={opt.value}
+                className="bg-[var(--color-bg-base)] text-[var(--color-bg-text)]">
+                {opt.label}
+              </option>
+            ))}
+          </select>
+          <div className="pointer-events-none absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--color-bg-muted-text)]">
+            <ArrowBadgeDownIcon />
+          </div>
+        </div>
       ) : type === "textarea" ? (
         <textarea
           id={id}
           placeholder={placeholder}
           {...register}
-          className={`w-full px-4 py-2 rounded-lg border-1 bg-transparent text-[var(--color-bg-text)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] ${
+          className={`w-full px-4 py-2 rounded-lg border-1 bg-[var(--color-bg-base)] text-[var(--color-bg-text)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] ${
             error
               ? "border-[var(--color-danger-dark-plus)]"
               : "border-[var(--color-bg-divider)]"
@@ -56,7 +67,7 @@ const InputField = ({
           id={id}
           type="file"
           {...register}
-          className={`w-full px-4 py-2 rounded-lg border-2 border-dashed text-[var(--color-bg-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] ${
+          className={`w-full px-4 py-2 rounded-lg border-1 border-dashed bg-[var(--color-bg-base)] appearance-none text-[var(--color-bg-text)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] ${
             error
               ? "border-[var(--color-danger-dark-plus)]"
               : "border-[var(--color-bg-divider)]"
@@ -69,7 +80,7 @@ const InputField = ({
             type={inputType}
             placeholder={placeholder}
             {...register}
-            className={`w-full px-4 py-2 rounded-lg border-1 bg-transparent text-[var(--color-bg-text)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] ${
+            className={`w-full px-4 py-2 rounded-lg border-1 bg-[var(--color-bg-base)] appearance-none text-[var(--color-bg-text)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] ${
               error
                 ? "border-[var(--color-danger-dark-plus)]"
                 : "border-[var(--color-bg-divider)]"
@@ -78,8 +89,7 @@ const InputField = ({
           {isPassword && (
             <div
               className="absolute inset-y-0 left-3 flex items-center cursor-pointer text-[var(--color-bg-muted-text)]"
-              onClick={() => setShowPassword((prev) => !prev)}
-            >
+              onClick={() => setShowPassword((prev) => !prev)}>
               {showPassword ? <EyeOffIcon /> : <EyeIcon />}
             </div>
           )}

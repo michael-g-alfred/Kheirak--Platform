@@ -7,6 +7,22 @@ import SubmitButton from "./SubmitButton";
 import { doSignInWithEmailAndPassword } from "../Firebase/auth";
 import { getDoc, doc } from "firebase/firestore";
 import { db } from "../Firebase/Firebase";
+import { toast } from "react-hot-toast";
+
+const getFriendlyFirebaseError = (code) => {
+  switch (code) {
+    case "auth/user-not-found":
+      return "لا يوجد حساب بهذا البريد.";
+    case "auth/wrong-password":
+      return "كلمة المرور غير صحيحة.";
+    case "auth/invalid-email":
+      return "صيغة البريد الإلكتروني غير صحيحة.";
+    case "auth/network-request-failed":
+      return "تحقق من اتصال الإنترنت.";
+    default:
+      return "حدث خطأ أثناء تسجيل الدخول. حاول مرة أخرى.";
+  }
+};
 
 export default function SignInForm() {
   const {
@@ -15,7 +31,6 @@ export default function SignInForm() {
     formState: { errors },
   } = useForm();
 
-  const [msg, setMsg] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -30,16 +45,17 @@ export default function SignInForm() {
       const userDoc = await getDoc(doc(db, "Users", uid));
       if (userDoc.exists()) {
         const role = userDoc.data().role;
-        setMsg("✅ تم تسجيل الدخول بنجاح");
+        toast.success("تم تسجيل الدخول بنجاح");
         setIsLoading(false);
         navigate("/");
       } else {
-        setMsg("❌ لم يتم العثور على بيانات المستخدم");
+        toast.error("لم يتم العثور على بيانات المستخدم");
         setIsLoading(false);
       }
     } catch (err) {
       console.error(err.message);
-      setMsg("❌ فشل في تسجيل الدخول: " + err.message);
+      const friendlyMsg = getFriendlyFirebaseError(err.code);
+      toast.error(friendlyMsg);
       setIsLoading(false);
     }
   };
@@ -76,13 +92,6 @@ export default function SignInForm() {
         />
         {/* زر الدخول */}
         <SubmitButton buttonTitle="تسجيل الدخول" isLoading={isLoading} />
-
-        {/* عرض رسالة الخطأ أو النجاح */}
-        {msg && (
-          <p className="w-full flex justify-center items-center border-2 border-[var(--color-bg-divider)] bg-[var(--color-bg-card)] text-[var(--color-bg-text)] p-1 rounded-full text-center mt-2">
-            {msg}
-          </p>
-        )}
       </form>
     </FormLayout>
   );

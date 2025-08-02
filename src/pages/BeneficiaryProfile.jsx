@@ -10,8 +10,8 @@ import CardLayout from "../layouts/CardLayout";
 import CardsLayout from "../layouts/CardsLayout";
 import ImageIcon from "../icons/ImageIcon";
 
-export default function OrgProfile() {
-  const [myCoupons, setMyCoupons] = useState([]);
+export default function BeneficiaryProfile() {
+  const [myPosts, setMyPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { currentUser } = useAuth();
   const userEmail = currentUser?.email;
@@ -22,25 +22,22 @@ export default function OrgProfile() {
       return;
     }
 
-    const unsubscribe = onSnapshot(
-      collection(db, "Coupons"),
-      (querySnapshot) => {
-        const submittedCoupons = [];
+    const unsubscribe = onSnapshot(collection(db, "Posts"), (querySnapshot) => {
+      const mySubmittedPosts = [];
 
-        querySnapshot.forEach((doc) => {
-          const couponData = doc.data();
-          if (couponData.submittedBy?.email === userEmail) {
-            submittedCoupons.push({
-              id: doc.id,
-              ...couponData,
-            });
-          }
-        });
+      querySnapshot.forEach((doc) => {
+        const postData = doc.data();
+        if (postData.submittedBy?.email === userEmail) {
+          mySubmittedPosts.push({
+            id: doc.id,
+            ...postData,
+          });
+        }
+      });
 
-        setMyCoupons(submittedCoupons);
-        setIsLoading(false);
-      }
-    );
+      setMyPosts(mySubmittedPosts);
+      setIsLoading(false);
+    });
 
     return () => unsubscribe();
   }, [userEmail]);
@@ -48,8 +45,8 @@ export default function OrgProfile() {
   return (
     <PageLayout>
       <Header_Subheader
-        h1="ملف الكوبونات الخاصة بك"
-        p="تعرف على كوبوناتك المصدّرة وقيمها وحالاتها."
+        h1="ملف الطبات الخاصة بك"
+        p="تعرف على طلباتك والمبالغ التي تم جمعها."
       />
 
       {/* معلومات المستخدم */}
@@ -85,30 +82,35 @@ export default function OrgProfile() {
         <div className="flex justify-center items-center text-[var(--color-bg-text)]">
           <Loader />
         </div>
-      ) : myCoupons.length === 0 ? (
-        <NoData h2="لم تقم بإنشاء أي كوبون حتى الآن." />
+      ) : myPosts.length === 0 ? (
+        <NoData h2="لم تقم بإنشاء أي طلب حتى الآن." />
       ) : (
         <CardsLayout colNum={1} fixedCol={2}>
-          {myCoupons.map((coupon) => (
-            <CardLayout key={coupon.id} title={coupon.title}>
-              <div className="text-md text-[var(--color-bg-text)] space-y-1 text-right">
-                <p>
-                  <strong>الحالة:</strong> {coupon.status || "غير محددة"}
-                </p>
-                <p>
-                  <strong>عدد الكوبونات الكلي:</strong> {coupon.stock}
-                </p>
-                <p>
-                  <strong>عدد المستخدم منها:</strong>{" "}
-                  {coupon.totalCouponUsed || 0}
-                </p>
-                <p>
-                  <strong>عدد المتبقي:</strong>{" "}
-                  {(coupon.stock || 0) - (coupon.totalCouponUsed || 0)}
-                </p>
-              </div>
-            </CardLayout>
-          ))}
+          {myPosts.map((post) => {
+            const totalReceived = post.donors?.reduce(
+              (sum, d) => sum + Number(d.amount || 0),
+              0
+            );
+
+            return (
+              <CardLayout key={post.id} title={post.title}>
+                <div className="text-md text-[var(--color-bg-text)] space-y-1 text-right">
+                  <p>
+                    <strong>حالة الطلب:</strong> {post.status}
+                  </p>
+                  <p>
+                    <strong>المبلغ المطلوب:</strong> {post.amount} ج.م
+                  </p>
+                  <p>
+                    <strong>المبلغ المستلم:</strong>{" "}
+                    <span className="text-[var(--color-primary-base)]">
+                      {totalReceived} ج.م
+                    </span>
+                  </p>
+                </div>
+              </CardLayout>
+            );
+          })}
         </CardsLayout>
       )}
     </PageLayout>

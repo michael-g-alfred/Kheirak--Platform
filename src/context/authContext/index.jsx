@@ -4,6 +4,7 @@ import { auth, db } from "../../Firebase/Firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { monitorAuthState } from "../../Firebase/auth";
 import { doSignOut } from "../../Firebase/auth";
+import Loader from "../../components/Loader";
 
 const AuthContext = createContext();
 
@@ -68,7 +69,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         userName,
       }}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 };
