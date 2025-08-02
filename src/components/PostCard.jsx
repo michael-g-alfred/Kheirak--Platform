@@ -95,76 +95,116 @@ const PostCard = ({ newPost }) => {
   };
 
   // Confirm donation and update Firestore with new totals and donor info
-  const handleConfirmDonation = async () => {
+ const handleConfirmDonation = async () => {
     toast.loading("جاري تنفيذ التبرع...");
-    setIsLoading(true);
-    const newTotal = totalDonated + Number(selectedAmount);
+  setIsLoading(true);
+  const newTotal = totalDonated + Number(selectedAmount);
 
-    // Prevent donation exceeding requested amount
-    if (newTotal > amount) {
-      toast.dismiss();
-      alert("المبلغ يتجاوز القيمة المطلوبة.");
-      setIsLoading(false);
-      closePopup();
-      return;
-    }
-
-    try {
-      // Dynamically import Firestore and Auth modules to avoid conflicts
-      const { doc, updateDoc, arrayUnion, getDoc } = await import(
-        "firebase/firestore"
-      );
-      const { getAuth } = await import("firebase/auth");
-
-      const postRef = doc(db, "Posts", newPost.id);
-      const auth = getAuth();
-      const user = auth.currentUser;
-
-      // Prepare update data including new total, donor details, and completion status
-      const updateData = {
-        totalDonated: newTotal,
-        donors: arrayUnion({
-          email: user?.email || "unknown",
-          amount: Number(selectedAmount),
-          date: new Date().toISOString(),
-        }),
-        isCompleted: newTotal >= amount,
-      };
-
-      // Update status to "مكتمل" if donation goal is reached
-      if (newTotal >= amount) {
-        updateData.status = "مكتمل";
-      }
-
-      // Apply updates to Firestore document
-      await updateDoc(postRef, updateData);
-
-      toast.dismiss();
-      toast.success(`تم التبرع بـ ${selectedAmount} ج.م`);
-      if (typeof onDonation === "function") onDonation();
-
-      // If donation goal reached, log donor emails for notification (placeholder)
-      if (newTotal >= amount) {
-        const snapshot = await getDoc(postRef);
-        const data = snapshot.data();
-        const donorEmails = (data?.donors || []).map((d) => d.email);
-        console.log("سيتم إرسال إشعار إلى:", donorEmails);
-
-        // TODO: Implement forced notification sending via FCM instead of console.log
-      }
-    } catch (error) {
-      toast.dismiss();
-      toast.error("حدث خطأ أثناء تنفيذ التبرع.");
-      alert("حدث خطأ أثناء تنفيذ التبرع.");
-      setIsLoading(false);
-      closePopup();
-      return;
-    }
-
-    // Reset loading state and close popup after successful donation
+  if (newTotal > amount) {
+   toast.dismiss(); 
+    alert("المبلغ يتجاوز القيمة المطلوبة.");
     setIsLoading(false);
     closePopup();
-  };
+    return;
+  }
+
+  try {
+    const { doc, updateDoc, arrayUnion, getDoc, setDoc } = await import("firebase/firestore");
+    const { getAuth } = await import("firebase/auth");
+
+    const postRef = doc(db, "Posts", newPost.id);
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    const updateData = {
+      totalDonated: newTotal,
+      donors: arrayUnion({
+        email: user?.email || "unknown",
+        amount: Number(selectedAmount),
+        date: new Date().toISOString(),
+      }),
+      isCompleted: newTotal >= amount,
+    };
+
+    if (newTotal >= amount) {
+      updateData.status = "مكتمل";
+    }
+
+    await updateDoc(postRef, updateData);
+toast.dismiss();
+    toast.success(`تم التبرع بـ ${selectedAmount} ج.م`);
+
+
+    if (typeof onDonation === "function") onDonation();
+
+    // إشعار للمتبرع الحالي
+    const donorNotifRef = doc(
+      db,
+      "Notifications",
+      user.email,
+      "user_Notifications",
+      `${Date.now()}`
+    );
+
+    await setDoc(donorNotifRef, {
+      title: "شكرًا على تبرعك 💚",
+      message: `لقد تبرعت بمبلغ ${selectedAmount} جنيه لحملة ${newPost.title}`,
+      timestamp: new Date().toISOString(),
+      read: false,
+    });
+
+    // إشعار لصاحب البوست (المحتاج)
+    if (newPost?.submittedBy?.email) {
+      const ownerNotifRef = doc(
+        db,
+        "Notifications",
+        newPost.submittedBy.email,
+        "user_Notifications",
+        `${Date.now() + 1}`
+      );
+
+      await setDoc(ownerNotifRef, {
+        title: "تم استلام تبرع جديد",
+        message: `${user?.email || "مستخدم"} تبرع لك بمبلغ ${selectedAmount} جنيه.`,
+        timestamp: new Date().toISOString(),
+        read: false,
+      });
+    }
+
+    // إذا تم اكتمال المبلغ، ابعت إشعار لكل المتبرعين
+    if (newTotal >= amount) {
+      const snapshot = await getDoc(postRef);
+      const data = snapshot.data();
+      const donorEmails = (data?.donors || []).map((d) => d.email);
+
+      for (let email of donorEmails) {
+        const notificationRef = doc(
+          db,
+          "Notifications",
+          email,
+          "user_Notifications",
+          `${Date.now() + Math.floor(Math.random() * 1000)}`
+        );
+
+        await setDoc(notificationRef, {
+          title: "شكرًا على تبرعك 💚",
+          message: `شكراً لك! تم الوصول لهدف التبرع لحملة ${newPost.title}.`,
+          timestamp: new Date().toISOString(),
+          read: false,
+        });
+      }
+    }
+  } catch (error) {
+    console.error("خطأ في التبرع:", error);
+    alert("حدث خطأ أثناء تنفيذ التبرع.");
+  }
+
+  setIsLoading(false);
+  closePopup();
+};
+
+  
+ 
 
   // -------------------------
   // Render UI
