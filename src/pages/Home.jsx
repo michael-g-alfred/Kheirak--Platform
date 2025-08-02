@@ -31,7 +31,7 @@ export default function Home() {
                 : "var(--color-bg-muted-text)",
             textAlign: "center",
           }}>
-          المنشورات
+          الطلبات
         </NavLink>
         <NavLink
           to="/coupons"
