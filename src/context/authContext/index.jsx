@@ -4,7 +4,6 @@ import { auth, db } from "../../Firebase/Firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { monitorAuthState } from "../../Firebase/auth";
 import { doSignOut } from "../../Firebase/auth";
-import Loader from "../../components/Loader";
 
 const AuthContext = createContext();
 
@@ -51,6 +50,16 @@ export const AuthProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
+  // add this function to refresh user data after sign up or sign in with google
+  const refreshUserData = async () => {
+    if (!auth.currentUser) return;
+    const userRef = doc(db, "Users", auth.currentUser.uid);
+    const userSnap = await getDoc(userRef);
+    if (userSnap.exists()) {
+      setUserData(userSnap.data());
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = monitorAuthState((user) => {
       setUser(user);
@@ -64,11 +73,13 @@ export const AuthProvider = ({ children }) => {
         currentUser,
         userData,
         isAuthenticated,
-        role,
+        role: userData?.role || "guest",
         logout,
         loading,
         userName,
-      }}>
+        refreshUserData,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

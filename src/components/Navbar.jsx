@@ -101,7 +101,8 @@ const Navbar = () => {
   return (
     <nav
       dir="rtl"
-      className="shadow-md border-b border-[var(--color-bg-divider)]">
+      className="shadow-md border-b border-[var(--color-bg-divider)]"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Navigation Tabs */}
@@ -115,7 +116,8 @@ const Navbar = () => {
                       await logout();
                       navigate("/");
                     }}
-                    className="cursor-pointer p-2 text-sm md:text-md lg:text-lg font-bold transition-colors duration-200 rounded-sm danger">
+                    className="cursor-pointer p-2 text-sm md:text-md lg:text-lg font-bold transition-colors duration-200 rounded-sm danger"
+                  >
                     {tab.label}
                   </span>
                 ) : (
@@ -130,7 +132,8 @@ const Navbar = () => {
                           ? "bg-[var(--color-primary-base)] text-[var(--color-secondary-base)]"
                           : "text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)]"
                       }`
-                    }>
+                    }
+                  >
                     {tab.label}
                   </NavLink>
                 )
@@ -141,14 +144,16 @@ const Navbar = () => {
           <div className="md:hidden">
             <button
               className="text-[var(--color-bg-text)] hover:text-gray-300 focus:outline-none focus:text-gray-300"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}>
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
               {isMenuOpen ? <CloseIcon /> : <MenuIcon />}
             </button>
           </div>
           {/* Logo */}
           <NavLink
             to="/"
-            className="flex-shrink-0 flex items-center cursor-pointer">
+            className="flex-shrink-0 flex items-center cursor-pointer"
+          >
             <img
               src={Logo}
               alt="Logo"
@@ -181,7 +186,8 @@ const Navbar = () => {
                         ? "bg-[var(--color-primary-base)] text-[var(--color-secondary-base)]"
                         : "text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)]"
                     }`
-                  }>
+                  }
+                >
                   {tab.label}
                 </NavLink>
               ))}
@@ -194,7 +200,8 @@ const Navbar = () => {
                     await logout();
                     navigate("/");
                   }}
-                  className="block px-2 py-2 text-base font-bold w-full text-left cursor-pointer transition-colors duration-200 rounded-sm danger mt-2">
+                  className="block px-2 py-2 text-base font-bold w-full text-left cursor-pointer transition-colors duration-200 rounded-sm danger mt-2"
+                >
                   {tabs.find((tab) => tab.id === "logout").label}
                 </span>
               </>

@@ -3,15 +3,19 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import InputField from "./InputField";
 import FormLayout from "../layouts/FormLayout";
-import { doCreateUserWithEmailAndPassword } from "../Firebase/auth";
+import {
+  doCreateUserWithEmailAndPassword,
+  doSignInWithGoogle,
+} from "../Firebase/auth";
 import { db } from "../Firebase/Firebase";
-import { collection, setDoc, doc } from "firebase/firestore";
-import { useState } from "react";
+import { collection, setDoc, doc, getDoc } from "firebase/firestore";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SubmitButton from "./SubmitButton";
 import { toast } from "react-hot-toast";
 import { updateProfile } from "firebase/auth";
 import GoogleIcon from "../assets/google-logo.svg";
+import { useAuth } from "../context/authContext/index";
 
 const schema = yup.object().shape({
   userName: yup.string().required("اسم المستخدم مطلوب"),
@@ -33,7 +37,7 @@ const getFriendlyFirebaseError = (code) => {
     case "auth/invalid-email":
       return "صيغة البريد الإلكتروني غير صحيحة.";
     case "auth/weak-password":
-      return "كلمة المرور ضعيفة جداً.";
+      return "كلمة المرور ضعيفة.";
     case "auth/network-request-failed":
       return "تحقق من اتصال الإنترنت.";
     default:
@@ -50,6 +54,7 @@ const SignUpForm = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
+  const { refreshUserData } = useAuth();
 
   const onSubmit = async ({ userName, email, password, role }) => {
     try {
@@ -71,10 +76,69 @@ const SignUpForm = () => {
 
       toast.success("تم إنشاء الحساب بنجاح!");
       setIsLoading(false);
+      await refreshUserData();
       navigate("/");
     } catch (error) {
       const friendlyMsg = getFriendlyFirebaseError(error.code);
       toast.error(friendlyMsg);
+      setIsLoading(false);
+    }
+  };
+
+  // const handleGoogleSignUp = async () => {
+  //   try {
+  //     setIsLoading(true);
+  //     const userCredential = await doSignInWithGoogle();
+  //     const user = userCredential.user;
+  //     const userRef = doc(db, "Users", user.uid);
+  //     const userSnap = await getDoc(userRef);
+  //     if (!userSnap.exists()) {
+  //       await setDoc(userRef, {
+  //         userName: user.displayName || "مستخدم Google",
+  //         email: user.email,
+  //         role: "متبرع",
+  //         createdAt: new Date(),
+  //       });
+  //     }
+  //     toast.success("تم إنشاء الحساب بنجاح!");
+  //     await refreshUserData();
+  //     navigate("/");
+  //   } catch (error) {
+  //     const friendlyMsg = getFriendlyFirebaseError(error.code);
+  //     toast.error(friendlyMsg);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+  // add signup with google and handle choose role page
+  const handleGoogleSignUp = async () => {
+    try {
+      setIsLoading(true);
+      const userCredential = await doSignInWithGoogle();
+      const user = userCredential.user;
+      const userRef = doc(db, "Users", user.uid);
+      const userSnap = await getDoc(userRef);
+      if (!userSnap.exists()) {
+        await setDoc(userRef, {
+          userName: user.displayName || "مستخدم Google",
+          email: user.email,
+          role: "",
+          createdAt: new Date(),
+        });
+      }
+      await refreshUserData();
+      toast.success("تم إنشاء الحساب بنجاح!");
+      const updatedSnap = await getDoc(userRef);
+      const role = updatedSnap.data()?.role;
+      if (!role) {
+        navigate("/choose-role");
+      } else {
+        navigate("/");
+      }
+    } catch (error) {
+      const friendlyMsg = getFriendlyFirebaseError(error.code);
+      toast.error(friendlyMsg);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -138,9 +202,10 @@ const SignUpForm = () => {
           </div>
           <button
             type="button"
-            onClick={""}
+            onClick={handleGoogleSignUp}
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-2 px-6 py-2 bg-[var(--color-secondary-base)] hover:bg-[var(--color-secondary-pressed)] text-[var(--color-bg-muted-text)] border border-[var(--color-bg-divider)]">
+            className="w-full flex items-center justify-center gap-2 px-6 py-2 bg-[var(--color-secondary-base)] hover:bg-[var(--color-secondary-pressed)] text-[var(--color-bg-muted-text)] border border-[var(--color-bg-divider)]"
+          >
             <span>Google</span>
             <img src={GoogleIcon} alt="Google" className="w-5 h-5" />
           </button>
