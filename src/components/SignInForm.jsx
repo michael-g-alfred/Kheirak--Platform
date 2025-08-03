@@ -4,7 +4,10 @@ import InputField from "./InputField";
 import FormLayout from "../layouts/FormLayout";
 import { useState } from "react";
 import SubmitButton from "./SubmitButton";
-import { doSignInWithEmailAndPassword } from "../Firebase/auth";
+import {
+  doSignInWithEmailAndPassword,
+  doSignInWithGoogle,
+} from "../Firebase/auth";
 import { getDoc, doc } from "firebase/firestore";
 import { db } from "../Firebase/Firebase";
 import { toast } from "react-hot-toast";
@@ -61,6 +64,28 @@ export default function SignInForm() {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    setIsLoading(true);
+    try {
+      const userCredential = await doSignInWithGoogle();
+      const uid = userCredential.user.uid;
+      const userDoc = await getDoc(doc(db, "Users", uid));
+
+      if (userDoc.exists()) {
+        toast.success("تم تسجيل الدخول بنجاح");
+        navigate("/");
+      } else {
+        toast.error("لم يتم العثور على بيانات المستخدم");
+      }
+    } catch (err) {
+      console.error(err.message);
+      const friendlyMsg = getFriendlyFirebaseError(err.code);
+      toast.error(friendlyMsg);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <FormLayout formTitle={"تسجيل الدخول"}>
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -103,9 +128,10 @@ export default function SignInForm() {
           </div>
           <button
             type="button"
-            onClick={""}
+            onClick={handleGoogleSignIn}
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-2 px-6 py-2 bg-[var(--color-secondary-base)] hover:bg-[var(--color-secondary-pressed)] text-[var(--color-bg-muted-text)] border border-[var(--color-bg-divider)]">
+            className="w-full flex items-center justify-center gap-2 px-6 py-2 bg-[var(--color-secondary-base)] hover:bg-[var(--color-secondary-pressed)] text-[var(--color-bg-muted-text)] border border-[var(--color-bg-divider)]"
+          >
             <span>Google</span>
             <img src={GoogleIcon} alt="Google" className="w-5 h-5" />
           </button>

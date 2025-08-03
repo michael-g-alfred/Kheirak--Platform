@@ -11,6 +11,7 @@ import Portfolio from "../pages/Portfolio";
 import Contact from "../pages/Contact";
 import NotFound from "../pages/NotFound";
 import Registration from "../pages/Registration";
+import ChooseRole from "../pages/ChooseRole";
 const AdminDashboard = lazy(() => import("../pages/AdminDashboard"));
 const DonorProfile = lazy(() => import("../pages/DonorProfile"));
 const OrgProfile = lazy(() => import("../pages/OrgProfile"));
@@ -37,8 +38,10 @@ export default function AppRoutes() {
             <LogoIcon />
           </div>
         </div>
-      }>
+      }
+    >
       <Routes>
+        <Route path="/choose-role" element={<ChooseRole />} />
         <Route path="/" element={<Home />}>
           <Route path="posts" element={<Posts />} />
           <Route path="coupons" element={<Coupons />} />
