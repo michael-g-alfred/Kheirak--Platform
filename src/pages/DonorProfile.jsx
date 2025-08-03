@@ -9,6 +9,7 @@ import NoData from "../components/NoData";
 import CardLayout from "../layouts/CardLayout";
 import CardsLayout from "../layouts/CardsLayout";
 import ImageIcon from "../icons/ImageIcon";
+import UserInfo from "../components/UserInfo";
 
 export default function DonorProfile() {
   const [donatedPosts, setDonatedPosts] = useState([]);
@@ -52,32 +53,8 @@ export default function DonorProfile() {
         p="تعرف على الطلبات التي ساهمت فيها ومقدار تبرعاتك."
       />
 
-      {/* معلومات المستخدم */}
-      <div className="text-[var(--color-bg-text)] flex items-center-safe justify-start gap-2">
-        {/* صورة المستخدم */}
-        {currentUser?.photoURL ? (
-          <img
-            src={currentUser.photoURL}
-            alt="User avatar"
-            className="w-16 h-16 rounded-full object-cover border"
-          />
-        ) : (
-          <div className="w-16 h-16 rounded-full bg-[var(--color-secondary-base)] text-[var(--color-bg-muted-text)] border border-[var(--color-bg-divider)] flex items-center justify-center">
-            <ImageIcon width={32} height={32} />
-          </div>
-        )}
-
-        {/* معلومات المستخدم */}
-        <div>
-          <p>
-            <strong>اسم المستخدم:</strong>{" "}
-            {currentUser?.displayName || "غير متوفر"}
-          </p>
-          <p>
-            <strong>البريد الإلكتروني:</strong> {currentUser?.email}
-          </p>
-        </div>
-      </div>
+      {/* {معلومات المستخدم} */}
+      <UserInfo />
 
       <hr className="my-4 border-[var(--color-bg-divider)] border-.5 rounded" />
 
