@@ -85,31 +85,6 @@ const SignUpForm = () => {
     }
   };
 
-  // const handleGoogleSignUp = async () => {
-  //   try {
-  //     setIsLoading(true);
-  //     const userCredential = await doSignInWithGoogle();
-  //     const user = userCredential.user;
-  //     const userRef = doc(db, "Users", user.uid);
-  //     const userSnap = await getDoc(userRef);
-  //     if (!userSnap.exists()) {
-  //       await setDoc(userRef, {
-  //         userName: user.displayName || "مستخدم Google",
-  //         email: user.email,
-  //         role: "متبرع",
-  //         createdAt: new Date(),
-  //       });
-  //     }
-  //     toast.success("تم إنشاء الحساب بنجاح!");
-  //     await refreshUserData();
-  //     navigate("/");
-  //   } catch (error) {
-  //     const friendlyMsg = getFriendlyFirebaseError(error.code);
-  //     toast.error(friendlyMsg);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
   // add signup with google and handle choose role page
   const handleGoogleSignUp = async () => {
     try {
@@ -192,11 +167,11 @@ const SignUpForm = () => {
 
         {/* زر الدخول */}
         <SubmitButton buttonTitle="إنشاء حساب" isLoading={isLoading} />
-        <div className="text-center">
+        <div className="text-center rounded-lg">
           <div className="flex items-center gap-4 mb-4">
             <hr className="flex-grow rounded border-1  border-[var(--color-bg-divider)]" />
             <span className="text-[var(--color-bg-muted-text)] text-md">
-              أو قم بإنشاء حساب عبر
+              أو
             </span>
             <hr className="flex-grow rounded border-1  border-[var(--color-bg-divider)]" />
           </div>
@@ -204,9 +179,8 @@ const SignUpForm = () => {
             type="button"
             onClick={handleGoogleSignUp}
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-2 px-6 py-2 bg-[var(--color-secondary-base)] hover:bg-[var(--color-secondary-pressed)] text-[var(--color-bg-muted-text)] border border-[var(--color-bg-divider)]"
-          >
-            <span>Google</span>
+            className="w-full flex items-center justify-center gap-2 px-6 py-2 bg-[var(--color-secondary-base)] hover:bg-[var(--color-secondary-pressed)] text-[var(--color-bg-muted-text)] border border-[var(--color-bg-divider)] rounded-lg cursor-pointer disabled:cursor-not-allowed disabled:bg-bg-[var(--color-secondary-disabled)]">
+            <span>إنشاء حساب بإستخدام جوجل</span>
             <img src={GoogleIcon} alt="Google" className="w-5 h-5" />
           </button>
         </div>

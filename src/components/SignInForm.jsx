@@ -122,7 +122,7 @@ export default function SignInForm() {
           <div className="flex items-center gap-4 mb-4">
             <hr className="flex-grow rounded border-1  border-[var(--color-bg-divider)]" />
             <span className="text-[var(--color-bg-muted-text)] text-md">
-              أو قم بتسجيل الدخول عبر
+              أو
             </span>
             <hr className="flex-grow rounded border-1  border-[var(--color-bg-divider)]" />
           </div>
@@ -130,9 +130,8 @@ export default function SignInForm() {
             type="button"
             onClick={handleGoogleSignIn}
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-2 px-6 py-2 bg-[var(--color-secondary-base)] hover:bg-[var(--color-secondary-pressed)] text-[var(--color-bg-muted-text)] border border-[var(--color-bg-divider)]"
-          >
-            <span>Google</span>
+            className="w-full flex items-center justify-center gap-2 px-6 py-2 bg-[var(--color-secondary-base)] hover:bg-[var(--color-secondary-pressed)] text-[var(--color-bg-muted-text)] border border-[var(--color-bg-divider)] rounded-lg cursor-pointer disabled:cursor-not-allowed disabled:bg-bg-[var(--color-secondary-disabled)]">
+            <span>التسجيل بإستخدام جوجل</span>
             <img src={GoogleIcon} alt="Google" className="w-5 h-5" />
           </button>
         </div>
