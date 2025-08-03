@@ -46,11 +46,7 @@ export default function PostReview() {
   return (
     <>
       {isLoading ? (
-        <div className="w-full flex justify-center py-8">
-          <div className="text-[var(--color-bg-text)] font-bold">
-            <Loader />
-          </div>
-        </div>
+        <Loader />
       ) : posts.length > 0 ? (
         <CardsLayout colNum={4}>
           {posts.map((post) => (

@@ -66,9 +66,7 @@ export default function Coupons() {
       <hr className="my-4 border-[var(--color-bg-divider)] border-.5 rounded" />
       {/* عرض الرسالة أو الكوبونات */}
       {loadingCoupons ? (
-        <div className="w-full flex justify-center items-center text-[var(--color-bg-text)]">
-          <Loader />
-        </div>
+        <Loader />
       ) : coupons.length === 0 ? (
         <NoData h2={"لا توجد كوبونات متاحة الآن"} />
       ) : (
