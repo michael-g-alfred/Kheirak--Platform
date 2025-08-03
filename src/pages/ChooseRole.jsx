@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { db } from "../Firebase/Firebase";
 import { doc, updateDoc } from "firebase/firestore";
 import { toast } from "react-hot-toast";
+import Loader from "../components/Loader";
 
 const roles = ["متبرع", "مستفيد", "مؤسسة"];
 
@@ -50,8 +51,7 @@ const ChooseRole = () => {
                 selectedRole === role
                   ? "bg-blue-500 text-white"
                   : "bg-gray-100 text-gray-800"
-              }`}
-            >
+              }`}>
               <input
                 type="radio"
                 value={role}
@@ -66,9 +66,8 @@ const ChooseRole = () => {
         <button
           onClick={handleSubmit}
           disabled={isLoading}
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
-        >
-          {isLoading ? "جارٍ الحفظ..." : "تأكيد"}
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+          {isLoading ? <Loader /> : "تأكيد"}
         </button>
       </div>
     </div>

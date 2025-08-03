@@ -79,9 +79,7 @@ export default function BeneficiaryProfile() {
       <hr className="my-4 border-[var(--color-bg-divider)] border-.5 rounded" />
 
       {isLoading ? (
-        <div className="flex justify-center items-center text-[var(--color-bg-text)]">
-          <Loader />
-        </div>
+        <Loader />
       ) : myPosts.length === 0 ? (
         <NoData h2="لم تقم بإنشاء أي طلب حتى الآن." />
       ) : (

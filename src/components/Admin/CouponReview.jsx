@@ -44,11 +44,7 @@ export default function CouponReview() {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center text-[var(--color-bg-text)]">
-        <Loader />
-      </div>
-    );
+    return <Loader />;
   }
 
   return (

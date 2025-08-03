@@ -82,9 +82,7 @@ export default function OrgProfile() {
       <hr className="my-4 border-[var(--color-bg-divider)] border-.5 rounded" />
 
       {isLoading ? (
-        <div className="flex justify-center items-center text-[var(--color-bg-text)]">
-          <Loader />
-        </div>
+        <Loader />
       ) : myCoupons.length === 0 ? (
         <NoData h2="لم تقم بإنشاء أي كوبون حتى الآن." />
       ) : (

@@ -91,9 +91,7 @@ export default function NotificationsPage() {
       )}
 
       {loading ? (
-        <div className="flex justify-center items-center text-[var(--color-bg-text)]">
-          <Loader />
-        </div>
+        <Loader />
       ) : notifications.length === 0 ? (
         <NoData h2="لا توجد إشعارات" />
       ) : (
