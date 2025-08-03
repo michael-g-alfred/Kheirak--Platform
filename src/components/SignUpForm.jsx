@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import SubmitButton from "./SubmitButton";
 import { toast } from "react-hot-toast";
 import { updateProfile } from "firebase/auth";
+import GoogleIcon from "../assets/google-logo.svg";
 
 const schema = yup.object().shape({
   userName: yup.string().required("اسم المستخدم مطلوب"),
@@ -127,6 +128,23 @@ const SignUpForm = () => {
 
         {/* زر الدخول */}
         <SubmitButton buttonTitle="إنشاء حساب" isLoading={isLoading} />
+        <div className="text-center">
+          <div className="flex items-center gap-4 mb-4">
+            <hr className="flex-grow rounded border-1  border-[var(--color-bg-divider)]" />
+            <span className="text-[var(--color-bg-muted-text)] text-md">
+              أو قم بإنشاء حساب عبر
+            </span>
+            <hr className="flex-grow rounded border-1  border-[var(--color-bg-divider)]" />
+          </div>
+          <button
+            type="button"
+            onClick={""}
+            disabled={isLoading}
+            className="w-full flex items-center justify-center gap-2 px-6 py-2 bg-[var(--color-secondary-base)] hover:bg-[var(--color-secondary-pressed)] text-[var(--color-bg-muted-text)] border border-[var(--color-bg-divider)]">
+            <span>Google</span>
+            <img src={GoogleIcon} alt="Google" className="w-5 h-5" />
+          </button>
+        </div>
       </form>
     </FormLayout>
   );

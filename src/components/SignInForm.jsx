@@ -8,6 +8,7 @@ import { doSignInWithEmailAndPassword } from "../Firebase/auth";
 import { getDoc, doc } from "firebase/firestore";
 import { db } from "../Firebase/Firebase";
 import { toast } from "react-hot-toast";
+import GoogleIcon from "../assets/google-logo.svg";
 
 const getFriendlyFirebaseError = (code) => {
   switch (code) {
@@ -92,6 +93,23 @@ export default function SignInForm() {
         />
         {/* زر الدخول */}
         <SubmitButton buttonTitle="تسجيل الدخول" isLoading={isLoading} />
+        <div className="text-center">
+          <div className="flex items-center gap-4 mb-4">
+            <hr className="flex-grow rounded border-1  border-[var(--color-bg-divider)]" />
+            <span className="text-[var(--color-bg-muted-text)] text-md">
+              أو قم بتسجيل الدخول عبر
+            </span>
+            <hr className="flex-grow rounded border-1  border-[var(--color-bg-divider)]" />
+          </div>
+          <button
+            type="button"
+            onClick={""}
+            disabled={isLoading}
+            className="w-full flex items-center justify-center gap-2 px-6 py-2 bg-[var(--color-secondary-base)] hover:bg-[var(--color-secondary-pressed)] text-[var(--color-bg-muted-text)] border border-[var(--color-bg-divider)]">
+            <span>Google</span>
+            <img src={GoogleIcon} alt="Google" className="w-5 h-5" />
+          </button>
+        </div>
       </form>
     </FormLayout>
   );
