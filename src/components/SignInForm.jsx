@@ -88,7 +88,7 @@ export default function SignInForm() {
 
   return (
     <FormLayout formTitle={"تسجيل الدخول"}>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
         {/* البريد الإلكتروني */}
         <InputField
           label="البريد الإلكتروني"

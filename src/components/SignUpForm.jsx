@@ -120,7 +120,7 @@ const SignUpForm = () => {
 
   return (
     <FormLayout formTitle={"إنشاء حساب"}>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
         {/* اسم المستخدم*/}
         <InputField
           label="اسم المستخدم"

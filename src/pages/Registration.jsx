@@ -19,7 +19,7 @@ export default function Registration() {
         <button
           type="button"
           onClick={() => setIsLogin(!isLogin)}
-          className="text-[var(--color-primary-base)] underline cursor-pointer mr-1">
+          className="text-[var(--color-primary-base)] underline cursor-pointer mr-1 font-bold">
           {isLogin ? "إنشاء حساب" : "تسجيل الدخول"}
         </button>
       </p>
