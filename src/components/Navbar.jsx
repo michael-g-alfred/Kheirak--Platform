@@ -123,12 +123,12 @@ const Navbar = () => {
                     key={tab.id}
                     to={tab.id === "home" ? "/" : `/${tab.id}`}
                     className={({ isActive }) =>
-                      `className="cursor-pointer p-1.5 text-sm md:text-md font-medium transition-colors duration-200 rounded-sm ${
+                      `className="cursor-pointer p-2 text-sm md:text-md transition-colors duration-200 rounded-sm ${
                         tab.id === "login"
                           ? "text-[var(--color-primary-base)] hover:text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)]"
                           : isActive
-                          ? "bg-[var(--color-primary-base)] text-[var(--color-secondary-base)]"
-                          : "text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)]"
+                          ? "font-bold bg-[var(--color-primary-base)] text-[var(--color-secondary-base)]"
+                          : "font-medium text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)]"
                       }`
                     }>
                     {tab.label}
@@ -174,12 +174,12 @@ const Navbar = () => {
                   }
                   onClick={() => setIsMenuOpen(false)}
                   className={({ isActive }) =>
-                    `block px-2 py-2 text-base font-bold w-full text-left transition-colors duration-200 rounded-sm ${
+                    `block p-2 text-base w-full text-left transition-colors duration-200 rounded-sm ${
                       tab.id === "login"
                         ? "text-[var(--color-primary-base)] hover:text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)]"
                         : isActive
-                        ? "bg-[var(--color-primary-base)] text-[var(--color-secondary-base)]"
-                        : "text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)]"
+                        ? "font-bold bg-[var(--color-primary-base)] text-[var(--color-secondary-base)]"
+                        : "font-medium text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)]"
                     }`
                   }>
                   {tab.label}
@@ -194,7 +194,7 @@ const Navbar = () => {
                     await logout();
                     navigate("/");
                   }}
-                  className="block px-2 py-2 text-base font-bold w-full text-left cursor-pointer transition-colors duration-200 rounded-sm danger mt-2">
+                  className="block p-2 text-base font-medium w-full text-left cursor-pointer transition-colors duration-200 rounded-sm danger mt-2">
                   {tabs.find((tab) => tab.id === "logout").label}
                 </span>
               </>
