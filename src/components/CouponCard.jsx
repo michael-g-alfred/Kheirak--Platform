@@ -21,7 +21,7 @@ const CouponCard = ({ newCoupon }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [selectedAmount, setSelectedAmount] = useState(0);
 
-  const handleConfirmDonation = async () => {
+ /* const handleConfirmDonation = async () => {
     setShowPopup(false);
     toast.loading("جاري تنفيذ استخدام الكوبون...");
     setIsLoading(true);
@@ -71,6 +71,82 @@ const CouponCard = ({ newCoupon }) => {
 
     setIsLoading(false);
   };
+*/
+const handleConfirmDonation = async () => {
+  setShowPopup(false);
+  toast.loading("جاري تنفيذ استخدام الكوبون...");
+  setIsLoading(true);
+  const newTotal = totalCouponUsed + 1;
+
+  try {
+    const { doc, updateDoc, arrayUnion, getDoc, setDoc } = await import("firebase/firestore");
+    const { getAuth } = await import("firebase/auth");
+    const couponRef = doc(db, "Coupons", newCoupon.id);
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    const updateData = {
+      totalCouponUsed: newTotal,
+      beneficiaries: arrayUnion({
+        email: user?.email || "unknown",
+        stock: 1,
+        date: new Date().toISOString(),
+      }),
+      isCompleted: newTotal >= stock,
+    };
+
+    if (newTotal >= stock) {
+      updateData.status = "مكتمل";
+    }
+
+    await updateDoc(couponRef, updateData);
+    toast.dismiss();
+    toast.success("تم استخدام الكوبون بنجاح. شكراً لك!");
+
+    // جلب بيانات الكوبون الحالية
+    const snapshot = await getDoc(couponRef);
+    const data = snapshot.data();
+
+    // إرسال إشعار للمستخدم الذي استخدم الكوبون
+    const userNotifRef = doc(
+      db,
+      "Notifications",
+      user.email,
+      "user_Notifications",
+      `${Date.now()}`
+    );
+    await setDoc(userNotifRef, {
+      title: " كوبون مستخدم",
+      message: `لقد استخدمت كوبون "${data.title}" بنجاح.`,
+      timestamp: new Date().toISOString(),
+      read: false,
+    });
+
+    // إرسال إشعار لصاحب الكوبون
+    const ownerEmail = data.submittedBy?.email;
+    if (ownerEmail) {
+      const ownerNotifRef = doc(
+        db,
+        "Notifications",
+        ownerEmail,
+        "user_Notifications",
+        `${Date.now()}`
+      );
+      await setDoc(ownerNotifRef, {
+        title: " تم استخدام كوبونك",
+        message: `${user?.email || "مستخدم"} استخدم كوبونك "${data.title}".`,
+        timestamp: new Date().toISOString(),
+        read: false,
+      });
+    }
+
+  } catch (error) {
+    toast.dismiss();
+    toast.error("حدث خطأ أثناء استخدام الكوبون.");
+  }
+
+  setIsLoading(false);
+};
 
   const closePopup = () => {
     setShowPopup(false);
