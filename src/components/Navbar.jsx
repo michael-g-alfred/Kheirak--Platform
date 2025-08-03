@@ -115,7 +115,7 @@ const Navbar = () => {
                       await logout();
                       navigate("/");
                     }}
-                    className="cursor-pointer p-2 text-sm md:text-md lg:text-lg font-bold transition-colors duration-200 rounded-sm danger">
+                    className="cursor-pointer p-2 text-sm md:text-md font-medium transition-colors duration-200 rounded-sm danger">
                     {tab.label}
                   </span>
                 ) : (
@@ -123,7 +123,7 @@ const Navbar = () => {
                     key={tab.id}
                     to={tab.id === "home" ? "/" : `/${tab.id}`}
                     className={({ isActive }) =>
-                      `                    className="cursor-pointer p-1.5 text-sm md:text-md lg:text-lg font-bold transition-colors duration-200 rounded-sm ${
+                      `className="cursor-pointer p-1.5 text-sm md:text-md font-medium transition-colors duration-200 rounded-sm ${
                         tab.id === "login"
                           ? "text-[var(--color-primary-base)] hover:text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)]"
                           : isActive
