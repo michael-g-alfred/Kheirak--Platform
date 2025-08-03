@@ -4,15 +4,23 @@ import { useNavigate } from "react-router-dom";
 import { db } from "../Firebase/Firebase";
 import { doc, updateDoc } from "firebase/firestore";
 import { toast } from "react-hot-toast";
-import Loader from "../components/Loader";
-
-const roles = ["متبرع", "مستفيد", "مؤسسة"];
+import InputField from "../components/InputField";
+import SubmitButton from "../components/SubmitButton";
+import PageLayout from "../layouts/PageLayout";
+import FormLayout from "../layouts/FormLayout";
+import { useForm } from "react-hook-form";
+import Header_Subheader from "../components/Header_Subheader";
 
 const ChooseRole = () => {
   const { currentUser, userData, refreshUserData } = useAuth();
   const navigate = useNavigate();
-  const [selectedRole, setSelectedRole] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   useEffect(() => {
     if (!currentUser) {
@@ -22,55 +30,47 @@ const ChooseRole = () => {
     }
   }, [currentUser, userData, navigate]);
 
-  const handleSubmit = async () => {
-    if (!selectedRole) return toast.error("اختر نوع المستخدم");
+  const onSubmit = async (data) => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      await updateDoc(doc(db, "Users", currentUser.uid), {
-        role: selectedRole,
+      const userRef = doc(db, "Users", currentUser.uid);
+      await updateDoc(userRef, {
+        role: data.role,
       });
       await refreshUserData();
-      toast.success("تم تحديد نوع المستخدم");
+      toast.success("تم تعيين نوع المستخدم بنجاح");
       navigate("/");
     } catch (error) {
-      toast.error("حدث خطأ أثناء الحفظ");
+      toast.error("حدث خطأ ما، حاول مرة أخرى");
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="max-w-md w-full space-y-6 bg-white p-6 rounded shadow">
-        <h1 className="text-2xl font-bold text-center">اختر نوع المستخدم</h1>
-        <div className="space-y-4">
-          {roles.map((role) => (
-            <label
-              key={role}
-              className={`block p-3 rounded border cursor-pointer ${
-                selectedRole === role
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-100 text-gray-800"
-              }`}>
-              <input
-                type="radio"
-                value={role}
-                checked={selectedRole === role}
-                onChange={() => setSelectedRole(role)}
-                className="hidden"
-              />
-              {role}
-            </label>
-          ))}
-        </div>
-        <button
-          onClick={handleSubmit}
-          disabled={isLoading}
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
-          {isLoading ? <Loader /> : "تأكيد"}
-        </button>
-      </div>
-    </div>
+    <PageLayout x="center" y="center">
+      <Header_Subheader
+        h1="اختر نوع المستخدم"
+        p="يرجى اختيار نوع الحساب الخاص بك لإكمال التسجيل"
+      />
+      <FormLayout>
+        <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+          <InputField
+            label={""}
+            id="role"
+            select
+            register={register("role")}
+            error={errors.role}
+            options={[
+              { value: "متبرع", label: "متبرع" },
+              { value: "مستفيد", label: "مستفيد" },
+              { value: "مؤسسة", label: "مؤسسة" },
+            ]}
+          />
+          <SubmitButton buttonTitle="تأكيد" isLoading={isLoading} />
+        </form>
+      </FormLayout>
+    </PageLayout>
   );
 };
 
