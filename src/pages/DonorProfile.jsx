@@ -8,7 +8,6 @@ import Loader from "../components/Loader";
 import NoData from "../components/NoData";
 import CardLayout from "../layouts/CardLayout";
 import CardsLayout from "../layouts/CardsLayout";
-import ImageIcon from "../icons/ImageIcon";
 import UserInfo from "../components/UserInfo";
 
 export default function DonorProfile() {

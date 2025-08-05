@@ -1,15 +1,33 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import Logo from "../assets/logo.svg";
 import CloseIcon from "../icons/CloseIcon";
 import MenuIcon from "../icons/MenuIcon";
 import NotificationBadge from "./NotificationBadge";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../Firebase/Firebase";
 
 const Navbar = () => {
   const { role, logout, loading, currentUser } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
+
+  const [userName, setUserName] = useState(null);
+
+  useEffect(() => {
+    const fetchUserName = async () => {
+      if (currentUser?.uid) {
+        const userRef = doc(db, "Users", currentUser.uid);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          setUserName(userSnap.data().userName);
+        }
+      }
+    };
+
+    fetchUserName();
+  }, [currentUser]);
 
   const baseTabs = [
     { id: "home", label: "الرئيسية" },
@@ -26,15 +44,11 @@ const Navbar = () => {
 
   const beneficiaryTabs = [
     {
-      id: currentUser?.email
-        ? `beneficiary-profile/${currentUser.email}`
-        : "beneficiary-profile",
+      id: `beneficiary-profile/${userName}`,
       label: "الملف الشخصي",
     },
     {
-      id: currentUser?.email
-        ? `notifications/${currentUser.email}`
-        : "notifications",
+      id: "notifications",
       label: <NotificationBadge />,
     },
     ...baseTabs,
@@ -43,15 +57,11 @@ const Navbar = () => {
 
   const donorTabs = [
     {
-      id: currentUser?.email
-        ? `donor-profile/${currentUser.email}`
-        : "donor-profile",
+      id: `donor-profile/${userName}`,
       label: "الملف الشخصي",
     },
     {
-      id: currentUser?.email
-        ? `notifications/${currentUser.email}`
-        : "notifications",
+      id: "notifications",
       label: <NotificationBadge />,
     },
     ...baseTabs,
@@ -60,15 +70,11 @@ const Navbar = () => {
 
   const orgTabs = [
     {
-      id: currentUser?.email
-        ? `org-profile/${currentUser.email}`
-        : "org-profile",
+      id: `org-profile/${userName}`,
       label: "الملف الشخصي",
     },
     {
-      id: currentUser?.email
-        ? `notifications/${currentUser.email}`
-        : "notifications",
+      id: "notifications",
       label: <NotificationBadge />,
     },
     ...baseTabs,
@@ -94,7 +100,7 @@ const Navbar = () => {
       default:
         return guestTabs;
     }
-  }, [role, currentUser?.email]);
+  }, [role, userName]);
 
   if (loading || role === null) return null;
 

@@ -38,8 +38,7 @@ export default function AppRoutes() {
             <LogoIcon />
           </div>
         </div>
-      }
-    >
+      }>
       <Routes>
         <Route path="/choose-role" element={<ChooseRole />} />
         <Route path="/" element={<Home />}>
@@ -77,7 +76,7 @@ export default function AppRoutes() {
 
         {/* Donor */}
         <Route
-          path="/donor-profile/:email?"
+          path="/donor-profile/:username?"
           element={
             <ProtectedRoute allowedRoles={["متبرع"]}>
               <DonorProfile />
@@ -87,7 +86,7 @@ export default function AppRoutes() {
 
         {/* Org */}
         <Route
-          path="/org-profile/:email?"
+          path="/org-profile/:username?"
           element={
             <ProtectedRoute allowedRoles={["مؤسسة"]}>
               <OrgProfile />
@@ -97,7 +96,7 @@ export default function AppRoutes() {
 
         {/* Beneficiary || Donor || Org */}
         <Route
-          path="/notifications/:email?"
+          path="/notifications/:username?"
           element={
             <ProtectedRoute allowedRoles={["متبرع", "مؤسسة", "مستفيد"]}>
               <Notifications />
