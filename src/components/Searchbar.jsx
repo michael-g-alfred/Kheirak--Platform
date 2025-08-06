@@ -1,6 +1,6 @@
 import InputField from "./InputField";
 
-export default function SearchBar({ searchTerm, setSearchTerm }) {
+export default function Searchbar({ searchTerm, setSearchTerm }) {
   return (
     <div className="my-4">
       <InputField
