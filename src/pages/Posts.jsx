@@ -1,14 +1,16 @@
-
 import { useState, useEffect } from "react";
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "../Firebase/Firebase";
+
+import { useAuth } from "../context/authContext";
+
 import CreatePostTrigger from "../components/CreatePostTrigger";
 import PostForm from "../components/PostForm";
 import NoData from "../components/NoData";
 import PostCard from "../components/PostCard";
 import CardsLayout from "../layouts/CardsLayout";
 import Loader from "../components/Loader";
-import { useAuth } from "../context/authContext";
+import SearchBar from "../components/SearchBar";
 
 export default function Posts() {
   const { role, loading } = useAuth();
@@ -70,18 +72,12 @@ export default function Posts() {
         </div>
       )}
 
-      {/* شريط البحث */}
-      <div className="my-4">
-        <input
-          type="text"
-          placeholder="ابحث عن اسم الطلب..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-
       <hr className="my-4 border-[var(--color-bg-divider)] border-.5 rounded" />
+
+      {/* شريط البحث */}
+      {posts.length > 0 && (
+        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      )}
 
       {loadingPosts ? (
         <Loader />
@@ -97,4 +93,3 @@ export default function Posts() {
     </>
   );
 }
-
