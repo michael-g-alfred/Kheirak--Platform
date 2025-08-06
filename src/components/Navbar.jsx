@@ -7,13 +7,43 @@ import MenuIcon from "../icons/MenuIcon";
 import NotificationBadge from "./NotificationBadge";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../Firebase/Firebase";
+import UserProfileTab from "./UserProfileTab";
+
+const NavLinksList = ({ tabs, isMobile, onClick }) => (
+  <>
+    {tabs.map((tab) => (
+      <NavLink
+        key={tab.id}
+        to={tab.id === "home" ? "/" : `/${tab.id}`}
+        onClick={onClick}
+        className={({ isActive }) =>
+          `${
+            isMobile
+              ? "block p-2 text-base w-full"
+              : "cursor-pointer p-2 text-sm md:text-md"
+          } transition-colors duration-200 rounded-sm ${
+            tab.id === "registration"
+              ? isActive
+                ? "text-[var(--color-secondary-text)] bg-[var(--color-primary-base)] font-bold"
+                : "border border-[var(--color-primary-base)] text-[var(--color-primary-base)] hover:text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)]"
+              : isActive
+              ? "font-bold bg-[var(--color-primary-base)] text-[var(--color-secondary-base)]"
+              : "font-medium text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)]"
+          }`
+        }>
+        {tab.label}
+      </NavLink>
+    ))}
+  </>
+);
 
 const Navbar = () => {
-  const { role, logout, loading, currentUser } = useAuth();
+  const { role, loading, currentUser } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   const [userName, setUserName] = useState(null);
+  const [photoURL, setPhotoURL] = useState(currentUser?.photoURL);
 
   useEffect(() => {
     const fetchUserName = async () => {
@@ -29,6 +59,12 @@ const Navbar = () => {
     fetchUserName();
   }, [currentUser]);
 
+  useEffect(() => {
+    if (currentUser?.photoURL) {
+      setPhotoURL(currentUser.photoURL);
+    }
+  }, [currentUser?.photoURL]);
+
   const baseTabs = [
     { id: "home", label: "الرئيسية" },
     { id: "about", label: "من نحن" },
@@ -39,53 +75,52 @@ const Navbar = () => {
 
   const guestTabs = [
     ...baseTabs,
-    { id: "registration", label: "تسجيل الدخول" },
+    {
+      id: "registration",
+      label: "تسجيل الدخول",
+    },
   ];
 
   const beneficiaryTabs = [
-    {
-      id: `beneficiary-profile/${userName}`,
-      label: "الملف الشخصي",
-    },
+    UserProfileTab({
+      pathPrefix: "beneficiary",
+      userName,
+      photoURL,
+    }),
     {
       id: "notifications",
       label: <NotificationBadge />,
     },
     ...baseTabs,
-    { id: "logout", label: "تسجيل الخروج" },
   ];
 
   const donorTabs = [
-    {
-      id: `donor-profile/${userName}`,
-      label: "الملف الشخصي",
-    },
+    UserProfileTab({
+      pathPrefix: "donor",
+      userName,
+      photoURL,
+    }),
     {
       id: "notifications",
       label: <NotificationBadge />,
     },
     ...baseTabs,
-    { id: "logout", label: "تسجيل الخروج" },
   ];
 
   const orgTabs = [
-    {
-      id: `org-profile/${userName}`,
-      label: "الملف الشخصي",
-    },
+    UserProfileTab({
+      pathPrefix: "org",
+      userName,
+      photoURL,
+    }),
     {
       id: "notifications",
       label: <NotificationBadge />,
     },
     ...baseTabs,
-    { id: "logout", label: "تسجيل الخروج" },
   ];
 
-  const adminTabs = [
-    { id: "dashboard", label: "لوحة التحكم" },
-    ...baseTabs,
-    { id: "logout", label: "تسجيل الخروج" },
-  ];
+  const adminTabs = [{ id: "dashboard", label: "لوحة التحكم" }, ...baseTabs];
 
   const tabs = useMemo(() => {
     switch (role) {
@@ -100,7 +135,7 @@ const Navbar = () => {
       default:
         return guestTabs;
     }
-  }, [role, userName]);
+  }, [role, userName, photoURL]);
 
   if (loading || role === null) return null;
 
@@ -113,34 +148,7 @@ const Navbar = () => {
           {/* Navigation Tabs */}
           <div className="hidden md:block">
             <div className="flex items-center justify-center space-x-2">
-              {tabs.map((tab) =>
-                tab.id === "logout" ? (
-                  <span
-                    key={tab.id}
-                    onClick={async () => {
-                      await logout();
-                      navigate("/");
-                    }}
-                    className="cursor-pointer p-2 text-sm md:text-md font-medium transition-colors duration-200 rounded-sm danger">
-                    {tab.label}
-                  </span>
-                ) : (
-                  <NavLink
-                    key={tab.id}
-                    to={tab.id === "home" ? "/" : `/${tab.id}`}
-                    className={({ isActive }) =>
-                      `className="cursor-pointer p-2 text-sm md:text-md transition-colors duration-200 rounded-sm ${
-                        tab.id === "login"
-                          ? "text-[var(--color-primary-base)] hover:text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)]"
-                          : isActive
-                          ? "font-bold bg-[var(--color-primary-base)] text-[var(--color-secondary-base)]"
-                          : "font-medium text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)]"
-                      }`
-                    }>
-                    {tab.label}
-                  </NavLink>
-                )
-              )}
+              <NavLinksList tabs={tabs} isMobile={false} />
             </div>
           </div>
           {/* Mobile menu button */}
@@ -166,44 +174,12 @@ const Navbar = () => {
       {/* Mobile menu */}
       {isMenuOpen && (
         <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-[var(--color-bg-base)]">
-            {tabs
-              .filter((tab) => tab.id !== "logout")
-              .map((tab) => (
-                <NavLink
-                  key={tab.id}
-                  to={
-                    tab.id === "home" || tab.id === "logout"
-                      ? "/"
-                      : `/${tab.id}`
-                  }
-                  onClick={() => setIsMenuOpen(false)}
-                  className={({ isActive }) =>
-                    `block p-2 text-base w-full text-left transition-colors duration-200 rounded-sm ${
-                      tab.id === "login"
-                        ? "text-[var(--color-primary-base)] hover:text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)]"
-                        : isActive
-                        ? "font-bold bg-[var(--color-primary-base)] text-[var(--color-secondary-base)]"
-                        : "font-medium text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)]"
-                    }`
-                  }>
-                  {tab.label}
-                </NavLink>
-              ))}
-            {tabs.find((tab) => tab.id === "logout") && (
-              <>
-                <span
-                  key="logout"
-                  onClick={async () => {
-                    setIsMenuOpen(false);
-                    await logout();
-                    navigate("/");
-                  }}
-                  className="block p-2 text-base font-medium w-full text-left cursor-pointer transition-colors duration-200 rounded-sm danger mt-2">
-                  {tabs.find((tab) => tab.id === "logout").label}
-                </span>
-              </>
-            )}
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-[var(--color-bg-base)] text-right">
+            <NavLinksList
+              tabs={tabs}
+              isMobile={true}
+              onClick={() => setIsMenuOpen(false)}
+            />
           </div>
         </div>
       )}
