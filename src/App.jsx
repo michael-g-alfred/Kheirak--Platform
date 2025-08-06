@@ -1,6 +1,7 @@
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./context/authContext/index";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import AppRoutes from "./routes/AppRoutes";
 import { Toaster } from "react-hot-toast";
 
@@ -12,6 +13,7 @@ export default function App() {
         <AuthProvider>
           <Navbar />
           <AppRoutes />
+          <Footer />
         </AuthProvider>
       </BrowserRouter>
     </>
