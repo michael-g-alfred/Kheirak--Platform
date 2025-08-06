@@ -10,7 +10,7 @@ import NoData from "../components/NoData";
 import PostCard from "../components/PostCard";
 import CardsLayout from "../layouts/CardsLayout";
 import Loader from "../components/Loader";
-import SearchBar from "../components/SearchBar";
+import Searchbar from "../components/Searchbar";
 
 export default function Posts() {
   const { role, loading } = useAuth();
@@ -76,7 +76,7 @@ export default function Posts() {
 
       {/* شريط البحث */}
       {posts.length > 0 && (
-        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        <Searchbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
       )}
 
       {loadingPosts ? (
