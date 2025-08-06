@@ -95,39 +95,39 @@ export default function Stats() {
         list={[
           {
             title: "عدد المستفيدين",
-            description: stats.users,
+            description: stats.users || "0",
           },
           {
             title: "عدد المتبرعين",
-            description: stats.donors,
+            description: stats.donors || "0",
           },
           {
             title: "عدد المؤسسات",
-            description: stats.orgs,
+            description: stats.orgs || "0",
           },
           {
             title: "عدد الطلبات",
-            description: stats.requests,
+            description: stats.requests || "0",
           },
           {
             title: "عدد الطلبات المكتملة",
-            description: stats.completedRequests,
+            description: stats.completedRequests || "0",
           },
           {
             title: "عدد الطلبات الغير مكتملة",
-            description: stats.pendingRequests,
+            description: stats.pendingRequests || "0",
           },
           {
             title: "عدد الكوبونات",
-            description: stats.coupons,
+            description: stats.coupons || "0",
           },
           {
             title: "عدد الكوبونات المكتملة",
-            description: stats.completedCoupons,
+            description: stats.completedCoupons || "0",
           },
           {
             title: "عدد الكوبونات الغير مكتملة",
-            description: stats.pendingCoupons,
+            description: stats.pendingCoupons || "0",
           },
         ]}
       />
