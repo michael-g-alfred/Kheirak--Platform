@@ -46,6 +46,7 @@ export default function CouponForm({ onClose }) {
         id: docRef.id,
         title: data.title,
         details: data.description,
+        type: data.type,
         attachedFiles: imageUrl,
         stock: parseFloat(data.stock),
         status: "قيد المراجعة",
@@ -72,13 +73,15 @@ export default function CouponForm({ onClose }) {
     <FormLayout>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="space-y-4 max-w-md mx-auto">
+        className="space-y-4 max-w-md mx-auto"
+      >
         <div className="flex justify-end">
           <button
             onClick={onClose}
             className="p-2 danger font-bold rounded-full focus:outline-none"
             aria-label="Close form"
-            type="button">
+            type="button"
+          >
             <CloseIcon />
           </button>
         </div>
@@ -91,6 +94,21 @@ export default function CouponForm({ onClose }) {
           error={errors.title}
         />
 
+        <InputField
+          label="نوع الكوبون"
+          id="type"
+          select
+          options={[
+            { value: "طعام", label: "طعام" },
+            { value: "دواء", label: "دواء" },
+            { value: "ملابس", label: "ملابس" },
+            { value: "كهرباء", label: "كهرباء" },
+            { value: "خدمات", label: "خدمات" },
+            { value: "تعليم", label: "تعليم" },
+          ]}
+          register={register("type", { required: "هذا الحقل مطلوب" })}
+          error={errors.type}
+        />
         <InputField
           label="تفاصيل الكوبون"
           id="description"
