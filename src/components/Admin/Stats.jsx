@@ -91,7 +91,7 @@ export default function Stats() {
   return (
     <>
       <CardsLayout
-        colNum={4}
+        colNum={3}
         list={[
           {
             title: "عدد المستفيدين",
