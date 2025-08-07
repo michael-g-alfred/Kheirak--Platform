@@ -83,7 +83,9 @@ export default function Coupons() {
         </div>
       )}
 
-      <div className="flex flex-wrap gap-2 mb-4">
+      <hr className="my-4 border-[var(--color-bg-divider)] border-.5 rounded" />
+      <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-7 gap-2 items-center justify-center">
+        {" "}
         {categories.map((type) => {
           const isSelected = selectedType === type;
 
@@ -91,21 +93,26 @@ export default function Coupons() {
             <button
               key={type}
               onClick={() => setselectedType(type)}
-              className={`flex items-center gap-2 px-3 py-1 rounded-full border transition-all duration-200
+              className={`flex items-center justify-center gap-2 px-6 py-2 rounded-full
           ${
             isSelected
-              ? "bg-primary text-white border-primary shadow-md"
-              : "bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200"
-          }`}
-            >
+              ? "bg-[var(--color-primary-base)] text-[var(--color-secondary-base)]"
+              : "bg-[var(--color-secondary-base)] text-[var(--color-bg-muted-text)]"
+          }`}>
               <span className="text-lg">{categoryIcons[type]}</span>
-              <span className="text-sm font-medium">{type}</span>
+              <span
+                className={`text-md ${
+                  isSelected ? "font-bold" : "font-medium"
+                }`}>
+                {type}
+              </span>
             </button>
           );
         })}
       </div>
 
       <hr className="my-4 border-[var(--color-bg-divider)] border-.5 rounded" />
+
       {/* عرض الرسالة أو الكوبونات */}
       {loadingCoupons ? (
         <Loader />
