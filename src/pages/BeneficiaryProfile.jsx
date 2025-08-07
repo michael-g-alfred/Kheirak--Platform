@@ -16,6 +16,21 @@ export default function BeneficiaryProfile() {
   const { currentUser } = useAuth();
   const userEmail = currentUser?.email;
 
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "مقبول":
+        return "bg-green-500";
+      case "مرفوض":
+        return "bg-red-500";
+      case "قيد المراجعة":
+        return "bg-yellow-500";
+      case "مكتمل":
+        return "bg-blue-500";
+      default:
+        return "bg-gray-500";
+    }
+  };
+
   useEffect(() => {
     if (!userEmail) {
       setIsLoading(false);
@@ -59,7 +74,7 @@ export default function BeneficiaryProfile() {
       ) : myPosts.length === 0 ? (
         <NoData h2="لم تقم بإنشاء أي طلب حتى الآن." />
       ) : (
-        <CardsLayout colNum={1} fixedCol={2}>
+        <CardsLayout colNum={1} fixedCol={3}>
           {myPosts.map((post) => {
             const totalReceived = post.donors?.reduce(
               (sum, d) => sum + Number(d.amount || 0),
@@ -81,8 +96,14 @@ export default function BeneficiaryProfile() {
                       {totalReceived} ج.م
                     </span>
                   </p>
-                  <p>
-                    <strong>حالة الطلب:</strong> {post.status}
+                  <p className="mt-4 w-full">
+                    <strong>الحالة: </strong>
+                    <span
+                      className={`${getStatusColor(
+                        post.status
+                      )} w-full font-bold py-0.125 px-2 rounded`}>
+                      {post.status}
+                    </span>
                   </p>
                 </div>
               </DynamicCardLayout>

@@ -16,6 +16,21 @@ export default function OrgProfile() {
   const { currentUser } = useAuth();
   const userEmail = currentUser?.email;
 
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "مقبول":
+        return "bg-green-500";
+      case "مرفوض":
+        return "bg-red-500";
+      case "قيد المراجعة":
+        return "bg-yellow-500";
+      case "مكتمل":
+        return "bg-blue-500";
+      default:
+        return "bg-gray-500";
+    }
+  };
+
   useEffect(() => {
     if (!userEmail) {
       setIsLoading(false);
@@ -62,16 +77,13 @@ export default function OrgProfile() {
       ) : myCoupons.length === 0 ? (
         <NoData h2="لم تقم بإنشاء أي كوبون حتى الآن." />
       ) : (
-        <CardsLayout colNum={1} fixedCol={2}>
+        <CardsLayout colNum={1} fixedCol={3}>
           {myCoupons.map((coupon) => (
             <DynamicCardLayout
               key={coupon.id}
               title={coupon.title}
               status={coupon.status}>
               <div className="text-md text-[var(--color-bg-text)] space-y-1 text-right">
-                <p>
-                  <strong>الحالة:</strong> {coupon.status || "غير محددة"}
-                </p>
                 <p>
                   <strong>عدد الكوبونات الكلي:</strong> {coupon.stock}
                 </p>
@@ -82,6 +94,15 @@ export default function OrgProfile() {
                 <p>
                   <strong>عدد المتبقي:</strong>{" "}
                   {(coupon.stock || 0) - (coupon.totalCouponUsed || 0)}
+                </p>
+                <p className="mt-4 w-full">
+                  <strong>الحالة: </strong>
+                  <span
+                    className={`${getStatusColor(
+                      coupon.status
+                    )} w-full font-bold py-0.125 px-2 rounded`}>
+                    {coupon.status}
+                  </span>
                 </p>
               </div>
             </DynamicCardLayout>
