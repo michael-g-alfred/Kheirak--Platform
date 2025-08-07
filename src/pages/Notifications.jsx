@@ -80,6 +80,7 @@ export default function NotificationsPage() {
         h1="الإشعارات"
         p="هنا تجد كل الإشعارات المتعلقة بحسابك."
       />
+
       {notifications.length > 0 && !loading && (
         <div className="flex justify-end">
           <button
@@ -95,7 +96,7 @@ export default function NotificationsPage() {
       ) : notifications.length === 0 ? (
         <NoData h2="لا توجد إشعارات" />
       ) : (
-        <CardsLayout colNum={2} fixedCol={2}>
+        <CardsLayout colNum={2} fixedCol={1}>
           {notifications.map((notif) => (
             <CardLayout key={notif.id} title={notif.title}>
               <div className="text-md text-[var(--color-bg-text)] space-y-1 text-right">
@@ -104,6 +105,16 @@ export default function NotificationsPage() {
                   {new Date(notif.timestamp).toLocaleString()}
                 </p>
               </div>
+
+              {notif.imageUrl && (
+                <div className="pt-2 text-center">
+                  <img
+                    src={notif.imageUrl}
+                    alt="QR Code"
+                    className="w-32 h-32 mx-auto rounded border"
+                  />
+                </div>
+              )}
             </CardLayout>
           ))}
         </CardsLayout>
