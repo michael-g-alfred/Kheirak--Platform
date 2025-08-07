@@ -4,9 +4,8 @@ import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import CardLayout from "../layouts/CardLayout";
 import ImageIcon from "../icons/ImageIcon";
-import ArrowBadgeLeft from "../icons/ArrowBadgeLeft";
 import FormLayout from "../layouts/FormLayout";
-import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "../Firebase/Firebase";
 import Loader from "./Loader";
 import { toast } from "react-hot-toast";
@@ -136,7 +135,7 @@ const PostCard = ({ newPost }) => {
         );
 
         await setDoc(ownerNotifRef, {
-          title: "تم استلام تبرع جديد",
+          title: "تم استلام تبرع جديد ✅",
           message: `${
             user?.email || "مستخدم"
           } تبرع لك بمبلغ ${selectedAmount} جنيه.`,
@@ -172,6 +171,38 @@ const PostCard = ({ newPost }) => {
             timestamp: new Date().toISOString(),
             read: false,
             userId: uid,
+          });
+        }
+
+        // ✅ توليد QR Code وإرسال إشعار لصاحب البوست
+        if (newPost?.submittedBy?.email) {
+          const qrData = JSON.stringify({
+            postId: newPost.id,
+            title: newPost.title,
+            amount,
+            totalDonated: newTotal,
+            submittedBy: newPost.submittedBy,
+          });
+
+          const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(
+            qrData
+          )}&size=150x150`;
+
+          const qrNotificationRef = doc(
+            db,
+            "Notifications",
+            newPost.submittedBy.email,
+            "user_Notifications",
+            `${Date.now() + 2}`
+          );
+
+          await setDoc(qrNotificationRef, {
+            title: "اكتمل جمع التبرعات 🎉",
+            message: `تم اكتمال جمع التبرعات لطلبك "${newPost.title}". هذا هو رمز الاستجابة السريعة الذي يحتوي على تفاصيل الطلب.`,
+            imageUrl: qrCodeURL,
+            timestamp: new Date().toISOString(),
+            read: false,
+            userId: newPost.submittedBy?.uid || "unknown",
           });
         }
       }
