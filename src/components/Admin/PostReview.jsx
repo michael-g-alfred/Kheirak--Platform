@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import CardLayout from "../../layouts/CardLayout";
+import DynamicCardLayout from "../../layouts/DynamicCardLayout";
 import CardsLayout from "../../layouts/CardsLayout";
 import NoData from "../NoData";
 import Loader from "../Loader";
@@ -11,6 +11,20 @@ export default function PostReview() {
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState(null);
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "مقبول":
+        return "bg-green-500";
+      case "مرفوض":
+        return "bg-red-500";
+      case "قيد المراجعة":
+        return "bg-yellow-500";
+      case "مكتمل":
+        return "bg-blue-500";
+      default:
+        return "bg-gray-500";
+    }
+  };
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -50,13 +64,19 @@ export default function PostReview() {
       ) : posts.length > 0 ? (
         <CardsLayout colNum={4}>
           {posts.map((post) => (
-            <CardLayout key={post.id} title={`${post.title}`}>
+            <DynamicCardLayout
+              key={post.id}
+              title={post.title}
+              status={post.status}>
               <div className="text-md text-[var(--color-bg-text)] space-y-1 text-right">
                 <p>
-                  <strong>المؤسسة: </strong> {post.submittedBy.userName}
+                  <strong>مقدم الطلب: </strong> {post.submittedBy.userName}
                 </p>
                 <p>
-                  <strong>الكمية المتوفرة: </strong> {post.amount}
+                  <strong>تفاصيل الطلب: </strong> {post.details}
+                </p>
+                <p>
+                  <strong>المبلغ المطلوب: </strong> {post.amount}
                 </p>
                 <p>
                   <strong>المرفقات: </strong>
@@ -88,8 +108,14 @@ export default function PostReview() {
                     "لا يوجد"
                   )}
                 </p>
-                <p>
-                  <strong>الحالة: </strong> {post.status}
+                <p className="mt-4 w-full">
+                  <strong>الحالة: </strong>
+                  <span
+                    className={`${getStatusColor(
+                      post.status
+                    )} w-full font-bold py-0.125 px-2 rounded`}>
+                    {post.status}
+                  </span>
                 </p>
               </div>
 
@@ -113,7 +139,7 @@ export default function PostReview() {
                   </button>
                 </div>
               )}
-            </CardLayout>
+            </DynamicCardLayout>
           ))}
         </CardsLayout>
       ) : (

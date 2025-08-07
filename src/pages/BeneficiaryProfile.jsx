@@ -6,7 +6,7 @@ import PageLayout from "../layouts/PageLayout";
 import Header_Subheader from "../components/Header_Subheader";
 import Loader from "../components/Loader";
 import NoData from "../components/NoData";
-import CardLayout from "../layouts/CardLayout";
+import DynamicCardLayout from "../layouts/DynamicCardLayout";
 import CardsLayout from "../layouts/CardsLayout";
 import UserInfo from "../components/UserInfo";
 
@@ -67,11 +67,11 @@ export default function BeneficiaryProfile() {
             );
 
             return (
-              <CardLayout key={post.id} title={post.title}>
+              <DynamicCardLayout
+                key={post.id}
+                title={post.title}
+                status={post.status}>
                 <div className="text-md text-[var(--color-bg-text)] space-y-1 text-right">
-                  <p>
-                    <strong>حالة الطلب:</strong> {post.status}
-                  </p>
                   <p>
                     <strong>المبلغ المطلوب:</strong> {post.amount} ج.م
                   </p>
@@ -81,8 +81,11 @@ export default function BeneficiaryProfile() {
                       {totalReceived} ج.م
                     </span>
                   </p>
+                  <p>
+                    <strong>حالة الطلب:</strong> {post.status}
+                  </p>
                 </div>
-              </CardLayout>
+              </DynamicCardLayout>
             );
           })}
         </CardsLayout>
