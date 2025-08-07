@@ -174,7 +174,7 @@ const PostCard = ({ newPost }) => {
           });
         }
 
-        // ✅ توليد QR Code وإرسال إشعار لصاحب البوست
+        //توليد QR Code وإرسال إشعار لصاحب البوست
         if (newPost?.submittedBy?.email) {
           const qrData = JSON.stringify({
             postId: newPost.id,
@@ -207,8 +207,8 @@ const PostCard = ({ newPost }) => {
         }
       }
     } catch (error) {
-      console.error("خطأ في التبرع:", error);
-      alert("حدث خطأ أثناء تنفيذ التبرع.");
+      toast.dismiss();
+      toast.error("حدث خطأ أثناء تنفيذ التبرع ‼. يرجى المحاولة مرة أخرى.");
     }
 
     setIsLoading(false);
@@ -247,7 +247,7 @@ const PostCard = ({ newPost }) => {
             <img
               src={newPost.attachedFiles}
               alt="attachment"
-              className="w-full h-100 object-contain rounded-lg border border-[var(--color-bg-divider)]"
+              className="w-full h-64 object-contain rounded-lg border border-[var(--color-bg-divider)]"
             />
           ) : (
             <div className="w-full h-100 bg-[var(--color-bg-base)] flex items-center justify-center rounded-lg border border-[var(--color-bg-divider)] text-[var(--color-bg-muted-text)]">
@@ -257,15 +257,15 @@ const PostCard = ({ newPost }) => {
         </div>
 
         <div className="flex justify-between items-center mb-2">
-          <h2 className="font-bold text-2xl text-[var(--color-primary-base)]">
+          <h2 className="font-bold text-2xl text-[var(--color-primary-base)] line-clamp-2">
             {newPost.title || "عنوان الطلب"}
           </h2>
           <span className="bg-[var(--color-bg-base)] text-[var(--color-primary-base)] px-6 py-2 rounded-md font-bold text-sm">
-            {amount} ج.م
+            المبلغ: {amount} ج.م
           </span>
         </div>
 
-        <p className="text-sm text-[var(--color-bg-text)] mb-4">
+        <p className="text-sm text-[var(--color-bg-text)] mb-4 line-clamp-2">
           {newPost.details || "تفاصيل الطلب..."}
         </p>
 

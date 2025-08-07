@@ -73,7 +73,7 @@ const CouponCard = ({ newCoupon }) => {
         `${Date.now()}`
       );
       await setDoc(userNotifRef, {
-        title: "كوبون مستخدم",
+        title: "كوبون مستخدم ✅",
         message: `لقد استخدمت كوبون "${data.title}" بنجاح.`,
         timestamp: new Date().toISOString(),
         read: false,
@@ -91,7 +91,7 @@ const CouponCard = ({ newCoupon }) => {
           `${Date.now()}`
         );
         await setDoc(ownerNotifRef, {
-          title: "تم استخدام كوبون",
+          title: "تم استخدام كوبون 🔖",
           message: `${user?.email || "مستخدم"} استخدم كوبون "${data.title}".`,
           timestamp: new Date().toISOString(),
           read: false,
@@ -107,7 +107,7 @@ const CouponCard = ({ newCoupon }) => {
             `${Date.now() + 1}` // لتفادي تطابق المفاتيح
           );
           await setDoc(ownerCompleteRef, {
-            title: "اكتمل استخدام الكوبون",
+            title: "اكتمل استخدام الكوبون 🎉",
             message: `تم استخدام جميع كوبونات "${data.title}" بنجاح.`,
             timestamp: new Date().toISOString(),
             read: false,
@@ -116,7 +116,7 @@ const CouponCard = ({ newCoupon }) => {
       }
     } catch (error) {
       toast.dismiss();
-      toast.error("حدث خطأ أثناء استخدام الكوبون.");
+      toast.error(`حدث خطأ أثناء استخدام الكوبون ‼`);
     }
 
     setIsLoading(false);
@@ -168,18 +168,8 @@ const CouponCard = ({ newCoupon }) => {
   // ------------------------- //
   // Event handlers
   // ------------------------- //
-  const handleUseCoupon = () => {
-    if (hasUsed) {
-      toast.error("لقد استخدمت هذا الكوبون مسبقاً.");
-      return;
-    }
-
-    if (isCompleted) {
-      toast.error("العدد مكتمل ولا يمكن استخدام المزيد من الكوبونات.");
-      return;
-    }
-
-    setSelectedAmount(newCoupon.amount || 0);
+  const handleDonateClick = (amount) => {
+    setSelectedAmount(Number(amount));
     setShowPopup(true);
   };
 
@@ -191,7 +181,6 @@ const CouponCard = ({ newCoupon }) => {
   return (
     <>
       <CardLayout>
-        {/* Header Section: Displays submitter's photo, name, and coupon creation time */}
         <div className="flex items-center gap-2 mb-2">
           <div className="flex-shrink-0">
             {newCoupon.submittedBy?.userPhoto ? (
@@ -216,40 +205,36 @@ const CouponCard = ({ newCoupon }) => {
           </div>
         </div>
 
-        {/* Bottom section with image and coupon details side-by-side */}
-        <div className="grid grid-cols-2 gap-2 items-center justify-between mb-2">
-          {/* Info Section: Displays title, details, and total coupon count */}
-          <div className="space-y-2 text-[var(--color-bg-text)]">
-            <h2 className="font-bold text-2xl text-[var(--color-primary-base)]">
-              {newCoupon.title || "عنوان الكوبون"}
-            </h2>
-            <p className="text-sm text-justify">
-              {newCoupon.details || "غير متوفرة"}
-            </p>
-            <p className="w-full flex justify-center bg-[var(--color-bg-base)] text-[var(--color-primary-base)] px-6 py-2 rounded-md font-bold text-sm">
-              عدد الكوبونات: {stock}
-            </p>
-          </div>
-          {/* Image Section: Shows attached image or placeholder if none */}
-          <div className="w-full h-35">
-            {newCoupon.attachedFiles ? (
-              <img
-                src={newCoupon.attachedFiles}
-                alt="attachment"
-                className="w-full h-full object-cover rounded-lg border border-[var(--color-bg-divider)]"
-              />
-            ) : (
-              <div className="w-full h-35 bg-[var(--color-bg-base)] flex items-center justify-center rounded-lg border border-[var(--color-bg-divider)] text-[var(--color-bg-muted-text)]">
-                لا توجد صورة
-              </div>
-            )}
-          </div>
+        <div className="mb-2">
+          {newCoupon.attachedFiles ? (
+            <img
+              src={newCoupon.attachedFiles}
+              alt="attachment"
+              className="w-full h-64 object-contain rounded-lg border border-[var(--color-bg-divider)]"
+            />
+          ) : (
+            <div className="w-full h-100 bg-[var(--color-bg-base)] flex items-center justify-center rounded-lg border border-[var(--color-bg-divider)] text-[var(--color-bg-muted-text)]">
+              لا توجد صورة
+            </div>
+          )}
         </div>
 
-        {/* Button Section: Redeem coupon button shown only for beneficiaries */}
+        <div className="flex justify-between items-center mb-2">
+          <h2 className="font-bold text-2xl text-[var(--color-primary-base)] line-clamp-2">
+            {newCoupon.title || "عنوان الكوبون"}
+          </h2>
+          <span className="bg-[var(--color-bg-base)] text-[var(--color-primary-base)] px-6 py-2 rounded-md font-bold text-sm">
+            عدد الكوبونات: {stock}
+          </span>
+        </div>
+
+        <p className="text-sm text-[var(--color-bg-text)] mb-4 line-clamp-3">
+          {newCoupon.details || "تفاصيل الكوبون..."}
+        </p>
+
         {role === "مستفيد" && (
           <button
-            onClick={handleUseCoupon}
+            onClick={() => handleDonateClick(1)}
             className={`w-full px-6 py-3 rounded font-bold text-md transition ${
               isCompleted || hasUsed
                 ? "bg-[var(--color-secondary-disabled)] text-[var(--color-bg-muted-text)] cursor-not-allowed"
@@ -260,7 +245,6 @@ const CouponCard = ({ newCoupon }) => {
           </button>
         )}
 
-        {/* Progress Bar Section: Visualizes coupon usage progress */}
         <div className="w-full mt-2">
           <div className="w-full h-6 rounded bg-[var(--color-secondary-disabled)] border-2 border-[var(--color-secondary-base)] overflow-hidden relative">
             <div
