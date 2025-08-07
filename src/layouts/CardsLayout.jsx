@@ -1,15 +1,20 @@
 import React from "react";
 import CardLayout from "./CardLayout";
 
-export default function CardsLayout({ list, children, colNum, fixedCol }) {
+export default function CardsLayout({ list, children, colNum = 3 }) {
+  const lgCols =
+    colNum === 1
+      ? "lg:grid-cols-1"
+      : colNum === 2
+      ? "lg:grid-cols-2"
+      : colNum === 3
+      ? "lg:grid-cols-3"
+      : colNum === 4
+      ? "lg:grid-cols-4"
+      : "lg:grid-cols-5";
+
   return (
-    <div
-      className={`grid ${
-        fixedCol
-          ? `grid-cols-${fixedCol}`
-          : "grid-cols-1 md:grid-cols-2 lg:grid-cols-" +
-            (colNum === 3 ? "3" : colNum === 4 ? "4" : colNum === 5 ? "5" : "2")
-      } gap-6 mt-6`}>
+    <div className={`grid grid-cols-1 md:grid-cols-2 ${lgCols} gap-6 mt-6`}>
       {list && list.length > 0
         ? list.map((item, index) => (
             <CardLayout

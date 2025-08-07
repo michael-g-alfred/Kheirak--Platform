@@ -74,7 +74,7 @@ export default function BeneficiaryProfile() {
       ) : myPosts.length === 0 ? (
         <NoData h2="لم تقم بإنشاء أي طلب حتى الآن." />
       ) : (
-        <CardsLayout colNum={1} fixedCol={3}>
+        <CardsLayout colNum={4}>
           {myPosts.map((post) => {
             const totalReceived = post.donors?.reduce(
               (sum, d) => sum + Number(d.amount || 0),

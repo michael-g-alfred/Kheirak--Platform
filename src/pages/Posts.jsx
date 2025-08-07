@@ -84,7 +84,7 @@ export default function Posts() {
       ) : filteredPosts.length === 0 ? (
         <NoData h2={"لا توجد طلبات تطابق كلمة البحث"} />
       ) : (
-        <CardsLayout colNum={2}>
+        <CardsLayout>
           {filteredPosts.map((post) => (
             <PostCard key={post.id} newPost={post} />
           ))}

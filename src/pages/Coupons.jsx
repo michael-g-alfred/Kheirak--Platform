@@ -119,7 +119,7 @@ export default function Coupons() {
       ) : coupons.length === 0 ? (
         <NoData h2={"لا توجد كوبونات متاحة الآن"} />
       ) : (
-        <CardsLayout colNum={3}>
+        <CardsLayout>
           {coupons
             .filter((coupon) =>
               selectedType === "الكل" ? true : coupon.type === selectedType

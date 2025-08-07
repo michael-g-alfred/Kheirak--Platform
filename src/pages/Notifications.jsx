@@ -96,7 +96,7 @@ export default function NotificationsPage() {
       ) : notifications.length === 0 ? (
         <NoData h2="لا توجد إشعارات" />
       ) : (
-        <CardsLayout colNum={2} fixedCol={1}>
+        <CardsLayout colNum={1}>
           {notifications.map((notif) => (
             <CardLayout key={notif.id} title={notif.title}>
               <div className="text-md text-[var(--color-bg-text)] space-y-1 text-right">

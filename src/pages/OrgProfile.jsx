@@ -77,7 +77,7 @@ export default function OrgProfile() {
       ) : myCoupons.length === 0 ? (
         <NoData h2="لم تقم بإنشاء أي كوبون حتى الآن." />
       ) : (
-        <CardsLayout colNum={1} fixedCol={3}>
+        <CardsLayout colNum={4}>
           {myCoupons.map((coupon) => (
             <DynamicCardLayout
               key={coupon.id}

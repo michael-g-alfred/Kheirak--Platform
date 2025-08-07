@@ -6,7 +6,7 @@ import PageLayout from "../layouts/PageLayout";
 import Header_Subheader from "../components/Header_Subheader";
 import Loader from "../components/Loader";
 import NoData from "../components/NoData";
-import CardLayout from "../layouts/CardLayout";
+import DynamicCardLayout from "../layouts/DynamicCardLayout";
 import CardsLayout from "../layouts/CardsLayout";
 import UserInfo from "../components/UserInfo";
 
@@ -15,6 +15,20 @@ export default function DonorProfile() {
   const [isLoading, setIsLoading] = useState(true);
   const { currentUser } = useAuth();
   const userEmail = currentUser?.email;
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "مقبول":
+        return "bg-green-500";
+      case "مرفوض":
+        return "bg-red-500";
+      case "قيد المراجعة":
+        return "bg-yellow-500";
+      case "مكتمل":
+        return "bg-blue-500";
+      default:
+        return "bg-gray-500";
+    }
+  };
 
   useEffect(() => {
     if (!userEmail) {
@@ -62,20 +76,20 @@ export default function DonorProfile() {
       ) : donatedPosts.length === 0 ? (
         <NoData h2="لم تقم بأي تبرع حتى الآن." />
       ) : (
-        <CardsLayout colNum={1} fixedCol={2}>
+        <CardsLayout colNum={4}>
           {donatedPosts.map((post) => {
             const totalDonated = post.donors
               .filter((d) => d.email === userEmail)
               .reduce((sum, d) => sum + Number(d.amount || 0), 0);
 
             return (
-              <CardLayout key={post.id} title={post.title}>
+              <DynamicCardLayout
+                key={post.id}
+                title={post.title}
+                status={post.status}>
                 <div className="text-md text-[var(--color-bg-text)] space-y-1 text-right">
                   <p>
                     <strong>صاحب الطلب:</strong> {post.submittedBy.userName}
-                  </p>
-                  <p>
-                    <strong>حالة الطلب:</strong> {post.status}
                   </p>
                   <p>
                     <strong>المبلغ المتبرع به:</strong>{" "}
@@ -83,8 +97,17 @@ export default function DonorProfile() {
                       {totalDonated} ج.م
                     </span>
                   </p>
+                  <p className="mt-4 w-full">
+                    <strong>الحالة: </strong>
+                    <span
+                      className={`${getStatusColor(
+                        post.status
+                      )} w-full font-bold py-0.125 px-2 rounded`}>
+                      {post.status}
+                    </span>
+                  </p>
                 </div>
-              </CardLayout>
+              </DynamicCardLayout>
             );
           })}
         </CardsLayout>
