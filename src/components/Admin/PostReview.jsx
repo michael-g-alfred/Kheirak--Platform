@@ -62,7 +62,7 @@ export default function PostReview() {
       {isLoading ? (
         <Loader />
       ) : posts.length > 0 ? (
-        <CardsLayout colNum={3}>
+        <CardsLayout>
           {posts.map((post) => (
             <DynamicCardLayout
               key={post.id}

@@ -64,7 +64,7 @@ export default function CouponReview() {
   return (
     <>
       {coupons.length > 0 ? (
-        <CardsLayout colNum={3}>
+        <CardsLayout>
           {coupons.map((coupon) => (
             <DynamicCardLayout
               key={coupon.id}
