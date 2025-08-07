@@ -14,7 +14,26 @@ export default function Coupons() {
   const [showCouponForm, setShowCouponForm] = useState(false);
   const [coupons, setCoupons] = useState([]);
   const [loadingCoupons, setLoadingCoupons] = useState(true);
+  const [selectedType, setselectedType] = useState("الكل");
 
+  const categories = [
+    "الكل",
+    "طعام",
+    "دواء",
+    "ملابس",
+    "كهرباء",
+    "خدمات",
+    "تعليم",
+  ];
+  const categoryIcons = {
+    الكل: "📦",
+    طعام: "🍔",
+    دواء: "💊",
+    ملابس: "👕",
+    كهرباء: "💡",
+    خدمات: "🛠️",
+    تعليم: "🎓",
+  };
   const handleCloseForm = () => {
     setShowCouponForm(false);
   };
@@ -63,6 +82,29 @@ export default function Coupons() {
           <CouponForm onClose={handleCloseForm} />
         </div>
       )}
+
+      <div className="flex flex-wrap gap-2 mb-4">
+        {categories.map((type) => {
+          const isSelected = selectedType === type;
+
+          return (
+            <button
+              key={type}
+              onClick={() => setselectedType(type)}
+              className={`flex items-center gap-2 px-3 py-1 rounded-full border transition-all duration-200
+          ${
+            isSelected
+              ? "bg-primary text-white border-primary shadow-md"
+              : "bg-gray-100 text-gray-800 border-gray-300 hover:bg-gray-200"
+          }`}
+            >
+              <span className="text-lg">{categoryIcons[type]}</span>
+              <span className="text-sm font-medium">{type}</span>
+            </button>
+          );
+        })}
+      </div>
+
       <hr className="my-4 border-[var(--color-bg-divider)] border-.5 rounded" />
       {/* عرض الرسالة أو الكوبونات */}
       {loadingCoupons ? (
@@ -71,9 +113,13 @@ export default function Coupons() {
         <NoData h2={"لا توجد كوبونات متاحة الآن"} />
       ) : (
         <CardsLayout colNum={2}>
-          {coupons.map((coupon) => (
-            <CouponCard key={coupon.id} newCoupon={coupon} />
-          ))}
+          {coupons
+            .filter((coupon) =>
+              selectedType === "الكل" ? true : coupon.type === selectedType
+            )
+            .map((coupon) => (
+              <CouponCard key={coupon.id} newCoupon={coupon} />
+            ))}
         </CardsLayout>
       )}
     </>

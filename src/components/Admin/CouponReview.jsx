@@ -71,7 +71,8 @@ export default function CouponReview() {
                               href={file}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-[var(--color-bg-muted-text)] break-all underline">
+                              className="text-[var(--color-bg-muted-text)] break-all underline"
+                            >
                               {file}
                             </a>
                           </li>
@@ -82,7 +83,8 @@ export default function CouponReview() {
                         href={coupon.attachedFiles}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-[var(--color-bg-muted-text)] break-all underline">
+                        className="text-[var(--color-bg-muted-text)] break-all underline"
+                      >
                         {coupon.attachedFiles}
                       </a>
                     )
@@ -93,6 +95,9 @@ export default function CouponReview() {
                 <p>
                   <strong>الحالة: </strong> {coupon.status}
                 </p>
+                <p>
+                  <strong>النوع: </strong> {coupon.type}
+                </p>
               </div>
 
               {coupon.status !== "مكتمل" && (
@@ -102,7 +107,8 @@ export default function CouponReview() {
                     className="success px-6 py-3 rounded text-md"
                     disabled={
                       coupon.status === "مقبول" || updatingId === coupon.id
-                    }>
+                    }
+                  >
                     قبول
                   </button>
                   <button
@@ -110,7 +116,8 @@ export default function CouponReview() {
                     className="danger px-6 py-3 rounded text-md"
                     disabled={
                       coupon.status === "مرفوض" || updatingId === coupon.id
-                    }>
+                    }
+                  >
                     رفض
                   </button>
                 </div>

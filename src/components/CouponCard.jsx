@@ -238,6 +238,9 @@ const CouponCard = ({ newCoupon }) => {
             <h2 className="font-bold text-2xl text-[var(--color-primary-base)]">
               {newCoupon.title || "عنوان الكوبون"}
             </h2>
+            <p className="text-sm text-[var(--color-bg-text)]">
+              {newCoupon.type || "نوع الكوبون"}
+            </p>
             <p className="text-sm">
               {newCoupon.details || "تفاصيل الكوبون..."}
             </p>
@@ -256,7 +259,8 @@ const CouponCard = ({ newCoupon }) => {
                 ? "bg-[var(--color-secondary-disabled)] text-[var(--color-bg-muted-text)] cursor-not-allowed"
                 : "bg-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] text-[var(--color-secondary-base)]"
             }`}
-            disabled={isCompleted || hasUsed}>
+            disabled={isCompleted || hasUsed}
+          >
             استخدام كوبون
           </button>
         )}
@@ -266,7 +270,8 @@ const CouponCard = ({ newCoupon }) => {
           <div className="w-full h-6 rounded bg-[var(--color-secondary-disabled)] border-2 border-[var(--color-secondary-base)] overflow-hidden relative">
             <div
               className="h-full bg-[var(--color-primary-base)] transition-all duration-300 text-md font-bold text-[var(--color-secondary-base)] flex items-center justify-center"
-              style={{ width: `${donationPercentage}%` }}>
+              style={{ width: `${donationPercentage}%` }}
+            >
               {Math.round(donationPercentage)}%
             </div>
           </div>
@@ -292,7 +297,8 @@ const CouponCard = ({ newCoupon }) => {
                   </strong>{" "}
                   كوبون
                 </span>
-              }>
+              }
+            >
               <div className="text-[var(--color-bg-text)] text-right space-y-2 mb-4">
                 <p className="text-md">
                   سيتم إستخدام{" "}
@@ -320,12 +326,14 @@ const CouponCard = ({ newCoupon }) => {
               <div className="flex justify-center gap-4 mt-4">
                 <button
                   className="danger px-6 py-2 rounded font-semibold"
-                  onClick={closePopup}>
+                  onClick={closePopup}
+                >
                   إغلاق
                 </button>
                 <button
                   className="success px-6 py-2 rounded font-semibold"
-                  onClick={handleConfirmDonation}>
+                  onClick={handleConfirmDonation}
+                >
                   {isLoading ? <Loader /> : "تأكيد"}
                 </button>
               </div>
