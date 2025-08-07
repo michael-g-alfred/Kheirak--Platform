@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Outlet, NavLink, useLocation } from "react-router-dom";
 import PageLayout from "../layouts/PageLayout";
 import Header_Subheader from "../components/Header_Subheader";
+import Carousel from "../components/Carousel";
 import Posts from "./Posts"; // adjust the path if necessary
 
 export default function Home() {
@@ -10,9 +11,7 @@ export default function Home() {
 
   return (
     <PageLayout>
-      <Header_Subheader
-        h1="منصة التبرعات"
-        p="مساعدة المحتاجين وتحقيق الخير في المجتمع."></Header_Subheader>
+      <Carousel />
       <div
         className="flex mb-8 rounded-lg overflow-hidden"
         style={{ backgroundColor: "var(--color-secondary-base)" }}>
