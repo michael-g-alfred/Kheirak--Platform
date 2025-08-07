@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import CardLayout from "../../layouts/CardLayout";
+import DynamicCardLayout from "../../layouts/DynamicCardLayout";
 import CardsLayout from "../../layouts/CardsLayout";
 import NoData from "../NoData";
 import Loader from "../Loader";
@@ -11,6 +11,20 @@ export default function CouponReview() {
   const [coupons, setCoupons] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [updatingId, setUpdatingId] = useState(null);
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "مقبول":
+        return "bg-green-500";
+      case "مرفوض":
+        return "bg-red-500";
+      case "قيد المراجعة":
+        return "bg-yellow-500";
+      case "مكتمل":
+        return "bg-blue-500";
+      default:
+        return "bg-gray-500";
+    }
+  };
 
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -52,10 +66,16 @@ export default function CouponReview() {
       {coupons.length > 0 ? (
         <CardsLayout colNum={4}>
           {coupons.map((coupon) => (
-            <CardLayout key={coupon.id} title={`${coupon.title}`}>
+            <DynamicCardLayout
+              key={coupon.id}
+              title={coupon.title}
+              status={coupon.status}>
               <div className="text-md text-[var(--color-bg-text)] space-y-1 text-right">
                 <p>
                   <strong>المؤسسة: </strong> {coupon.submittedBy.userName}
+                </p>
+                <p>
+                  <strong>تفاصيل الكوبون: </strong> {coupon.details}
                 </p>
                 <p>
                   <strong>الكمية المتوفرة: </strong> {coupon.stock}
@@ -92,8 +112,14 @@ export default function CouponReview() {
                     "لا يوجد"
                   )}
                 </p>
-                <p>
-                  <strong>الحالة: </strong> {coupon.status}
+                <p className="mt-4 w-full">
+                  <strong>الحالة: </strong>
+                  <span
+                    className={`${getStatusColor(
+                      coupon.status
+                    )} w-full font-bold py-0.125 px-2 rounded`}>
+                    {coupon.status}
+                  </span>
                 </p>
                 <p>
                   <strong>النوع: </strong> {coupon.type}
@@ -122,7 +148,7 @@ export default function CouponReview() {
                   </button>
                 </div>
               )}
-            </CardLayout>
+            </DynamicCardLayout>
           ))}
         </CardsLayout>
       ) : (

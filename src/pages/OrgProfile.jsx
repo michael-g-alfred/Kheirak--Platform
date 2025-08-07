@@ -6,7 +6,7 @@ import PageLayout from "../layouts/PageLayout";
 import Header_Subheader from "../components/Header_Subheader";
 import Loader from "../components/Loader";
 import NoData from "../components/NoData";
-import CardLayout from "../layouts/CardLayout";
+import DynamicCardLayout from "../layouts/DynamicCardLayout";
 import CardsLayout from "../layouts/CardsLayout";
 import UserInfo from "../components/UserInfo";
 
@@ -64,7 +64,10 @@ export default function OrgProfile() {
       ) : (
         <CardsLayout colNum={1} fixedCol={2}>
           {myCoupons.map((coupon) => (
-            <CardLayout key={coupon.id} title={coupon.title}>
+            <DynamicCardLayout
+              key={coupon.id}
+              title={coupon.title}
+              status={coupon.status}>
               <div className="text-md text-[var(--color-bg-text)] space-y-1 text-right">
                 <p>
                   <strong>الحالة:</strong> {coupon.status || "غير محددة"}
@@ -81,7 +84,7 @@ export default function OrgProfile() {
                   {(coupon.stock || 0) - (coupon.totalCouponUsed || 0)}
                 </p>
               </div>
-            </CardLayout>
+            </DynamicCardLayout>
           ))}
         </CardsLayout>
       )}
