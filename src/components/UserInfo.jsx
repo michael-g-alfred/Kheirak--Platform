@@ -47,8 +47,8 @@ export default function UserInfo() {
   };
 
   return (
-    <div className="text-[var(--color-bg-text)] flex items-center-safe justify-between gap-2 w-full">
-      <div className="flex items-center gap-4">
+    <div className="text-[var(--color-bg-text)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-2 w-full">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full">
         <label className="cursor-pointer relative">
           <input
             type="file"
@@ -68,7 +68,7 @@ export default function UserInfo() {
             </div>
           )}
         </label>
-        <div>
+        <div className="text-start">
           <p>
             <strong>اسم المستخدم:</strong>{" "}
             {currentUser?.displayName || "غير متوفر"}
@@ -78,7 +78,9 @@ export default function UserInfo() {
           </p>
         </div>
       </div>
-      <button onClick={handleLogout} className="px-6 py-2 danger rounded">
+      <button
+        onClick={handleLogout}
+        className="min-w-fit px-6 py-2 danger rounded">
         تسجيل الخروج
       </button>
     </div>

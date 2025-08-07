@@ -247,20 +247,19 @@ const PostCard = ({ newPost }) => {
             <img
               src={newPost.attachedFiles}
               alt="attachment"
-              className="w-full h-64 object-contain rounded-lg border border-[var(--color-bg-divider)]"
+              className="w-full h-40 sm:h-48 md:h-56 lg:h-64  xl:h-72 2xl:h-80 object-contain rounded-lg border border-[var(--color-bg-divider)]"
             />
           ) : (
-            <div className="w-full h-100 bg-[var(--color-bg-base)] flex items-center justify-center rounded-lg border border-[var(--color-bg-divider)] text-[var(--color-bg-muted-text)]">
+            <div className="w-full h-40 sm:h-48 md:h-56 lg:h-64  xl:h-72 2xl:h-80 object-contain rounded-lg border border-[var(--color-bg-divider)] text-[var(--color-bg-muted-text)]">
               لا توجد صورة
             </div>
           )}
         </div>
-
-        <div className="flex justify-between items-center mb-2">
-          <h2 className="font-bold text-2xl text-[var(--color-primary-base)] line-clamp-2">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-2">
+          <h2 className="font-bold text-xl sm:text-2xl text-[var(--color-primary-base)] line-clamp-2">
             {newPost.title || "عنوان الطلب"}
           </h2>
-          <span className="bg-[var(--color-bg-base)] text-[var(--color-primary-base)] px-6 py-2 rounded-md font-bold text-sm">
+          <span className="bg-[var(--color-bg-base)] text-[var(--color-primary-base)] px-4 py-2 rounded-md font-bold text-sm sm:text-base text-center">
             المبلغ: {amount} ج.م
           </span>
         </div>
@@ -270,16 +269,17 @@ const PostCard = ({ newPost }) => {
         </p>
 
         {role === "متبرع" && (
-          <div className="flex justify-between gap-1">
+          <div className="flex flex-wrap justify-between gap-2">
             {[50, 100, 500, remainingAmount].map((amt, index) => (
               <button
                 key={index}
                 onClick={() => handleDonateClick(amt)}
-                className={`w-full p-2 rounded font-bold text-sm transition ${
-                  isCompleted
-                    ? "bg-[var(--color-secondary-disabled)] text-[var(--color-bg-muted-text)] cursor-not-allowed"
-                    : "bg-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] text-[var(--color-secondary-base)]"
-                }`}
+                className={`flex-1 min-w-[60px] p-2 rounded font-bold text-sm text-center transition
+        ${
+          isCompleted
+            ? "bg-[var(--color-secondary-disabled)] text-[var(--color-bg-muted-text)] cursor-not-allowed"
+            : "bg-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] text-[var(--color-secondary-base)]"
+        }`}
                 disabled={isCompleted}>
                 {amt} ج.م
               </button>
@@ -290,11 +290,12 @@ const PostCard = ({ newPost }) => {
               inputMode="numeric"
               disabled={isCompleted}
               placeholder="مبلغ آخر"
-              className={`w-full text-center p-2 rounded font-bold text-sm transition outline-none ${
-                isCompleted
-                  ? "bg-[var(--color-secondary-disabled)] text-[var(--color-bg-muted-text)]"
-                  : "bg-[var(--color-secondary-base)] hover:bg-[var(--color-secondary-hover)] text-[var(--color-bg-text)] border-2 border-[var(--color-bg-divider)]"
-              }`}
+              className={`flex-1 min-w-[60px] text-center p-2 rounded font-bold text-sm transition outline-none
+      ${
+        isCompleted
+          ? "bg-[var(--color-secondary-disabled)] text-[var(--color-bg-muted-text)]"
+          : "bg-[var(--color-secondary-base)] hover:bg-[var(--color-secondary-hover)] text-[var(--color-bg-text)] border-2 border-[var(--color-bg-divider)]"
+      }`}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   const value = e.target.value.trim();

@@ -210,26 +210,25 @@ const CouponCard = ({ newCoupon }) => {
             <img
               src={newCoupon.attachedFiles}
               alt="attachment"
-              className="w-full h-64 object-contain rounded-lg border border-[var(--color-bg-divider)]"
+              className="w-full h-40 sm:h-48 md:h-56 lg:h-64  xl:h-72 2xl:h-80 object-contain rounded-lg border border-[var(--color-bg-divider)]"
             />
           ) : (
-            <div className="w-full h-100 bg-[var(--color-bg-base)] flex items-center justify-center rounded-lg border border-[var(--color-bg-divider)] text-[var(--color-bg-muted-text)]">
+            <div className="w-full h-40 sm:h-48 md:h-56 lg:h-64  xl:h-72 2xl:h-80 object-contain rounded-lg border border-[var(--color-bg-divider)] text-[var(--color-bg-muted-text)]">
               لا توجد صورة
             </div>
           )}
         </div>
 
-        <div className="flex justify-between items-center mb-2">
-          <h2 className="font-bold text-2xl text-[var(--color-primary-base)] line-clamp-2">
-            {newCoupon.title || "عنوان الكوبون"}
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-2">
+          <h2 className="font-bold text-xl sm:text-2xl text-[var(--color-primary-base)] line-clamp-2">
+            {newCoupon.title || "عنوان الطلب"}
           </h2>
-          <span className="bg-[var(--color-bg-base)] text-[var(--color-primary-base)] px-6 py-2 rounded-md font-bold text-sm">
+          <span className="bg-[var(--color-bg-base)] text-[var(--color-primary-base)] px-4 py-2 rounded-md font-bold text-sm sm:text-base text-center">
             عدد الكوبونات: {stock}
           </span>
         </div>
-
-        <p className="text-sm text-[var(--color-bg-text)] mb-4 line-clamp-3">
-          {newCoupon.details || "تفاصيل الكوبون..."}
+        <p className="text-sm text-[var(--color-bg-text)] mb-4 line-clamp-2">
+          {newCoupon.details || "تفاصيل الطلب..."}
         </p>
 
         {role === "مستفيد" && (

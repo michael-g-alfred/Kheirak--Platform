@@ -85,7 +85,7 @@ export default function NotificationsPage() {
         <div className="flex justify-end">
           <button
             onClick={handleDeleteAll}
-            className="px-6 py-2 danger rounded">
+            className="w-full sm:w-auto px-6 py-2 danger rounded text-center">
             حذف كل الإشعارات
           </button>
         </div>
