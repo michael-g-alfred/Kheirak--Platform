@@ -37,22 +37,29 @@ export default function BeneficiaryProfile() {
       return;
     }
 
-    const unsubscribe = onSnapshot(collection(db, "Posts"), (querySnapshot) => {
-      const mySubmittedPosts = [];
+    const unsubscribe = onSnapshot(
+      collection(db, "Posts"),
+      (querySnapshot) => {
+        const mySubmittedPosts = [];
 
-      querySnapshot.forEach((doc) => {
-        const postData = doc.data();
-        if (postData.submittedBy?.email === userEmail) {
-          mySubmittedPosts.push({
-            id: doc.id,
-            ...postData,
-          });
-        }
-      });
+        querySnapshot.forEach((doc) => {
+          const postData = doc.data();
+          if (postData.submittedBy?.email === userEmail) {
+            mySubmittedPosts.push({
+              id: doc.id,
+              ...postData,
+            });
+          }
+        });
 
-      setMyPosts(mySubmittedPosts);
-      setIsLoading(false);
-    });
+        setMyPosts(mySubmittedPosts);
+        setIsLoading(false);
+      },
+      (error) => {
+        console.error("Error fetching user posts:", error);
+        setIsLoading(false);
+      }
+    );
 
     return () => unsubscribe();
   }, [userEmail]);
@@ -60,7 +67,7 @@ export default function BeneficiaryProfile() {
   return (
     <PageLayout>
       <Header_Subheader
-        h1="ملف الطبات الخاصة بك"
+        h1="ملف الطلبات الخاصة بك"
         p="تعرف على طلباتك والمبالغ التي تم جمعها."
       />
 
@@ -79,7 +86,7 @@ export default function BeneficiaryProfile() {
             const totalReceived = post.donors?.reduce(
               (sum, d) => sum + Number(d.amount || 0),
               0
-            );
+            ) || 0;
 
             return (
               <DynamicCardLayout

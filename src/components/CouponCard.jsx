@@ -7,9 +7,18 @@ import { ar } from "date-fns/locale";
 import CardLayout from "../layouts/CardLayout";
 import ImageIcon from "../icons/ImageIcon";
 import FormLayout from "../layouts/FormLayout";
-import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+import {
+  doc,
+  onSnapshot,
+  updateDoc,
+  arrayUnion,
+  getDoc,
+  setDoc,
+} from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 import { db } from "../Firebase/Firebase";
 import BulletPoints from "./BulletPoints";
+import Loader from "./Loader";
 
 // ------------------------- //
 // State variables
@@ -34,13 +43,16 @@ const CouponCard = ({ newCoupon }) => {
     const newTotal = totalCouponUsed + 1;
 
     try {
-      const { doc, updateDoc, arrayUnion, getDoc, setDoc } = await import(
-        "firebase/firestore"
-      );
-      const { getAuth } = await import("firebase/auth");
       const couponRef = doc(db, "Coupons", newCoupon.id);
       const auth = getAuth();
       const user = auth.currentUser;
+
+      if (!user) {
+        toast.dismiss();
+        toast.error("يجب تسجيل الدخول أولاً");
+        setIsLoading(false);
+        return;
+      }
 
       const updateData = {
         totalCouponUsed: newTotal,

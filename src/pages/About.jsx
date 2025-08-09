@@ -1,4 +1,3 @@
-import React from "react";
 import PageLayout from "../layouts/PageLayout";
 import Header_Subheader from "../components/Header_Subheader";
 import CardsLayout from "../layouts/CardsLayout";
@@ -24,10 +23,15 @@ export default function About() {
 
   return (
     <PageLayout>
-      <Header_Subheader
-        h1="من نحن؟"
-        p="خِيرُكَ .. منصة تهدف إلى تسهيل التبرعات والربط بين المتبرعين والمستفيدين، من خلال واجهة سهلة وآمنة تضمن وصول المساعدات إلى مستحقيها."></Header_Subheader>
-      <CardsLayout list={sections} />
+      <div dir="rtl">
+        <Header_Subheader
+          h1="من نحن؟"
+          p="خِيرُكَ .. منصة تهدف إلى تسهيل التبرعات والربط بين المتبرعين والمستفيدين، من خلال واجهة سهلة وآمنة تضمن وصول المساعدات إلى مستحقيها."
+        />
+        <main role="main" aria-label="معلومات عن منصة خيرك">
+          <CardsLayout list={sections} />
+        </main>
+      </div>
     </PageLayout>
   );
 }

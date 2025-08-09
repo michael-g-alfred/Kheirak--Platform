@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import EyeIcon from "../icons/EyeIcon";
 import EyeOffIcon from "../icons/EyeOffIcon";
 import ArrowBadgeDownIcon from "../icons/ArrowBadgeDownIcon";
@@ -87,11 +87,15 @@ const InputField = ({
             }`}
           />
           {isPassword && (
-            <div
-              className="absolute inset-y-0 left-3 flex items-center cursor-pointer text-[var(--color-bg-muted-text)]"
-              onClick={() => setShowPassword((prev) => !prev)}>
+            <button
+              type="button"
+              className="absolute inset-y-0 left-3 flex items-center cursor-pointer text-[var(--color-bg-muted-text)] hover:text-[var(--color-primary-base)] transition-colors"
+              onClick={() => setShowPassword((prev) => !prev)}
+              aria-label={
+                showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"
+              }>
               {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-            </div>
+            </button>
           )}
         </div>
       )}

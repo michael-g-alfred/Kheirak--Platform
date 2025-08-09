@@ -20,7 +20,11 @@ const ChooseRole = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      role: ""
+    }
+  });
 
   useEffect(() => {
     if (!currentUser) {
@@ -49,27 +53,37 @@ const ChooseRole = () => {
 
   return (
     <PageLayout x="center" y="center">
-      <Header_Subheader
-        h1="اختر نوع المستخدم"
-        p="يرجى اختيار نوع الحساب الخاص بك لإكمال التسجيل"
-      />
-      <FormLayout>
-        <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-          <InputField
-            label={""}
-            id="role"
-            select
-            register={register("role")}
-            error={errors.role}
-            options={[
-              { value: "متبرع", label: "متبرع" },
-              { value: "مستفيد", label: "مستفيد" },
-              { value: "مؤسسة", label: "مؤسسة" },
-            ]}
-          />
-          <SubmitButton buttonTitle="تأكيد" isLoading={isLoading} />
-        </form>
-      </FormLayout>
+      <div dir="rtl">
+        <Header_Subheader
+          h1="اختر نوع المستخدم"
+          p="يرجى اختيار نوع الحساب الخاص بك لإكمال التسجيل"
+        />
+        <FormLayout>
+          <form 
+            className="space-y-6" 
+            onSubmit={handleSubmit(onSubmit)}
+            role="form"
+            aria-label="نموذج اختيار نوع المستخدم"
+          >
+            <InputField
+              label="نوع المستخدم"
+              id="role"
+              select
+              register={register("role", {
+                required: "يرجى اختيار نوع المستخدم"
+              })}
+              error={errors.role}
+              placeholder="اختر نوع المستخدم"
+              options={[
+                { value: "متبرع", label: "متبرع" },
+                { value: "مستفيد", label: "مستفيد" },
+                { value: "مؤسسة", label: "مؤسسة" },
+              ]}
+            />
+            <SubmitButton buttonTitle="تأكيد" isLoading={isLoading} />
+          </form>
+        </FormLayout>
+      </div>
     </PageLayout>
   );
 };

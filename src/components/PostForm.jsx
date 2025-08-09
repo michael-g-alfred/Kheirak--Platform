@@ -8,7 +8,7 @@ import CloseIcon from "../icons/CloseIcon";
 import { db } from "../Firebase/Firebase";
 import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { useAuth } from "../context/authContext";
-import toast from "react-hot-toast";
+import { toast } from "react-hot-toast";
 
 export default function PostForm({ onClose }) {
   const { currentUser, userData, userName } = useAuth();
@@ -22,25 +22,29 @@ export default function PostForm({ onClose }) {
   const onSubmit = async (data) => {
     setIsLoading(true);
     try {
-      const file = data.file[0];
+      const file = data.file?.[0];
+
+      // Check if file exists
+      if (!file) {
+        toast.error("يرجى اختيار ملف");
+        return;
+      }
 
       // Check file type
       if (!file.type.startsWith("image/")) {
         toast.error("الملف يجب أن يكون صورة");
-        setIsLoading(false);
         return;
       }
+      
       // Check file size (max 2MB)
       const maxSizeMB = 2;
       if (file.size > maxSizeMB * 1024 * 1024) {
         toast.error(`حجم الصورة يجب ألا يتجاوز ${maxSizeMB} ميجا`);
-        setIsLoading(false);
         return;
       }
 
       // Confirm dialog
       if (!window.confirm("هل أنت متأكد من إرسال الطلب؟")) {
-        setIsLoading(false);
         return;
       }
 
@@ -69,6 +73,7 @@ export default function PostForm({ onClose }) {
       });
       onClose();
     } catch (error) {
+      console.error("Error submitting post:", error);
       toast.error("حدث خطأ أثناء إرسال الطلب", {
         position: "bottom-center",
       });

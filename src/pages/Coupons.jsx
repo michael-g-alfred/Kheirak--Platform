@@ -14,7 +14,7 @@ export default function Coupons() {
   const [showCouponForm, setShowCouponForm] = useState(false);
   const [coupons, setCoupons] = useState([]);
   const [loadingCoupons, setLoadingCoupons] = useState(true);
-  const [selectedType, setselectedType] = useState("الكل");
+  const [selectedType, setSelectedType] = useState("الكل");
 
   const categories = [
     "الكل",
@@ -92,7 +92,7 @@ export default function Coupons() {
           return (
             <button
               key={type}
-              onClick={() => setselectedType(type)}
+              onClick={() => setSelectedType(type)}
               className={`flex items-center justify-center gap-2 px-6 py-2 rounded-full
           ${
             isSelected

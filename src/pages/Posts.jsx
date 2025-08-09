@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "../Firebase/Firebase";
+import { toast } from "react-hot-toast";
 
 import { useAuth } from "../context/authContext";
 
@@ -27,23 +28,30 @@ export default function Posts() {
     const unsubscribe = onSnapshot(
       collection(db, "Posts"),
       (snapshot) => {
-        const fetchedPosts = snapshot.docs
-          .map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }))
-          .sort((a, b) => {
-            const aDate = new Date(a.createdAt?.seconds * 1000 || 0);
-            const bDate = new Date(b.createdAt?.seconds * 1000 || 0);
-            return bDate - aDate;
-          })
-          .filter((post) => post.status === "مقبول");
+        try {
+          const fetchedPosts = snapshot.docs
+            .map((doc) => ({
+              id: doc.id,
+              ...doc.data(),
+            }))
+            .sort((a, b) => {
+              const aDate = new Date(a.createdAt?.seconds * 1000 || 0);
+              const bDate = new Date(b.createdAt?.seconds * 1000 || 0);
+              return bDate - aDate;
+            })
+            .filter((post) => post.status === "مقبول");
 
-        setPosts(fetchedPosts);
-        setLoadingPosts(false);
+          setPosts(fetchedPosts);
+          setLoadingPosts(false);
+        } catch (error) {
+          console.error("Error processing posts:", error);
+          toast.error("خطأ في معالجة الطلبات");
+          setLoadingPosts(false);
+        }
       },
       (error) => {
         console.error("Error fetching posts:", error);
+        toast.error("خطأ في جلب الطلبات");
         setLoadingPosts(false);
       }
     );
@@ -53,21 +61,27 @@ export default function Posts() {
 
   if (loading || role === null) return null;
 
-  const filteredPosts = posts.filter((post) =>
-    post.title?.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredPosts = posts.filter(
+    (post) =>
+      post.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      post.description?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
-    <>
+    <div dir="rtl">
       {role === "مستفيد" && (
         <CreatePostTrigger
-          title={"ما هو طلب التبرع اليوم؟"}
+          title="ما هو طلب التبرع اليوم؟"
           onClick={() => setShowPostForm((prev) => !prev)}
         />
       )}
 
       {showPostForm && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-950/90 backdrop-blur-md z-50">
+        <div
+          className="fixed inset-0 flex items-center justify-center bg-gray-950/90 backdrop-blur-md z-50"
+          role="dialog"
+          aria-modal="true"
+          aria-label="نموذج إضافة طلب جديد">
           <PostForm onClose={handleCloseForm} />
         </div>
       )}
@@ -76,20 +90,43 @@ export default function Posts() {
 
       {/* شريط البحث */}
       {posts.length > 0 && (
-        <Searchbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        <div className="mb-6">
+          <Searchbar
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            placeholder="ابحث في الطلبات..."
+          />
+        </div>
       )}
 
-      {loadingPosts ? (
-        <Loader />
-      ) : filteredPosts.length === 0 ? (
-        <NoData h2={"لا توجد طلبات تطابق كلمة البحث"} />
-      ) : (
-        <CardsLayout>
-          {filteredPosts.map((post) => (
-            <PostCard key={post.id} newPost={post} />
-          ))}
-        </CardsLayout>
-      )}
-    </>
+      <main role="main" aria-label="قائمة الطلبات">
+        {loadingPosts ? (
+          <div className="flex justify-center py-8">
+            <Loader />
+          </div>
+        ) : filteredPosts.length === 0 ? (
+          <NoData
+            h2={
+              searchTerm
+                ? "لا توجد طلبات تطابق كلمة البحث"
+                : "لا توجد طلبات متاحة"
+            }
+          />
+        ) : (
+          <>
+            <div className="text-center text-sm text-[var(--color-bg-muted-text)]">
+              تم العثور على {filteredPosts.length} طلب{" "}
+              {posts.length !== filteredPosts.length &&
+                `من أصل ${posts.length}`}
+            </div>
+            <CardsLayout>
+              {filteredPosts.map((post) => (
+                <PostCard key={post.id} newPost={post} />
+              ))}
+            </CardsLayout>
+          </>
+        )}
+      </main>
+    </div>
   );
 }

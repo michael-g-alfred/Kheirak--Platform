@@ -1,4 +1,3 @@
-import React from "react";
 import PageLayout from "../layouts/PageLayout";
 import Header_Subheader from "../components/Header_Subheader";
 import CardsLayout from "../layouts/CardsLayout";
@@ -26,10 +25,18 @@ export default function Services() {
 
   return (
     <PageLayout>
-      <Header_Subheader
-        h1="خدماتنا"
-        p="نقدم مجموعة من الخدمات التي تهدف إلى تسهيل عملية التبرع وضمان وصول الدعم لمستحقيه بأفضل الطرق وأكثرها أمانًا."></Header_Subheader>
-      <CardsLayout list={services} colNum={3} />
+      <div dir="rtl">
+        <Header_Subheader
+          h1="خدماتنا"
+          p="نقدم مجموعة من الخدمات التي تهدف إلى تسهيل عملية التبرع وضمان وصول الدعم لمستحقيه بأفضل الطرق وأكثرها أمانًا."
+        />
+
+        <main role="main" aria-label="قائمة الخدمات">
+          <section aria-label="خدمات المنصة">
+            <CardsLayout list={services} colNum={3} />
+          </section>
+        </main>
+      </div>
     </PageLayout>
   );
 }

@@ -8,8 +8,8 @@ import {
   doSignInWithGoogle,
 } from "../Firebase/auth";
 import { db } from "../Firebase/Firebase";
-import { collection, setDoc, doc, getDoc } from "firebase/firestore";
-import { useState, useEffect } from "react";
+import { setDoc, doc, getDoc } from "firebase/firestore";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SubmitButton from "./SubmitButton";
 import { toast } from "react-hot-toast";
@@ -57,8 +57,8 @@ const SignUpForm = () => {
   const { refreshUserData } = useAuth();
 
   const onSubmit = async ({ userName, email, password, role }) => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       const userCredential = await doCreateUserWithEmailAndPassword(
         email,
         password
@@ -75,12 +75,12 @@ const SignUpForm = () => {
       });
 
       toast.success("تم إنشاء الحساب بنجاح!");
-      setIsLoading(false);
       await refreshUserData();
       navigate("/");
     } catch (error) {
       const friendlyMsg = getFriendlyFirebaseError(error.code);
       toast.error(friendlyMsg);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -179,7 +179,7 @@ const SignUpForm = () => {
             type="button"
             onClick={handleGoogleSignUp}
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-2 px-6 py-2 bg-[var(--color-secondary-base)] hover:bg-[var(--color-secondary-pressed)] text-[var(--color-bg-muted-text)] border border-[var(--color-bg-divider)] rounded-lg cursor-pointer disabled:cursor-not-allowed disabled:bg-bg-[var(--color-secondary-disabled)]">
+            className="w-full flex items-center justify-center gap-2 px-6 py-2 bg-[var(--color-secondary-base)] hover:bg-[var(--color-secondary-pressed)] text-[var(--color-bg-muted-text)] border border-[var(--color-bg-divider)] rounded-lg cursor-pointer disabled:cursor-not-allowed disabled:bg-[var(--color-secondary-disabled)]">
             <span>إنشاء حساب بإستخدام جوجل</span>
             <img src={GoogleIcon} alt="Google" className="w-5 h-5" />
           </button>

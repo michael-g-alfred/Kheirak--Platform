@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
-import FacebookIcon from "../icons/FaceebookIcon";
+import FacebookIcon from "../icons/FacebookIcon";
 import XIcon from "../icons/XIcon";
-import InstgramIcon from "../icons/InstgramIcon";
+import InstagramIcon from "../icons/InstagramIcon";
 import MailIcon from "../icons/MailIcon";
 import PhoneIcon from "../icons/PhoneIcon";
-import WhatsAppIcon from "../icons/What'sAppIcon";
+import WhatsAppIcon from "../icons/WhatsAppIcon";
 
 export default function Footer() {
   const navLinks = [
@@ -17,7 +17,7 @@ export default function Footer() {
   const socialLinks = [
     { href: "https://facebook.com", icon: <FacebookIcon /> },
     { href: "https://twitter.com", icon: <XIcon /> },
-    { href: "https://instagram.com", icon: <InstgramIcon /> },
+    { href: "https://instagram.com", icon: <InstagramIcon /> },
   ];
 
   const contactInfo = [

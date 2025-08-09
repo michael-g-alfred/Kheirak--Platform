@@ -1,4 +1,4 @@
-export default function BookmarkIcon() {
+export default function FacebookIcon() {
   return (
     <svg
       width="20"
@@ -7,7 +7,7 @@ export default function BookmarkIcon() {
       fill="none"
       xmlns="http://www.w3.org/2000/svg">
       <path
-        d="M18 7V21L12 17L6 21V7C6 5.93913 6.42143 4.92172 7.17157 4.17157C7.92172 3.42143 8.93913 3 10 3H14C15.0609 3 16.0783 3.42143 16.8284 4.17157C17.5786 4.92172 18 5.93913 18 7Z"
+        d="M7 10V14H10V21H14V14H17L18 10H14V8C14 7.73478 14.1054 7.48043 14.2929 7.29289C14.4804 7.10536 14.7348 7 15 7H18V3H15C13.6739 3 12.4021 3.52678 11.4645 4.46447C10.5268 5.40215 10 6.67392 10 8V10H7Z"
         stroke="currentColor"
         strokeWidth="1.5"
         strokeLinecap="round"

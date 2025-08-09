@@ -3,7 +3,7 @@ import DynamicCardLayout from "../../layouts/DynamicCardLayout";
 import CardsLayout from "../../layouts/CardsLayout";
 import NoData from "../NoData";
 import Loader from "../Loader";
-import toast from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import { collection, doc, updateDoc, onSnapshot } from "firebase/firestore";
 import { db } from "../../Firebase/Firebase";
 
@@ -50,7 +50,9 @@ export default function CouponReview() {
     try {
       setUpdatingId(id);
       await updateDoc(doc(db, "Coupons", id), { status });
-    } catch {
+      toast.success(`تم ${status === "مقبول" ? "قبول" : "رفض"} الكوبون بنجاح`);
+    } catch (error) {
+      console.error("Error updating coupon status:", error);
       toast.error(`خطأ أثناء ${status === "مقبول" ? "قبول" : "رفض"} الكوبون`);
     } finally {
       setUpdatingId(null);
@@ -72,7 +74,7 @@ export default function CouponReview() {
               status={coupon.status}>
               <div className="text-md text-[var(--color-bg-text)] space-y-1 text-right">
                 <p>
-                  <strong>المؤسسة: </strong> {coupon.submittedBy.userName}
+                  <strong>المؤسسة: </strong> {coupon.submittedBy?.userName || "غير محدد"}
                 </p>
                 <p>
                   <strong>تفاصيل الكوبون: </strong> {coupon.details}
@@ -132,7 +134,7 @@ export default function CouponReview() {
                     disabled={
                       coupon.status === "مقبول" || updatingId === coupon.id
                     }>
-                    قبول
+                    {updatingId === coupon.id ? <Loader /> : "قبول"}
                   </button>
                   <button
                     onClick={() => handleUpdateStatus(coupon.id, "مرفوض")}
@@ -140,7 +142,7 @@ export default function CouponReview() {
                     disabled={
                       coupon.status === "مرفوض" || updatingId === coupon.id
                     }>
-                    رفض
+                    {updatingId === coupon.id ? <Loader /> : "رفض"}
                   </button>
                 </div>
               )}

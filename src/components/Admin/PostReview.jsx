@@ -3,7 +3,7 @@ import DynamicCardLayout from "../../layouts/DynamicCardLayout";
 import CardsLayout from "../../layouts/CardsLayout";
 import NoData from "../NoData";
 import Loader from "../Loader";
-import toast from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import { collection, doc, updateDoc, onSnapshot } from "firebase/firestore";
 import { db } from "../../Firebase/Firebase";
 
@@ -50,7 +50,9 @@ export default function PostReview() {
     try {
       setUpdatingId(id);
       await updateDoc(doc(db, "Posts", id), { status });
-    } catch {
+      toast.success(`تم ${status === "مقبول" ? "قبول" : "رفض"} الطلب بنجاح`);
+    } catch (error) {
+      console.error("Error updating post status:", error);
       toast.error(`خطأ أثناء ${status === "مقبول" ? "قبول" : "رفض"} الطلب`);
     } finally {
       setUpdatingId(null);
@@ -70,7 +72,7 @@ export default function PostReview() {
               status={post.status}>
               <div className="text-md text-[var(--color-bg-text)] space-y-1 text-right">
                 <p>
-                  <strong>مقدم الطلب: </strong> {post.submittedBy.userName}
+                  <strong>مقدم الطلب: </strong> {post.submittedBy?.userName || "غير محدد"}
                 </p>
                 <p>
                   <strong>تفاصيل الطلب: </strong> {post.details}
@@ -127,7 +129,7 @@ export default function PostReview() {
                     disabled={
                       post.status === "مقبول" || updatingId === post.id
                     }>
-                    قبول
+                    {updatingId === post.id ? <Loader /> : "قبول"}
                   </button>
                   <button
                     onClick={() => handleUpdateStatus(post.id, "مرفوض")}
@@ -135,7 +137,7 @@ export default function PostReview() {
                     disabled={
                       post.status === "مرفوض" || updatingId === post.id
                     }>
-                    رفض
+                    {updatingId === post.id ? <Loader /> : "رفض"}
                   </button>
                 </div>
               )}

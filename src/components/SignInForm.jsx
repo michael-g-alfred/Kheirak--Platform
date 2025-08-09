@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import InputField from "./InputField";
 import FormLayout from "../layouts/FormLayout";
@@ -50,16 +50,15 @@ export default function SignInForm() {
       if (userDoc.exists()) {
         const role = userDoc.data().role;
         toast.success("تم تسجيل الدخول بنجاح");
-        setIsLoading(false);
         navigate("/");
       } else {
         toast.error("لم يتم العثور على بيانات المستخدم");
-        setIsLoading(false);
       }
     } catch (err) {
       console.error(err.message);
       const friendlyMsg = getFriendlyFirebaseError(err.code);
       toast.error(friendlyMsg);
+    } finally {
       setIsLoading(false);
     }
   };
@@ -130,7 +129,7 @@ export default function SignInForm() {
             type="button"
             onClick={handleGoogleSignIn}
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-2 px-6 py-2 bg-[var(--color-secondary-base)] hover:bg-[var(--color-secondary-pressed)] text-[var(--color-bg-muted-text)] border border-[var(--color-bg-divider)] rounded-lg cursor-pointer disabled:cursor-not-allowed disabled:bg-bg-[var(--color-secondary-disabled)]">
+            className="w-full flex items-center justify-center gap-2 px-6 py-2 bg-[var(--color-secondary-base)] hover:bg-[var(--color-secondary-pressed)] text-[var(--color-bg-muted-text)] border border-[var(--color-bg-divider)] rounded-lg cursor-pointer disabled:cursor-not-allowed disabled:bg-[var(--color-secondary-disabled)]">
             <span>التسجيل بإستخدام جوجل</span>
             <img src={GoogleIcon} alt="Google" className="w-5 h-5" />
           </button>

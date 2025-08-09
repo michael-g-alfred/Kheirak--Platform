@@ -1,10 +1,10 @@
-import React from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import InputField from "./InputField";
 import FormLayout from "../layouts/FormLayout";
 import SubmitButton from "./SubmitButton";
+import { toast } from "react-hot-toast";
 
 const schema = yup.object().shape({
   name: yup.string().required("الاسم مطلوب").min(2, "قصير جدًا"),
@@ -27,13 +27,29 @@ export default function ContactForm() {
   });
 
   const onSubmit = async (data) => {
-    await new Promise((res) => setTimeout(res, 1000)); // محاكاة تأخير الشبكة
-    alert(
-      `تم إرسال الرسالة!\n\nالاسم: ${data.name}\nالبريد الإلكتروني: ${
-        data.email
-      }\nرقم الهاتف: ${data.phone || "لا يوجد"}\nالرسالة: ${data.message}`
-    );
-    reset();
+    try {
+      toast.loading("جاري إرسال الرسالة...");
+      
+      // محاكاة تأخير الشبكة - في التطبيق الحقيقي، هذا سيكون API call
+      await new Promise((res) => setTimeout(res, 1000));
+      
+      // في التطبيق الحقيقي، هنا سيتم إرسال البيانات إلى الخادم
+      console.log("Contact form data:", {
+        name: data.name,
+        email: data.email,
+        phone: data.phone || "لا يوجد",
+        message: data.message,
+        timestamp: new Date().toISOString()
+      });
+      
+      toast.dismiss();
+      toast.success("تم إرسال الرسالة بنجاح! سنتواصل معك قريباً.");
+      reset();
+    } catch (error) {
+      console.error("Error sending contact form:", error);
+      toast.dismiss();
+      toast.error("حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى.");
+    }
   };
 
   return (
