@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import Logo from "../assets/logo.svg";
 import CloseIcon from "../icons/CloseIcon";
@@ -40,7 +40,6 @@ const NavLinksList = ({ tabs, isMobile, onClick }) => (
 const Navbar = () => {
   const { role, loading, currentUser } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const navigate = useNavigate();
 
   const [userName, setUserName] = useState(null);
   const [photoURL, setPhotoURL] = useState(currentUser?.photoURL);
@@ -48,16 +47,22 @@ const Navbar = () => {
   useEffect(() => {
     const fetchUserName = async () => {
       if (currentUser?.uid) {
-        const userRef = doc(db, "Users", currentUser.uid);
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) {
-          setUserName(userSnap.data().userName);
+        try {
+          const userRef = doc(db, "Users", currentUser.uid);
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            setUserName(userSnap.data().userName);
+          }
+        } catch (error) {
+          console.error("Error fetching user name:", error);
         }
+      } else {
+        setUserName(null);
       }
     };
 
     fetchUserName();
-  }, [currentUser]);
+  }, [currentUser?.uid]);
 
   useEffect(() => {
     if (currentUser?.photoURL) {
@@ -81,57 +86,57 @@ const Navbar = () => {
     },
   ];
 
-  const beneficiaryTabs = [
-    UserProfileTab({
-      pathPrefix: "beneficiary",
-      userName,
-      photoURL,
-    }),
-    {
-      id: "notifications",
-      label: <NotificationBadge />,
-    },
-    ...baseTabs,
-  ];
-
-  const donorTabs = [
-    UserProfileTab({
-      pathPrefix: "donor",
-      userName,
-      photoURL,
-    }),
-    {
-      id: "notifications",
-      label: <NotificationBadge />,
-    },
-    ...baseTabs,
-  ];
-
-  const orgTabs = [
-    UserProfileTab({
-      pathPrefix: "org",
-      userName,
-      photoURL,
-    }),
-    {
-      id: "notifications",
-      label: <NotificationBadge />,
-    },
-    ...baseTabs,
-  ];
-
   const adminTabs = [{ id: "dashboard", label: "لوحة التحكم" }, ...baseTabs];
 
   const tabs = useMemo(() => {
+    const beneficiaryTabsWithUser = [
+      UserProfileTab({
+        pathPrefix: "beneficiary",
+        userName,
+        photoURL,
+      }),
+      {
+        id: "notifications",
+        label: <NotificationBadge />,
+      },
+      ...baseTabs,
+    ];
+
+    const donorTabsWithUser = [
+      UserProfileTab({
+        pathPrefix: "donor",
+        userName,
+        photoURL,
+      }),
+      {
+        id: "notifications",
+        label: <NotificationBadge />,
+      },
+      ...baseTabs,
+    ];
+
+    const orgTabsWithUser = [
+      UserProfileTab({
+        pathPrefix: "org",
+        userName,
+        photoURL,
+      }),
+      {
+        id: "notifications",
+        label: <NotificationBadge />,
+      },
+      ...baseTabs,
+    ];
+
     switch (role) {
       case "مشرف":
         return adminTabs;
       case "مستفيد":
-        return beneficiaryTabs;
+        return beneficiaryTabsWithUser;
       case "متبرع":
-        return donorTabs;
+        return donorTabsWithUser;
       case "مؤسسة":
-        return orgTabs;
+        return orgTabsWithUser;
       default:
         return guestTabs;
     }

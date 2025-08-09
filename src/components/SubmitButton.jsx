@@ -12,7 +12,13 @@ export default function SubmitButton({
       className="w-full text-[var(--color-secondary-base)] font-bold p-3 rounded-md transition cursor-pointer bg-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)]
        disabled:cursor-not-allowed"
       disabled={disabled}>
-      {isLoading ? <Loader /> : buttonTitle}
+      {isLoading ? (
+        <span className="bg-[var(--color-bg-base)]">
+          <Loader />
+        </span>
+      ) : (
+        buttonTitle
+      )}
     </button>
   );
 }

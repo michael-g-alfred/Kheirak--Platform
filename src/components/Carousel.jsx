@@ -1,4 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import ArrowBadgeLeft from "../icons/ArrowBadgeLeft";
+import ChevronLeftIcon from "../icons/ChevronLeftIcon";
+import ChevronRightIcon from "../icons/ChevronRightIcon";
 
 const slides = [
   {
@@ -29,41 +32,83 @@ const slides = [
 
 const Carousel = () => {
   const [current, setCurrent] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
+    if (isPaused) return;
+
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % slides.length);
     }, 5000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [isPaused]);
+
+  const goToSlide = (index) => {
+    setCurrent(index);
+  };
+
+  const goToPrevious = () => {
+    setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
+  };
+
+  const goToNext = () => {
+    setCurrent((prev) => (prev + 1) % slides.length);
+  };
 
   return (
-    <div className="w-full mx-auto bg-[var(--color-bg-card)] rounded-lg text-center relative border-1 border-[var(--color-bg-divider)] ">
+    <div
+      className="w-full mx-auto bg-[var(--color-bg-card)] rounded-lg text-center relative border-1 border-[var(--color-bg-divider)]"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      role="region"
+      aria-label="صور متحركة للمشاريع الخيرية">
       <div className="overflow-hidden rounded-lg h-64 sm:h-72 md:h-80 lg:h-100 relative">
         <img
           src={slides[current].image}
-          alt={`Slide ${current + 1}`}
+          alt={slides[current].title}
           className="w-full h-full object-cover"
+          onError={(e) => {
+            e.target.src =
+              "https://via.placeholder.com/800x400/cccccc/666666?text=صورة+غير+متوفرة";
+          }}
         />
-        <h2 className="absolute bottom-4 right-0 left-0 text-lg sm:text-xl md:text-2xl font-semibold bg-[var(--color-secondary-base)]/70 backdrop-blur-sm text-[var(--color-bg-muted-text)] px-4 py-3">
+
+        {/* Navigation Arrows */}
+        <button
+          onClick={goToNext}
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all duration-200"
+          aria-label="الصورة السابقة">
+          <ChevronLeftIcon />
+        </button>
+
+        <button
+          onClick={goToPrevious}
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all duration-200"
+          aria-label="الصورة التالية">
+          <ChevronRightIcon />
+        </button>
+
+        <h2 className="absolute bottom-6 right-0 left-0 text-lg sm:text-xl md:text-2xl font-semibold bg-[var(--color-secondary-base)]/70 backdrop-blur-sm text-[var(--color-bg-muted-text)] px-4 py-3">
           {slides[current].title}
         </h2>
       </div>
 
-      {/* Dots */}
-      {/* <div className="absolute bottom-2 right-0 left-0 flex justify-center gap-2">
+      {/* Dots Navigation */}
+      <div className="absolute bottom-2 right-0 left-0 flex justify-center gap-2">
         {slides.map((_, index) => (
           <button
             key={index}
-            onClick={() => setCurrent(index)}
-            className={`w-3 h-3 rounded-full transition ${
+            onClick={() => goToSlide(index)}
+            className={`w-3 h-3 rounded-full transition-all duration-200 ${
               index === current
-                ? "bg-[var(--color-primary-base)]"
-                : "bg-[var(--color-secondary-disabled)]"
-            }`}></button>
+                ? "bg-[var(--color-primary-base)] scale-110"
+                : "bg-[var(--color-secondary-disabled)] hover:bg-[var(--color-primary-base)]/50"
+            }`}
+            aria-label={`الانتقال إلى الصورة ${index + 1}`}
+          />
         ))}
-      </div> */}
+      </div>
     </div>
   );
 };

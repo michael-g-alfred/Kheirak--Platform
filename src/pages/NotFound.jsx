@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import PageLayout from "../layouts/PageLayout";
 
 export default function NotFound() {
@@ -6,29 +7,40 @@ export default function NotFound() {
 
   return (
     <PageLayout x="center" y="center">
-      <h1 style={{ fontSize: "5rem" }}>😭</h1>
-      <h2 style={{ fontSize: "2rem", color: "var(--color-bg-text)" }}>
-        .404 - الصفحة غير موجودة
-      </h2>
-      <a
-        href="/"
-        style={{
-          width: "20rem",
-          textDecoration: "none",
-          backgroundColor: hover
-            ? "var(--color-primary-hover)"
-            : "var(--color-primary-base)",
-          color: "var(--color-secondary-base)",
-          padding: "0.75rem 1.5rem",
-          borderRadius: "8px",
-          fontWeight: "bold",
-          display: "inline-block",
-          textAlign: "center",
-        }}
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}>
-        العودة إلى الصفحة الرئيسية
-      </a>
+      <div dir="rtl" className="text-center space-y-6">
+        <div role="img" aria-label="وجه حزين" className="text-8xl">
+          😭
+        </div>
+        <div>
+          <h1 className="text-4xl font-bold text-[var(--color-bg-text)] mb-2">
+            404
+          </h1>
+          <h2 className="text-2xl text-[var(--color-bg-text)] mb-6">
+            الصفحة غير موجودة
+          </h2>
+          <p className="text-lg text-[var(--color-bg-muted-text)] mb-8 max-w-md mx-auto">
+            عذراً، لم نتمكن من العثور على الصفحة التي تبحث عنها. قد تكون الصفحة
+            محذوفة أو تم تغيير الرابط.
+          </p>
+        </div>
+        <Link
+          to="/"
+          className={`inline-block w-80 px-6 py-3 rounded-lg font-bold text-center transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+            hover ? "transform scale-105" : ""
+          }`}
+          style={{
+            textDecoration: "none",
+            backgroundColor: hover
+              ? "var(--color-primary-hover)"
+              : "var(--color-primary-base)",
+            color: "var(--color-secondary-base)",
+          }}
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
+          aria-label="العودة إلى الصفحة الرئيسية">
+          العودة إلى الصفحة الرئيسية
+        </Link>
+      </div>
     </PageLayout>
   );
 }

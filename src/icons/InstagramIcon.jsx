@@ -1,6 +1,4 @@
-import React from "react";
-
-export default function InstgramIcon() {
+export default function InstagramIcon() {
   return (
     <svg
       width="20"

@@ -1,12 +1,135 @@
-# React + Vite
+# Kheirak Platform 🤝
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A comprehensive donation and coupon management platform built with React and Firebase, supporting multiple user roles and real-time interactions.
 
-Currently, two official plugins are available:
+## 🌟 Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Multi-Role System**: Admin, Donor, Organization, Beneficiary, and Guest roles
+- **Coupon Management**: Create, distribute, and redeem coupons with real-time tracking
+- **Donation Posts**: Share and manage donation requests
+- **Real-time Updates**: Live data synchronization using Firebase Firestore
+- **Arabic Support**: Full RTL (Right-to-Left) layout and Arabic localization
+- **Responsive Design**: Mobile-first approach with modern UI
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Frontend**: React 19.1.0 + Vite
+- **Styling**: TailwindCSS 4.1.11
+- **Backend**: Firebase (Authentication + Firestore)
+- **Routing**: React Router DOM
+- **State Management**: React Context API
+- **Notifications**: React Hot Toast
+- **Form Validation**: Yup + React Hook Form
+- **Date Handling**: date-fns with Arabic locale
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js (v16 or higher)
+- npm or yarn
+- Firebase project setup
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/your-username/Kheirak--Platform.git
+cd Kheirak--Platform
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Configure Firebase:
+   - Create a Firebase project
+   - Enable Authentication and Firestore
+   - Update Firebase configuration in `src/Firebase/Firebase.js`
+
+4. Start the development server:
+```bash
+npm run dev
+```
+
+## 📁 Project Structure
+
+```
+src/
+├── components/        # Reusable UI components
+│   ├── CouponCard.jsx    # Coupon display & redemption
+│   ├── PostCard.jsx      # Donation posts
+│   ├── Navbar.jsx        # Navigation
+│   └── Admin/            # Admin-specific components
+├── pages/            # Route pages
+│   ├── Home.jsx
+│   ├── AdminDashboard.jsx
+│   └── Profile pages for each role
+├── layouts/          # Layout components
+├── context/          # React Context (Auth)
+├── Firebase/         # Firebase configuration
+├── routes/           # Route definitions
+└── utils/            # Utility functions
+```
+
+## 👥 User Roles
+
+- **Admin**: Full system management and oversight
+- **Donor**: Create donation posts and redeem coupons
+- **Organization**: Create and manage coupon campaigns
+- **Beneficiary**: Receive donations and use available coupons
+- **Guest**: Browse public content with limited access
+
+## 🔥 Firebase Setup
+
+1. **Authentication**: Configure sign-in methods (Email/Password)
+2. **Firestore Collections**:
+   - `Users`: User profiles and role information
+   - `Coupons`: Coupon data and usage tracking
+   - `Posts`: Donation posts and requests
+   - `Notifications`: User notifications
+
+## 🎨 Key Features
+
+### Coupon System
+- Real-time coupon creation and management
+- Usage tracking with beneficiary information
+- Stock management and availability status
+- Confirmation dialogs for redemption
+
+### Donation Management
+- Post creation with rich content
+- Real-time updates on donation status
+- User interaction tracking
+- Admin moderation capabilities
+
+### User Management
+- Role-based access control
+- Profile management for different user types
+- Authentication state persistence
+- Protected routes and components
+
+## 🚀 Deployment
+
+The project is configured for Firebase Hosting:
+
+```bash
+npm run build
+firebase deploy
+```
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🆘 Support
+
+For support and questions, please open an issue in the GitHub repository.

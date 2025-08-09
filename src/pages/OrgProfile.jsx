@@ -54,6 +54,10 @@ export default function OrgProfile() {
 
         setMyCoupons(submittedCoupons);
         setIsLoading(false);
+      },
+      (error) => {
+        console.error("Error fetching organization coupons:", error);
+        setIsLoading(false);
       }
     );
 

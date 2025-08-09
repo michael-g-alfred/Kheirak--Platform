@@ -36,25 +36,32 @@ export default function DonorProfile() {
       return;
     }
 
-    const unsubscribe = onSnapshot(collection(db, "Posts"), (querySnapshot) => {
-      const postsWithDonations = [];
+    const unsubscribe = onSnapshot(
+      collection(db, "Posts"),
+      (querySnapshot) => {
+        const postsWithDonations = [];
 
-      querySnapshot.forEach((doc) => {
-        const postData = doc.data();
-        const donors = postData.donors || [];
-        const donated = donors.some((donor) => donor.email === userEmail);
+        querySnapshot.forEach((doc) => {
+          const postData = doc.data();
+          const donors = postData.donors || [];
+          const donated = donors.some((donor) => donor.email === userEmail);
 
-        if (donated) {
-          postsWithDonations.push({
-            id: doc.id,
-            ...postData,
-          });
-        }
-      });
+          if (donated) {
+            postsWithDonations.push({
+              id: doc.id,
+              ...postData,
+            });
+          }
+        });
 
-      setDonatedPosts(postsWithDonations);
-      setIsLoading(false);
-    });
+        setDonatedPosts(postsWithDonations);
+        setIsLoading(false);
+      },
+      (error) => {
+        console.error("Error fetching donated posts:", error);
+        setIsLoading(false);
+      }
+    );
 
     return () => unsubscribe();
   }, [userEmail]);
@@ -78,7 +85,7 @@ export default function DonorProfile() {
       ) : (
         <CardsLayout colNum={4}>
           {donatedPosts.map((post) => {
-            const totalDonated = post.donors
+            const totalDonated = (post.donors || [])
               .filter((d) => d.email === userEmail)
               .reduce((sum, d) => sum + Number(d.amount || 0), 0);
 
@@ -89,7 +96,7 @@ export default function DonorProfile() {
                 status={post.status}>
                 <div className="text-md text-[var(--color-bg-text)] space-y-1 text-right">
                   <p>
-                    <strong>صاحب الطلب:</strong> {post.submittedBy.userName}
+                    <strong>صاحب الطلب:</strong> {post.submittedBy?.userName || "غير محدد"}
                   </p>
                   <p>
                     <strong>المبلغ المتبرع به:</strong>{" "}

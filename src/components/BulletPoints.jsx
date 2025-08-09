@@ -1,4 +1,3 @@
-import React from "react";
 import ArrowBadgeLeft from "../icons/ArrowBadgeLeft";
 
 export default function BulletPoints({ content }) {

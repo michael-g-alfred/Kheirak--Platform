@@ -5,7 +5,15 @@ import { ar } from "date-fns/locale";
 import CardLayout from "../layouts/CardLayout";
 import ImageIcon from "../icons/ImageIcon";
 import FormLayout from "../layouts/FormLayout";
-import { doc, onSnapshot } from "firebase/firestore";
+import {
+  doc,
+  onSnapshot,
+  updateDoc,
+  arrayUnion,
+  getDoc,
+  setDoc,
+} from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 import { db } from "../Firebase/Firebase";
 import Loader from "./Loader";
 import { toast } from "react-hot-toast";
@@ -72,21 +80,23 @@ const PostCard = ({ newPost }) => {
     if (newTotal > amount) {
       toast.dismiss();
       toast.error("المبلغ يتجاوز القيمة المطلوبة.");
-      ("المبلغ يتجاوز القيمة المطلوبة.");
       setIsLoading(false);
       closePopup();
       return;
     }
 
     try {
-      const { doc, updateDoc, arrayUnion, getDoc, setDoc } = await import(
-        "firebase/firestore"
-      );
-      const { getAuth } = await import("firebase/auth");
-
       const postRef = doc(db, "Posts", newPost.id);
       const auth = getAuth();
       const user = auth.currentUser;
+
+      if (!user) {
+        toast.dismiss();
+        toast.error("يجب تسجيل الدخول أولاً");
+        setIsLoading(false);
+        closePopup();
+        return;
+      }
 
       const updateData = {
         totalDonated: newTotal,
