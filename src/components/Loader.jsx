@@ -5,7 +5,7 @@ export default function Loader() {
       role="status"
       aria-label="جاري التحميل...">
       <span
-        className="inline-block w-5 h-5 border-2 border-t-transparent rounded-full animate-spin"
+        className="inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"
         aria-hidden="true"
       />
     </div>
