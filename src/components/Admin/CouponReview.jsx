@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import DynamicCardLayout from "../../layouts/DynamicCardLayout";
 import CardsLayout from "../../layouts/CardsLayout";
 import NoData from "../NoData";
 import Loader from "../Loader";
 import { toast } from "react-hot-toast";
-import { collection, doc, updateDoc, onSnapshot } from "firebase/firestore";
-import { db } from "../../Firebase/Firebase";
+import { useFetchCollection } from "../../hooks/useFetchCollection";
+import { useUpdateStatus } from "../../hooks/useUpdateStatus";
 
 export default function CouponReview() {
-  const [coupons, setCoupons] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [updatingId, setUpdatingId] = useState(null);
+  const { data: coupons, loading, error } = useFetchCollection(["Coupons"]);
+  const { updatingId, updateStatus } = useUpdateStatus("Coupons");
+
   const getStatusColor = (status) => {
     switch (status) {
       case "مقبول":
@@ -27,39 +27,12 @@ export default function CouponReview() {
   };
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      collection(db, "Coupons"),
-      (snapshot) => {
-        const fetchedCoupons = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setCoupons(fetchedCoupons);
-        setIsLoading(false);
-      },
-      (error) => {
-        toast.error("خطأ أثناء تحميل الكوبونات");
-        setIsLoading(false);
-      }
-    );
-
-    return () => unsubscribe();
-  }, []);
-
-  const handleUpdateStatus = async (id, status) => {
-    try {
-      setUpdatingId(id);
-      await updateDoc(doc(db, "Coupons", id), { status });
-      toast.success(`تم ${status === "مقبول" ? "قبول" : "رفض"} الكوبون بنجاح`);
-    } catch (error) {
-      console.error("Error updating coupon status:", error);
-      toast.error(`خطأ أثناء ${status === "مقبول" ? "قبول" : "رفض"} الكوبون`);
-    } finally {
-      setUpdatingId(null);
+    if (error) {
+      toast.error("خطأ أثناء تحميل الكوبونات");
     }
-  };
+  }, [error]);
 
-  if (isLoading) {
+  if (loading) {
     return <Loader />;
   }
 
@@ -130,16 +103,16 @@ export default function CouponReview() {
               {coupon.status !== "مكتمل" && (
                 <div className="flex gap-2 mt-4">
                   <button
-                    onClick={() => handleUpdateStatus(coupon.id, "مقبول")}
-                    className="success px-6 py-3 rounded text-md"
+                    onClick={() => updateStatus(coupon.id, "مقبول")}
+                    className="success px-6 py-3 rounded text-md focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-success-light)] disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={
                       coupon.status === "مقبول" || updatingId === coupon.id
                     }>
                     {updatingId === coupon.id ? <Loader /> : "قبول"}
                   </button>
                   <button
-                    onClick={() => handleUpdateStatus(coupon.id, "مرفوض")}
-                    className="danger px-6 py-3 rounded text-md"
+                    onClick={() => updateStatus(coupon.id, "مرفوض")}
+                    className="danger px-6 py-3 rounded text-md focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-danger-light)] disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={
                       coupon.status === "مرفوض" || updatingId === coupon.id
                     }>
