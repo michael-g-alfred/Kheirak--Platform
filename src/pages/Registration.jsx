@@ -24,7 +24,7 @@ export default function Registration() {
               <button
                 type="button"
                 onClick={() => setIsLogin(!isLogin)}
-                className="text-[var(--color-primary-base)] underline font-bold px-2 py-1 rounded cursor-pointer"
+                className="text-[var(--color-primary-base)] underline font-bold px-2 py-1 rounded cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)]"
                 aria-label={
                   isLogin
                     ? "التبديل إلى نموذج إنشاء حساب جديد"
