@@ -1,13 +1,5 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { db } from "../Firebase/Firebase";
-import {
-  collection,
-  onSnapshot,
-  deleteDoc,
-  getDocs,
-  doc,
-} from "firebase/firestore";
-import { getAuth } from "firebase/auth";
 import { toast } from "react-hot-toast";
 
 import PageLayout from "../layouts/PageLayout";
@@ -17,61 +9,32 @@ import NoData from "../components/NoData";
 import CardLayout from "../layouts/CardLayout";
 import CardsLayout from "../layouts/CardsLayout";
 
+import { useFetchCollection } from "../hooks/useFetchCollection";
+import { getAuth } from "firebase/auth";
+import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+
 export default function NotificationsPage() {
-  const [notifications, setNotifications] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState(false);
   const auth = getAuth();
   const user = auth.currentUser;
 
+  const {
+    data: notifications,
+    loading: loadingNotifications,
+    error,
+  } = useFetchCollection(
+    user ? ["Notifications", user.email, "user_Notifications"] : []
+  );
+
   useEffect(() => {
-    if (!user) {
-      setLoading(false);
-      return;
+    if (error) {
+      toast.error("خطأ في جلب الإشعارات");
     }
-
-    const notifRef = collection(
-      db,
-      "Notifications",
-      user.email,
-      "user_Notifications"
-    );
-
-    const unsubscribe = onSnapshot(
-      notifRef,
-      (snapshot) => {
-        try {
-          const notifs = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-          const sorted = notifs.sort((a, b) => {
-            const timestampA = a.timestamp || "";
-            const timestampB = b.timestamp || "";
-            return timestampB.localeCompare(timestampA);
-          });
-          setNotifications(sorted);
-          setLoading(false);
-        } catch (error) {
-          console.error("Error processing notifications:", error);
-          toast.error("خطأ في معالجة الإشعارات");
-          setLoading(false);
-        }
-      },
-      (error) => {
-        console.error("Error fetching notifications:", error);
-        toast.error("خطأ في جلب الإشعارات");
-        setLoading(false);
-      }
-    );
-
-    return () => unsubscribe();
-  }, [user]);
+  }, [error]);
 
   const handleDeleteAll = async () => {
     if (!user || deleting) return;
 
-    // Use toast for confirmation instead of window.confirm
     const confirmDelete = window.confirm(
       "هل أنت متأكد أنك تريد حذف كل الإشعارات؟"
     );
@@ -119,12 +82,12 @@ export default function NotificationsPage() {
           p="هنا تجد كل الإشعارات المتعلقة بحسابك."
         />
 
-        {notifications.length > 0 && !loading && (
+        {notifications.length > 0 && !loadingNotifications && (
           <div className="flex justify-end mb-6">
             <button
               onClick={handleDeleteAll}
               disabled={deleting}
-              className="w-full sm:w-auto px-6 py-2 danger rounded text-center transition-all duration-200 hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full sm:w-auto px-6 py-2 danger_Outline rounded text-center focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-danger-light)] disabled:opacity-50 disabled:cursor-not-allowed"
               aria-label="حذف جميع الإشعارات">
               {deleting ? (
                 <Loader borderColor="var(--color-bg-text)" />
@@ -136,7 +99,7 @@ export default function NotificationsPage() {
         )}
 
         <main role="main" aria-label="قائمة الإشعارات">
-          {loading ? (
+          {loadingNotifications ? (
             <Loader />
           ) : notifications.length === 0 ? (
             <NoData h2="لا توجد إشعارات" />
@@ -159,7 +122,7 @@ export default function NotificationsPage() {
                         src={notif.imageUrl}
                         alt={notif.imageAlt || "صورة الإشعار"}
                         className="w-32 h-32 mx-auto rounded border"
-                        loading="lazy"
+                        loadingNotifications="lazy"
                         onError={(e) => {
                           e.target.style.display = "none";
                         }}

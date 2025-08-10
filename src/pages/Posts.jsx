@@ -1,10 +1,6 @@
-import { useState, useEffect } from "react";
-import { collection, onSnapshot } from "firebase/firestore";
-import { db } from "../Firebase/Firebase";
+import { useState } from "react";
 import { toast } from "react-hot-toast";
-
 import { useAuth } from "../context/authContext";
-
 import CreatePostTrigger from "../components/CreatePostTrigger";
 import PostForm from "../components/PostForm";
 import NoData from "../components/NoData";
@@ -14,53 +10,36 @@ import Loader from "../components/Loader";
 import Searchbar from "../components/Searchbar";
 import Divider from "../components/Divider";
 
+import { useFetchCollection } from "../hooks/useFetchCollection";
+
 export default function Posts() {
   const { role, loading } = useAuth();
   const [showPostForm, setShowPostForm] = useState(false);
-  const [posts, setPosts] = useState([]);
-  const [loadingPosts, setLoadingPosts] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+
+  const filterFn = (post) => post.status === "مقبول";
+
+  const sortFn = (a, b) => {
+    const aDate = new Date(a.createdAt?.seconds * 1000 || 0);
+    const bDate = new Date(b.createdAt?.seconds * 1000 || 0);
+    return bDate - aDate;
+  };
+
+  const {
+    data: posts,
+    loading: loadingPosts,
+    error,
+  } = useFetchCollection(["Posts"], filterFn, sortFn);
 
   const handleCloseForm = () => {
     setShowPostForm(false);
   };
 
-  useEffect(() => {
-    const unsubscribe = onSnapshot(
-      collection(db, "Posts"),
-      (snapshot) => {
-        try {
-          const fetchedPosts = snapshot.docs
-            .map((doc) => ({
-              id: doc.id,
-              ...doc.data(),
-            }))
-            .sort((a, b) => {
-              const aDate = new Date(a.createdAt?.seconds * 1000 || 0);
-              const bDate = new Date(b.createdAt?.seconds * 1000 || 0);
-              return bDate - aDate;
-            })
-            .filter((post) => post.status === "مقبول");
-
-          setPosts(fetchedPosts);
-          setLoadingPosts(false);
-        } catch (error) {
-          console.error("Error processing posts:", error);
-          toast.error("خطأ في معالجة الطلبات");
-          setLoadingPosts(false);
-        }
-      },
-      (error) => {
-        console.error("Error fetching posts:", error);
-        toast.error("خطأ في جلب الطلبات");
-        setLoadingPosts(false);
-      }
-    );
-
-    return () => unsubscribe();
-  }, []);
-
   if (loading || role === null) return null;
+
+  if (error) {
+    toast.error("خطأ في جلب الطلبات");
+  }
 
   const filteredPosts = posts.filter(
     (post) =>
@@ -90,7 +69,6 @@ export default function Posts() {
 
         <Divider />
 
-        {/* شريط البحث */}
         {posts.length > 0 && (
           <div className="mb-6">
             <Searchbar

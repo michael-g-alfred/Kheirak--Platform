@@ -1,16 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import DynamicCardLayout from "../../layouts/DynamicCardLayout";
 import CardsLayout from "../../layouts/CardsLayout";
 import NoData from "../NoData";
 import Loader from "../Loader";
 import { toast } from "react-hot-toast";
-import { collection, doc, updateDoc, onSnapshot } from "firebase/firestore";
-import { db } from "../../Firebase/Firebase";
+import { useFetchCollection } from "../../hooks/useFetchCollection";
+import { useUpdateStatus } from "../../hooks/useUpdateStatus";
 
 export default function PostReview() {
-  const [posts, setPosts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [updatingId, setUpdatingId] = useState(null);
+  const { data: posts, loading, error } = useFetchCollection(["Posts"]);
+  const { updatingId, updateStatus } = useUpdateStatus("Posts");
+
   const getStatusColor = (status) => {
     switch (status) {
       case "مقبول":
@@ -27,43 +27,18 @@ export default function PostReview() {
   };
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      collection(db, "Posts"),
-      (snapshot) => {
-        const fetchedPosts = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setPosts(fetchedPosts);
-        setIsLoading(false);
-      },
-      (error) => {
-        toast.error("خطأ أثناء تحميل الطلبات");
-        setIsLoading(false);
-      }
-    );
-
-    return () => unsubscribe();
-  }, []);
-
-  const handleUpdateStatus = async (id, status) => {
-    try {
-      setUpdatingId(id);
-      await updateDoc(doc(db, "Posts", id), { status });
-      toast.success(`تم ${status === "مقبول" ? "قبول" : "رفض"} الطلب بنجاح`);
-    } catch (error) {
-      console.error("Error updating post status:", error);
-      toast.error(`خطأ أثناء ${status === "مقبول" ? "قبول" : "رفض"} الطلب`);
-    } finally {
-      setUpdatingId(null);
+    if (error) {
+      toast.error("خطأ أثناء تحميل الطلبات");
     }
-  };
+  }, [error]);
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <>
-      {isLoading ? (
-        <Loader />
-      ) : posts.length > 0 ? (
+      {posts.length > 0 ? (
         <CardsLayout>
           {posts.map((post) => (
             <DynamicCardLayout
@@ -125,16 +100,16 @@ export default function PostReview() {
               {post.status !== "مكتمل" && (
                 <div className="flex gap-2 mt-4">
                   <button
-                    onClick={() => handleUpdateStatus(post.id, "مقبول")}
-                    className="success px-6 py-3 rounded text-md"
+                    onClick={() => updateStatus(post.id, "مقبول")}
+                    className="success px-6 py-3 rounded text-md focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-success-light)] disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={
                       post.status === "مقبول" || updatingId === post.id
                     }>
                     {updatingId === post.id ? <Loader /> : "قبول"}
                   </button>
                   <button
-                    onClick={() => handleUpdateStatus(post.id, "مرفوض")}
-                    className="danger px-6 py-3 rounded text-md"
+                    onClick={() => updateStatus(post.id, "مرفوض")}
+                    className="danger px-6 py-3 rounded text-md focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-danger-light)] disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={
                       post.status === "مرفوض" || updatingId === post.id
                     }>

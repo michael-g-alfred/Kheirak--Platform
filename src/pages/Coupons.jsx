@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
-import { collection, onSnapshot } from "firebase/firestore";
-import { db } from "../Firebase/Firebase";
+import { useState } from "react";
+import { useFetchCollection } from "../hooks/useFetchCollection";
 import CreatePostTrigger from "../components/CreatePostTrigger";
 import CouponForm from "../components/CouponForm";
 import NoData from "../components/NoData";
@@ -9,12 +8,11 @@ import CardsLayout from "../layouts/CardsLayout";
 import Loader from "../components/Loader";
 import { useAuth } from "../context/authContext";
 import Divider from "../components/Divider";
+import { toast } from "react-hot-toast";
 
 export default function Coupons() {
   const { role, loading } = useAuth();
   const [showCouponForm, setShowCouponForm] = useState(false);
-  const [coupons, setCoupons] = useState([]);
-  const [loadingCoupons, setLoadingCoupons] = useState(true);
   const [selectedType, setSelectedType] = useState("الكل");
 
   const categories = [
@@ -35,43 +33,33 @@ export default function Coupons() {
     خدمات: "🛠️",
     تعليم: "🎓",
   };
+
+  const filterFn = (coupon) => coupon.status === "مقبول";
+
+  const sortFn = (a, b) => {
+    const aDate = new Date(a.createdAt?.seconds * 1000 || 0);
+    const bDate = new Date(b.createdAt?.seconds * 1000 || 0);
+    return bDate - aDate;
+  };
+
+  const {
+    data: Coupons,
+    loading: loadingCoupons,
+    error,
+  } = useFetchCollection(["Coupons"], filterFn, sortFn);
+
   const handleCloseForm = () => {
     setShowCouponForm(false);
   };
 
-  useEffect(() => {
-    const unsubscribe = onSnapshot(
-      collection(db, "Coupons"),
-      (snapshot) => {
-        const fetchedCoupons = snapshot.docs
-          .map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }))
-          .sort((a, b) => {
-            const aDate = new Date(a.createdAt?.seconds * 1000 || 0);
-            const bDate = new Date(b.createdAt?.seconds * 1000 || 0);
-            return bDate - aDate;
-          })
-          .filter((post) => post.status === "مقبول");
-
-        setCoupons(fetchedCoupons);
-        setLoadingCoupons(false);
-      },
-      (error) => {
-        console.error("Error fetching Coupons:", error);
-        setLoadingCoupons(false);
-      }
-    );
-
-    return () => unsubscribe();
-  }, []);
-
   if (loading || role === null) return null;
+
+  if (error) {
+    toast.error("خطأ في جلب الكوبونات");
+  }
 
   return (
     <div className="px-6">
-      {" "}
       {role === "مؤسسة" && (
         <CreatePostTrigger
           title="إنشاء كوبون جديد"
@@ -85,7 +73,6 @@ export default function Coupons() {
       )}
       <Divider />
       <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-7 gap-2 items-center justify-center">
-        {" "}
         {categories.map((type) => {
           const isSelected = selectedType === type;
 
@@ -111,20 +98,17 @@ export default function Coupons() {
         })}
       </div>
       <Divider />
-      {/* عرض الرسالة أو الكوبونات */}
       {loadingCoupons ? (
         <Loader />
-      ) : coupons.length === 0 ? (
+      ) : Coupons.length === 0 ? (
         <NoData h2={"لا توجد كوبونات متاحة الآن"} />
       ) : (
         <CardsLayout>
-          {coupons
-            .filter((coupon) =>
-              selectedType === "الكل" ? true : coupon.type === selectedType
-            )
-            .map((coupon) => (
-              <CouponCard key={coupon.id} newCoupon={coupon} />
-            ))}
+          {Coupons.filter((coupon) =>
+            selectedType === "الكل" ? true : coupon.type === selectedType
+          ).map((coupon) => (
+            <CouponCard key={coupon.id} newCoupon={coupon} />
+          ))}
         </CardsLayout>
       )}
     </div>
