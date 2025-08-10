@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import ArrowBadgeLeft from "../icons/ArrowBadgeLeft";
 import ChevronLeftIcon from "../icons/ChevronLeftIcon";
 import ChevronRightIcon from "../icons/ChevronRightIcon";
 
@@ -39,7 +38,7 @@ const Carousel = () => {
 
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % slides.length);
-    }, 5000);
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [isPaused]);
@@ -58,12 +57,12 @@ const Carousel = () => {
 
   return (
     <div
-      className="w-full mx-auto bg-[var(--color-bg-card)] rounded-lg text-center relative border-1 border-[var(--color-bg-divider)]"
+      className="w-full mx-auto bg-[var(--color-bg-card)] rounded-lg text-center relative border border-[var(--color-bg-divider)] overflow-hidden"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       role="region"
       aria-label="صور متحركة للمشاريع الخيرية">
-      <div className="overflow-hidden rounded-lg h-64 sm:h-72 md:h-80 lg:h-100 relative">
+      <div className="overflow-hidden h-64 sm:h-72 md:h-80 lg:h-100 relative">
         <img
           src={slides[current].image}
           alt={slides[current].title}
@@ -77,19 +76,19 @@ const Carousel = () => {
         {/* Navigation Arrows */}
         <button
           onClick={goToNext}
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all duration-200"
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-[var(--color-bg-card)]/50 backdrop-blur-sm text-[var(--color-primary-base)] border border-[var(--color-bg-divider)] p-2 hover:bg-[var(--color-bg-card)]/70  rounded-full *:transition-all duration-200"
           aria-label="الصورة السابقة">
           <ChevronLeftIcon />
         </button>
 
         <button
           onClick={goToPrevious}
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all duration-200"
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-[var(--color-bg-card)]/50 backdrop-blur-sm text-[var(--color-primary-base)] border border-[var(--color-bg-divider)] p-2 hover:bg-[var(--color-bg-card)]/70  rounded-full *:transition-all duration-200"
           aria-label="الصورة التالية">
           <ChevronRightIcon />
         </button>
 
-        <h2 className="absolute bottom-6 right-0 left-0 text-lg sm:text-xl md:text-2xl font-semibold bg-[var(--color-secondary-base)]/70 backdrop-blur-sm text-[var(--color-bg-muted-text)] px-4 py-3">
+        <h2 className="absolute bottom-6 right-0 left-0 text-lg sm:text-xl md:text-2xl font-semibold bg-[var(--color-bg-card)]/50 backdrop-blur-sm text-[var(--color-primary-base)] border-y border-[var(--color-bg-divider)] px-4 py-3">
           {slides[current].title}
         </h2>
       </div>
@@ -103,7 +102,7 @@ const Carousel = () => {
             className={`w-3 h-3 rounded-full transition-all duration-200 ${
               index === current
                 ? "bg-[var(--color-primary-base)] scale-110"
-                : "bg-[var(--color-secondary-disabled)] hover:bg-[var(--color-primary-base)]/50"
+                : "bg-[var(--color-primary-disabled)] hover:bg-[var(--color-primary-base)]/50"
             }`}
             aria-label={`الانتقال إلى الصورة ${index + 1}`}
           />

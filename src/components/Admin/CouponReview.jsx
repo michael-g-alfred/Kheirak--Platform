@@ -72,9 +72,10 @@ export default function CouponReview() {
               key={coupon.id}
               title={coupon.title}
               status={coupon.status}>
-              <div className="text-md text-[var(--color-bg-text)] space-y-1 text-right">
+              <div className="text-md text-[var(--color-bg-text-dark)] space-y-1 text-right">
                 <p>
-                  <strong>المؤسسة: </strong> {coupon.submittedBy?.userName || "غير محدد"}
+                  <strong>المؤسسة: </strong>{" "}
+                  {coupon.submittedBy?.userName || "غير محدد"}
                 </p>
                 <p>
                   <strong>تفاصيل الكوبون: </strong> {coupon.details}

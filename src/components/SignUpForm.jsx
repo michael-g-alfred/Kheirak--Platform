@@ -16,6 +16,7 @@ import { toast } from "react-hot-toast";
 import { updateProfile } from "firebase/auth";
 import GoogleIcon from "../assets/google-logo.svg";
 import { useAuth } from "../context/authContext/index";
+import Divider from "./Divider";
 
 const schema = yup.object().shape({
   userName: yup.string().required("اسم المستخدم مطلوب"),
@@ -169,17 +170,17 @@ const SignUpForm = () => {
         <SubmitButton buttonTitle="إنشاء حساب" isLoading={isLoading} />
         <div className="text-center rounded-lg">
           <div className="flex items-center gap-4 mb-4">
-            <hr className="flex-grow rounded border-1  border-[var(--color-bg-divider)]" />
+            <Divider />
             <span className="text-[var(--color-bg-muted-text)] text-md">
               أو
             </span>
-            <hr className="flex-grow rounded border-1  border-[var(--color-bg-divider)]" />
+            <Divider />
           </div>
           <button
             type="button"
             onClick={handleGoogleSignUp}
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-2 px-6 py-2 bg-[var(--color-secondary-base)] hover:bg-[var(--color-secondary-pressed)] text-[var(--color-bg-muted-text)] border border-[var(--color-bg-divider)] rounded-lg cursor-pointer disabled:cursor-not-allowed disabled:bg-[var(--color-secondary-disabled)]">
+            className="w-full flex items-center justify-center gap-2 px-6 py-2 text-[var(--color-primary-base)] border border-[var(--color-bg-divider)] rounded-lg cursor-pointer disabled:cursor-not-allowed disabled:bg-[var(--color-primary-disabled)]">
             <span>إنشاء حساب بإستخدام جوجل</span>
             <img src={GoogleIcon} alt="Google" className="w-5 h-5" />
           </button>

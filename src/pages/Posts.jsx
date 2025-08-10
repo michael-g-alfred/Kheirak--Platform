@@ -12,6 +12,7 @@ import PostCard from "../components/PostCard";
 import CardsLayout from "../layouts/CardsLayout";
 import Loader from "../components/Loader";
 import Searchbar from "../components/Searchbar";
+import Divider from "../components/Divider";
 
 export default function Posts() {
   const { role, loading } = useAuth();
@@ -68,65 +69,67 @@ export default function Posts() {
   );
 
   return (
-    <div dir="rtl">
-      {role === "مستفيد" && (
-        <CreatePostTrigger
-          title="ما هو طلب التبرع اليوم؟"
-          onClick={() => setShowPostForm((prev) => !prev)}
-        />
-      )}
-
-      {showPostForm && (
-        <div
-          className="fixed inset-0 flex items-center justify-center bg-gray-950/90 backdrop-blur-md z-50"
-          role="dialog"
-          aria-modal="true"
-          aria-label="نموذج إضافة طلب جديد">
-          <PostForm onClose={handleCloseForm} />
-        </div>
-      )}
-
-      <hr className="my-4 border-[var(--color-bg-divider)] border-.5 rounded" />
-
-      {/* شريط البحث */}
-      {posts.length > 0 && (
-        <div className="mb-6">
-          <Searchbar
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            placeholder="ابحث في الطلبات..."
+    <div className="px-6">
+      <div dir="rtl">
+        {role === "مستفيد" && (
+          <CreatePostTrigger
+            title="ما هو طلب التبرع اليوم؟"
+            onClick={() => setShowPostForm((prev) => !prev)}
           />
-        </div>
-      )}
-
-      <main role="main" aria-label="قائمة الطلبات">
-        {loadingPosts ? (
-          <div className="flex justify-center py-8">
-            <Loader />
-          </div>
-        ) : filteredPosts.length === 0 ? (
-          <NoData
-            h2={
-              searchTerm
-                ? "لا توجد طلبات تطابق كلمة البحث"
-                : "لا توجد طلبات متاحة"
-            }
-          />
-        ) : (
-          <>
-            <div className="text-center text-sm text-[var(--color-bg-muted-text)]">
-              تم العثور على {filteredPosts.length} طلب{" "}
-              {posts.length !== filteredPosts.length &&
-                `من أصل ${posts.length}`}
-            </div>
-            <CardsLayout>
-              {filteredPosts.map((post) => (
-                <PostCard key={post.id} newPost={post} />
-              ))}
-            </CardsLayout>
-          </>
         )}
-      </main>
+
+        {showPostForm && (
+          <div
+            className="fixed inset-0 flex items-center justify-center bg-gray-950/90 backdrop-blur-md z-50"
+            role="dialog"
+            aria-modal="true"
+            aria-label="نموذج إضافة طلب جديد">
+            <PostForm onClose={handleCloseForm} />
+          </div>
+        )}
+
+        <Divider />
+
+        {/* شريط البحث */}
+        {posts.length > 0 && (
+          <div className="mb-6">
+            <Searchbar
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              placeholder="ابحث في الطلبات..."
+            />
+          </div>
+        )}
+
+        <main role="main" aria-label="قائمة الطلبات">
+          {loadingPosts ? (
+            <div className="flex justify-center py-8">
+              <Loader />
+            </div>
+          ) : filteredPosts.length === 0 ? (
+            <NoData
+              h2={
+                searchTerm
+                  ? "لا توجد طلبات تطابق كلمة البحث"
+                  : "لا توجد طلبات متاحة"
+              }
+            />
+          ) : (
+            <>
+              <div className="text-center text-sm text-[var(--color-primary-base)]">
+                تم العثور على {filteredPosts.length} طلب{" "}
+                {posts.length !== filteredPosts.length &&
+                  `من أصل ${posts.length}`}
+              </div>
+              <CardsLayout>
+                {filteredPosts.map((post) => (
+                  <PostCard key={post.id} newPost={post} />
+                ))}
+              </CardsLayout>
+            </>
+          )}
+        </main>
+      </div>
     </div>
   );
 }

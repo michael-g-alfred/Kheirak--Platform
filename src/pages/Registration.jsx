@@ -19,7 +19,7 @@ export default function Registration() {
           {isLogin ? <SignInForm key="signin" /> : <SignUpForm key="signup" />}
 
           <div className="text-center mt-6">
-            <p className="text-sm text-[var(--color-bg-text)] mb-2">
+            <p className="text-sm text-[var(--color-bg-text-dark)] mb-2">
               {isLogin ? "لا تملك حساب؟" : "لديك حساب بالفعل؟"}
               <button
                 type="button"

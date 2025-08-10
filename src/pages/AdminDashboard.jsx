@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import { toast } from "react-hot-toast";
 import UserInfo from "../components/UserInfo";
+import Divider from "../components/Divider";
 
 export default function AdminDashboard() {
   const [lastUpdated, setLastUpdated] = useState(null);
@@ -53,7 +54,7 @@ export default function AdminDashboard() {
             <Stats />
           </section>
 
-          <hr className="my-6 border-[var(--color-bg-divider)] border-[0.5px] rounded" />
+          <Divider />
 
           <section aria-labelledby="posts-heading">
             <div className="flex flex-col items-start gap-2 mb-4">
@@ -69,7 +70,7 @@ export default function AdminDashboard() {
             <PostReview />
           </section>
 
-          <hr className="my-6 border-[var(--color-bg-divider)] border-[0.5px] rounded" />
+          <Divider />
 
           <section aria-labelledby="coupons-heading">
             <div className="flex flex-col items-start gap-2 mb-4">

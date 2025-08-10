@@ -35,7 +35,7 @@ export default function CouponForm({ onClose }) {
         toast.error("الملف يجب أن يكون صورة");
         return;
       }
-      
+
       // Check file size (max 2MB)
       const maxSizeMB = 2;
       if (file.size > maxSizeMB * 1024 * 1024) {
@@ -82,15 +82,13 @@ export default function CouponForm({ onClose }) {
     <FormLayout>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="space-y-4 max-w-md mx-auto"
-      >
+        className="space-y-4 max-w-md mx-auto">
         <div className="flex justify-end">
           <button
             onClick={onClose}
-            className="p-2 danger font-bold rounded-full focus:outline-none"
+            className="p-2 danger_Outline font-bold rounded-full focus:outline-none"
             aria-label="Close form"
-            type="button"
-          >
+            type="button">
             <CloseIcon />
           </button>
         </div>

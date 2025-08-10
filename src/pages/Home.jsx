@@ -8,6 +8,11 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState("posts");
   const location = useLocation();
 
+  const navLinkBaseClass = "flex-1 p-6 font-semibold";
+  const navLinkBaseStyle = {
+    textAlign: "center",
+  };
+
   return (
     <PageLayout>
       <div dir="rtl">
@@ -15,21 +20,21 @@ export default function Home() {
         <nav
           role="navigation"
           aria-label="التنقل بين الأقسام"
-          className="flex my-8 rounded-lg overflow-hidden">
+          className="flex my-6 rounded-lg overflow-hidden">
           <NavLink
             to="/posts"
             onClick={() => setActiveTab("posts")}
-            className={`flex-1 p-6 font-semibold transition-all duration-200 hover:opacity-80`}
+            className={navLinkBaseClass}
             style={{
+              ...navLinkBaseStyle,
               backgroundColor:
                 activeTab === "posts"
                   ? "var(--color-primary-base)"
-                  : "var(--color-secondary-base)",
+                  : "var(--color-primary-disabled)",
               color:
                 activeTab === "posts"
-                  ? "var(--color-secondary-base)"
+                  ? "var(--color-bg-text)"
                   : "var(--color-bg-muted-text)",
-              textAlign: "center",
             }}
             aria-current={activeTab === "posts" ? "page" : undefined}>
             الطلبات
@@ -37,17 +42,17 @@ export default function Home() {
           <NavLink
             to="/coupons"
             onClick={() => setActiveTab("coupons")}
-            className={`flex-1 p-6 font-semibold transition-all duration-200 hover:opacity-80`}
+            className={navLinkBaseClass}
             style={{
+              ...navLinkBaseStyle,
               backgroundColor:
                 activeTab === "coupons"
                   ? "var(--color-primary-base)"
-                  : "var(--color-secondary-base)",
+                  : "var(--color-primary-disabled)",
               color:
                 activeTab === "coupons"
-                  ? "var(--color-secondary-base)"
+                  ? "var(--color-bg-text)"
                   : "var(--color-bg-muted-text)",
-              textAlign: "center",
             }}
             aria-current={activeTab === "coupons" ? "page" : undefined}>
             الكوبونات

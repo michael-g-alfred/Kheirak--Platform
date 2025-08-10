@@ -8,6 +8,7 @@ import CouponCard from "../components/CouponCard";
 import CardsLayout from "../layouts/CardsLayout";
 import Loader from "../components/Loader";
 import { useAuth } from "../context/authContext";
+import Divider from "../components/Divider";
 
 export default function Coupons() {
   const { role, loading } = useAuth();
@@ -69,21 +70,20 @@ export default function Coupons() {
   if (loading || role === null) return null;
 
   return (
-    <>
+    <div className="px-6">
+      {" "}
       {role === "مؤسسة" && (
         <CreatePostTrigger
           title="إنشاء كوبون جديد"
           onClick={() => setShowCouponForm((prev) => !prev)}
         />
       )}
-
       {showCouponForm && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-950/90 backdrop-blur-md z-50">
           <CouponForm onClose={handleCloseForm} />
         </div>
       )}
-
-      <hr className="my-4 border-[var(--color-bg-divider)] border-.5 rounded" />
+      <Divider />
       <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-7 gap-2 items-center justify-center">
         {" "}
         {categories.map((type) => {
@@ -96,8 +96,8 @@ export default function Coupons() {
               className={`flex items-center justify-center gap-2 px-6 py-2 rounded-full
           ${
             isSelected
-              ? "bg-[var(--color-primary-base)] text-[var(--color-secondary-base)]"
-              : "bg-[var(--color-secondary-base)] text-[var(--color-bg-muted-text)]"
+              ? "bg-[var(--color-primary-base)] text-[var(--color-bg-text)]"
+              : "bg-[var(--color-primary-disabled)] text-[var(--color-bg-muted-text)]"
           }`}>
               <span className="text-lg">{categoryIcons[type]}</span>
               <span
@@ -110,9 +110,7 @@ export default function Coupons() {
           );
         })}
       </div>
-
-      <hr className="my-4 border-[var(--color-bg-divider)] border-.5 rounded" />
-
+      <Divider />
       {/* عرض الرسالة أو الكوبونات */}
       {loadingCoupons ? (
         <Loader />
@@ -129,6 +127,6 @@ export default function Coupons() {
             ))}
         </CardsLayout>
       )}
-    </>
+    </div>
   );
 }

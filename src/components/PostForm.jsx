@@ -35,7 +35,7 @@ export default function PostForm({ onClose }) {
         toast.error("الملف يجب أن يكون صورة");
         return;
       }
-      
+
       // Check file size (max 2MB)
       const maxSizeMB = 2;
       if (file.size > maxSizeMB * 1024 * 1024) {
@@ -90,7 +90,7 @@ export default function PostForm({ onClose }) {
         <div className="flex justify-end">
           <button
             onClick={onClose}
-            className="p-2 danger font-bold rounded-full focus:outline-none"
+            className="p-2 danger_Outline font-bold rounded-full focus:outline-none"
             aria-label="Close form"
             type="button">
             <CloseIcon />

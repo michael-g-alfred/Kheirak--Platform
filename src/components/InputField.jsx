@@ -12,6 +12,7 @@ const InputField = ({
   error,
   select = false,
   options = [],
+  ...props
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = type === "password";
@@ -20,7 +21,9 @@ const InputField = ({
   return (
     <div>
       {label && (
-        <label htmlFor={id} className="block mb-2 text-[var(--color-bg-text)]">
+        <label
+          htmlFor={id}
+          className="block mb-2 text-[var(--color-primary-base)]">
           {label}
         </label>
       )}
@@ -30,7 +33,8 @@ const InputField = ({
           <select
             id={id}
             {...register}
-            className={`w-full px-4 py-2 rounded-lg bg-[var(--color-bg-base)] appearance-none text-[var(--color-bg-text)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] cursor-pointer ${
+            {...props}
+            className={`w-full px-4 py-2 rounded-lg bg-[var(--color-bg-base)] appearance-none text-[var(--color-primary-base)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] cursor-pointer ${
               error
                 ? "border-[var(--color-danger-dark-plus)]"
                 : "border-[var(--color-bg-divider)]"
@@ -42,7 +46,7 @@ const InputField = ({
               <option
                 key={opt.value}
                 value={opt.value}
-                className="bg-[var(--color-bg-base)] text-[var(--color-bg-text)]">
+                className="bg-[var(--color-bg-base)] text-[var(--color-primary-base)]">
                 {opt.label}
               </option>
             ))}
@@ -56,7 +60,8 @@ const InputField = ({
           id={id}
           placeholder={placeholder}
           {...register}
-          className={`w-full px-4 py-2 rounded-lg border-1 bg-[var(--color-bg-base)] text-[var(--color-bg-text)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] ${
+          {...props}
+          className={`w-full px-4 py-2 rounded-lg border-1 bg-[var(--color-bg-base)] text-[var(--color-primary-base)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] ${
             error
               ? "border-[var(--color-danger-dark-plus)]"
               : "border-[var(--color-bg-divider)]"
@@ -67,7 +72,8 @@ const InputField = ({
           id={id}
           type="file"
           {...register}
-          className={`w-full px-4 py-2 rounded-lg border-1 border-dashed bg-[var(--color-bg-base)] appearance-none text-[var(--color-bg-text)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] ${
+          {...props}
+          className={`w-full px-4 py-2 rounded-lg border-1 border-dashed bg-[var(--color-bg-base)] appearance-none text-[var(--color-primary-base)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] ${
             error
               ? "border-[var(--color-danger-dark-plus)]"
               : "border-[var(--color-bg-divider)]"
@@ -80,7 +86,8 @@ const InputField = ({
             type={inputType}
             placeholder={placeholder}
             {...register}
-            className={`w-full px-4 py-2 rounded-lg border-1 bg-[var(--color-bg-base)] appearance-none text-[var(--color-bg-text)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] ${
+            {...props}
+            className={`w-full px-4 py-2 rounded-lg border-1 bg-[var(--color-bg-base)] appearance-none text-[var(--color-primary-base)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] ${
               error
                 ? "border-[var(--color-danger-dark-plus)]"
                 : "border-[var(--color-bg-divider)]"

@@ -24,11 +24,11 @@ const NavLinksList = ({ tabs, isMobile, onClick }) => (
           } transition-colors duration-200 rounded-sm ${
             tab.id === "registration"
               ? isActive
-                ? "text-[var(--color-secondary-text)] bg-[var(--color-primary-base)] font-bold"
-                : "border border-[var(--color-primary-base)] text-[var(--color-primary-base)] hover:text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)]"
+                ? "text-[var(--color-bg-text)] bg-[var(--color-primary-base)] font-bold"
+                : "border border-[var(--color-primary-base)] text-[var(--color-primary-base)] hover:text-[var(--color-bg-text)] hover:bg-[var(--color-primary-base)]"
               : isActive
-              ? "font-bold bg-[var(--color-primary-base)] text-[var(--color-secondary-base)]"
-              : "font-medium text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)]"
+              ? "font-bold bg-[var(--color-primary-base)] text-[var(--color-bg-text)]"
+              : "font-medium text-[var(--color-primary-base)] hover:bg-[var(--color-primary-base)] hover:text-[var(--color-bg-text)]"
           }`
         }>
         {tab.label}
@@ -147,7 +147,7 @@ const Navbar = () => {
   return (
     <nav
       dir="rtl"
-      className="shadow-md border-b border-[var(--color-bg-divider)] bg-[var(--color-bg-base)] fixed top-0 right-0 left-0 z-50">
+      className="shadow-xs border-b border-[var(--color-bg-divider)] bg-[var(--color-bg-base)] fixed top-0 right-0 left-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Navigation Tabs */}

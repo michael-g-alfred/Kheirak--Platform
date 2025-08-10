@@ -1,41 +1,42 @@
 @import url("https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap");
 @import "tailwindcss";
 :root {
-  /* Primary Colors */
-  --color-primary-base: #38e07b;
-  --color-primary-hover: #2fc56c;
-  --color-primary-pressed: #26a55e;
-  --color-primary-disabled: #b2efc8;
-  --color-primary-focus: transparent; /* Value missing, set default */
+  /* Primary Colors - Deep teal */
+  --color-primary-base: #043c3c;
+  --color-primary-hover: #033333;
+  --color-primary-pressed: #022a2a;
+  --color-primary-disabled: #9fb7b7;
+  --color-primary-focus: transparent;
 
-  /* Secondary Colors */
-  --color-secondary-base: #264533;
-  --color-secondary-hover: #315b42;
-  --color-secondary-pressed: #1c3526;
-  --color-secondary-disabled: #a7b6af;
-  --color-secondary-focus: transparent; /* Value missing, set default */
+  /* Secondary Colors - Cool Blue */
+  /* --color-secondary-base: #2980b9;
+  --color-secondary-hover: #2471a3;
+  --color-secondary-pressed: #1f618d;
+  --color-secondary-disabled: #a9cce3;
+  --color-secondary-focus: transparent; */
 
-  /* Background Colors */
-  --color-bg-base: #122117;
-  --color-bg-card: #366347;
-  --color-bg-text: #ffffff;
-  --color-bg-muted-text: #d1e3d6;
-  --color-bg-divider: #5b8f72;
+  /* Background & Card & Text */
+  --color-bg-base: #faf9f7;
+  --color-bg-card: #eaf4f3;
+  --color-bg-text: #f4f6f7;
+  --color-bg-text-dark: #2c3e50;
+  --color-bg-muted-text: #7f8c8d;
+  --color-bg-divider: #8aa7a5;
 
-  /* Danger Colors */
-  --color-danger-light: #e02b2b;
-  --color-danger-dark: #a41616;
-  --color-danger-dark-plus: #a41616;
+  /* Danger Colors - Premium Red */
+  --color-danger-light: #c62828; /* Premium red */
+  --color-danger-dark: #b71c1c;
+  --color-danger-dark-plus: #8e0000;
 
-  /* Success Colors */
-  --color-success-light: #1b9e1b;
-  --color-success-dark: #107c10;
-  --color-success-dark-plus: #052505;
+  /* Success Colors - Premium Green */
+  --color-success-light: #2e7d32; /* Premium green */
+  --color-success-dark: #1b5e20;
+  --color-success-dark-plus: #0d3b12;
 
-  /* Warning Colors */
-  --color-warning-light: #fff9f5;
-  --color-warning-dark: #f7630c;
-  --color-warning-dark-plus: #bc4b09;
+  /* Warning Colors - Premium Amber */
+  --color-warning-light: #ffb300; /* Premium amber */
+  --color-warning-dark: #ffa000;
+  --color-warning-dark-plus: #ff8f00;
 }
 
 html,
@@ -57,7 +58,7 @@ body {
   background-color: var(--color-success-dark-plus);
 }
 .success:disabled {
-  background-color: var(--color-secondary-disabled);
+  background-color: var(--color-primary-disabled);
   color: var(--color-bg-muted-text);
   cursor: not-allowed;
 }
@@ -73,7 +74,7 @@ body {
   background-color: var(--color-danger-dark-plus);
 }
 .danger:disabled {
-  background-color: var(--color-secondary-disabled);
+  background-color: var(--color-primary-disabled);
   color: var(--color-bg-muted-text);
   cursor: not-allowed;
 }
