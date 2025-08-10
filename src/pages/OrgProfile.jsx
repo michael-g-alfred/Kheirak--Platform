@@ -9,6 +9,7 @@ import NoData from "../components/NoData";
 import DynamicCardLayout from "../layouts/DynamicCardLayout";
 import CardsLayout from "../layouts/CardsLayout";
 import UserInfo from "../components/UserInfo";
+import Divider from "../components/Divider";
 
 export default function OrgProfile() {
   const [myCoupons, setMyCoupons] = useState([]);
@@ -74,7 +75,7 @@ export default function OrgProfile() {
       {/* {معلومات المستخدم} */}
       <UserInfo />
 
-      <hr className="my-4 border-[var(--color-bg-divider)] border-.5 rounded" />
+      <Divider />
 
       {isLoading ? (
         <Loader />
@@ -87,7 +88,7 @@ export default function OrgProfile() {
               key={coupon.id}
               title={coupon.title}
               status={coupon.status}>
-              <div className="text-md text-[var(--color-bg-text)] space-y-1 text-right">
+              <div className="text-md text-[var(--color-bg-text-dark)] space-y-1 text-right">
                 <p>
                   <strong>عدد الكوبونات الكلي:</strong> {coupon.stock}
                 </p>

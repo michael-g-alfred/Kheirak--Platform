@@ -7,6 +7,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../Firebase/Firebase";
 import { updateProfile } from "firebase/auth";
 import { toast } from "react-hot-toast";
+import NoPhoto from "./NoPhoto";
 
 export default function UserInfo({ info = true }) {
   const { currentUser, logout } = useAuth();
@@ -73,10 +74,10 @@ export default function UserInfo({ info = true }) {
 
   return (
     <div
-      className="text-[var(--color-bg-text)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-2 w-full"
+      className="text-[var(--color-bg-text-dark)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-2 w-full"
       dir="rtl">
       {info && (
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full">
           <label
             className="cursor-pointer relative"
             aria-label="تغيير صورة الملف الشخصي">
@@ -89,8 +90,8 @@ export default function UserInfo({ info = true }) {
               aria-describedby="avatar-help"
             />
             {uploading ? (
-              <div className="w-16 h-16 rounded-full bg-[var(--color-secondary-base)] border border-[var(--color-bg-divider)] flex items-center justify-center">
-                <div className="w-6 h-6 border-2 border-[var(--color-primary-base)] border-t-transparent rounded-full animate-spin" />
+              <div className="w-16 h-16 rounded-full bg-[var(--color-primary-base)] border border-[var(--color-bg-divider)] flex items-center justify-center">
+                <div className="w-6 h-6 border-2 border-[var(--color-bg-divider)] border-t-transparent rounded-full animate-spin" />
               </div>
             ) : currentUser?.photoURL ? (
               <img
@@ -99,9 +100,7 @@ export default function UserInfo({ info = true }) {
                 className="w-16 h-16 rounded-full object-cover border hover:opacity-80 transition-opacity"
               />
             ) : (
-              <div className="w-16 h-16 rounded-full bg-[var(--color-secondary-base)] text-[var(--color-bg-muted-text)] border border-[var(--color-bg-divider)] flex items-center justify-center hover:bg-[var(--color-primary-base)] hover:text-white transition-colors">
-                <ImageIcon width={32} height={32} />
-              </div>
+              <NoPhoto />
             )}
             <div id="avatar-help" className="sr-only">
               اضغط لتغيير صورة الملف الشخصي. الحد الأقصى للحجم 2 ميجابايت.

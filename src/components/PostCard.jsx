@@ -18,6 +18,7 @@ import { db } from "../Firebase/Firebase";
 import Loader from "./Loader";
 import { toast } from "react-hot-toast";
 import BulletPoints from "./BulletPoints";
+import NoPhoto from "./NoPhoto";
 
 const PostCard = ({ newPost }) => {
   const [showPopup, setShowPopup] = useState(false);
@@ -184,7 +185,6 @@ const PostCard = ({ newPost }) => {
           });
         }
 
-        //توليد QR Code وإرسال إشعار لصاحب البوست
         if (newPost?.submittedBy?.email) {
           const qrData = JSON.stringify({
             postId: newPost.id,
@@ -234,61 +234,75 @@ const PostCard = ({ newPost }) => {
               <img
                 src={newPost.submittedBy.userPhoto}
                 alt="profile"
-                className="w-16 h-16 rounded-full object-cover border-2 border-[var(--color-secondary-base)]"
+                className="w-16 h-16 rounded-full object-cover border border-[var(--color-bg-divider)]"
               />
             ) : (
-              <div className="w-16 h-16 rounded-full bg-[var(--color-secondary-base)] flex items-center justify-center text-[var(--color-bg-muted-text)] text-2xl">
-                <ImageIcon height={36} width={36} />
-              </div>
+              <NoPhoto />
             )}
           </div>
           <div className="flex flex-col items-start flex-1">
             <span className="font-bold text-lg text-[var(--color-primary-base)]">
               {newPost.submittedBy?.userName || "اسم المستخدم"}
             </span>
-            <span className="text-xs text-[var(--color-bg-text)]">
+            <span className="text-xs text-[var(--color-bg-text-dark)]">
               {formattedTime}
             </span>
           </div>
         </div>
 
+        {/* صورة + progress bar clip */}
         <div className="mb-2">
-          {newPost.attachedFiles ? (
-            <img
-              src={newPost.attachedFiles}
-              alt="attachment"
-              className="w-full h-40 sm:h-48 md:h-56 lg:h-64  xl:h-72 2xl:h-80 object-contain rounded-lg border border-[var(--color-bg-divider)]"
-            />
-          ) : (
-            <div className="w-full h-40 sm:h-48 md:h-56 lg:h-64  xl:h-72 2xl:h-80 object-contain rounded-lg border border-[var(--color-bg-divider)] text-[var(--color-bg-muted-text)]">
-              لا توجد صورة
+          <div className="relative w-full sm:aspect-[4/3] md:aspect-[16/9] xl:aspect-[21/9] rounded-lg border border-[var(--color-bg-divider)] overflow-hidden">
+            {newPost.attachedFiles ? (
+              <img
+                src={newPost.attachedFiles}
+                alt="attachment"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-[var(--color-bg-muted-text)]">
+                لا توجد صورة
+              </div>
+            )}
+
+            <div className="absolute bottom-0 left-0 w-full">
+              <div className="w-full h-7 bg-[var(--color-primary-disabled)] border-t-1 border-[var(--color-bg-divider)] overflow-hidden relative">
+                <div
+                  className="h-full bg-[var(--color-primary-base)] transition-all duration-300 text-md font-bold text-[var(--color-bg-text)] flex items-center justify-center"
+                  style={{ width: `${donationPercentage}%` }}>
+                  {Math.round(donationPercentage)}%
+                </div>
+              </div>
             </div>
-          )}
+          </div>
         </div>
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-2">
+
+        {/* العنوان والمبلغ */}
+        <div className="flex flex-col gap-2 mb-2">
           <h2 className="font-bold text-xl sm:text-2xl text-[var(--color-primary-base)] line-clamp-2">
             {newPost.title || "عنوان الطلب"}
           </h2>
-          <span className="bg-[var(--color-bg-base)] text-[var(--color-primary-base)] px-4 py-2 rounded-md font-bold text-sm sm:text-base text-center">
+          <span className="text-[var(--color-primary-base)] border border-[var(--color-bg-divider)] px-4 py-2 rounded font-bold text-sm sm:text-base text-center">
             المبلغ: {amount} ج.م
           </span>
         </div>
 
-        <p className="text-sm text-[var(--color-bg-text)] mb-4 line-clamp-2">
+        <p className="text-sm text-[var(--color-bg-text-dark)] mb-4 line-clamp-2">
           {newPost.details || "تفاصيل الطلب..."}
         </p>
 
+        {/* أزرار التبرع */}
         {role === "متبرع" && (
-          <div className="flex flex-wrap justify-between gap-2">
+          <div className="flex flex-wrap justify-between gap-1 mb-2">
             {[50, 100, 500, remainingAmount].map((amt, index) => (
               <button
                 key={index}
                 onClick={() => handleDonateClick(amt)}
-                className={`flex-1 min-w-[60px] p-2 rounded font-bold text-sm text-center transition
+                className={`flex-1 min-w-[60px] p-2 rounded font-bold text-xs text-center transition
         ${
           isCompleted
-            ? "bg-[var(--color-secondary-disabled)] text-[var(--color-bg-muted-text)] cursor-not-allowed"
-            : "bg-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] text-[var(--color-secondary-base)]"
+            ? "bg-[var(--color-primary-disabled)]  text-[var(--color-bg-muted-text)] cursor-not-allowed"
+            : "bg-[var(--color-primary-base)] text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)] cursor-pointer"
         }`}
                 disabled={isCompleted}>
                 {amt} ج.م
@@ -300,11 +314,11 @@ const PostCard = ({ newPost }) => {
               inputMode="numeric"
               disabled={isCompleted}
               placeholder="مبلغ آخر"
-              className={`flex-1 min-w-[60px] text-center p-2 rounded font-bold text-sm transition outline-none
+              className={`flex-1 min-w-[60px] text-center p-2 rounded font-bold text-xs transition outline-none
       ${
         isCompleted
-          ? "bg-[var(--color-secondary-disabled)] text-[var(--color-bg-muted-text)]"
-          : "bg-[var(--color-secondary-base)] hover:bg-[var(--color-secondary-hover)] text-[var(--color-bg-text)] border-2 border-[var(--color-bg-divider)]"
+          ? "bg-[var(--color-primary-disabled)] text-[var(--color-bg-muted-text)] cursor-not-allowed"
+          : "border border-[var(--color-bg-divider)] bg-[var(--color-bg-base)] text-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] hover:text-[var(--color-bg-text)] cursor-pointer"
       }`}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
@@ -326,44 +340,35 @@ const PostCard = ({ newPost }) => {
           </div>
         )}
 
-        <div className="w-full mt-2">
-          <div className="w-full h-6 rounded bg-[var(--color-secondary-disabled)] border-2 border-[var(--color-secondary-base)] overflow-hidden relative">
-            <div
-              className="h-full bg-[var(--color-primary-base)] transition-all duration-300 text-md font-bold text-[var(--color-secondary-base)] flex items-center justify-center"
-              style={{ width: `${donationPercentage}%` }}>
-              {Math.round(donationPercentage)}%
-            </div>
-          </div>
-          <p className="text-md font-bold text-[var(--color-bg-muted-text)] text-center mt-1">
-            {!isCompleted
-              ? `${totalDonated} / ${amount} ج.م — المتبقي: ${remainingAmount} ج.م`
-              : "المبلغ مكتمل"}
-          </p>
-        </div>
+        {/* حالة المبلغ */}
+        <p className="w-full text-[var(--color-primary-base)] border-1 border-[var(--color-bg-divider)] p-2 rounded font-bold text-sm sm:text-base text-center">
+          {!isCompleted
+            ? `${totalDonated} / ${amount} ج.م — المتبقي: ${remainingAmount} ج.م`
+            : "المبلغ مكتمل"}
+        </p>
       </CardLayout>
 
       {showPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-950/90 backdrop-blur-md z-50">
           <FormLayout
+            className="bg-[var(--color-bg-card)]"
             formTitle={
-              <span className="bg-[var(--color-secondary-base)] rounded border border-[var(--color-bg-divider)] p-1 px-2">
+              <span className="text-[var(--color-primary-base)] rounded">
                 تأكيد تحويل{" "}
-                <strong className="text-[var(--color-bg-text)] underline">
+                <strong className="text-[var(--color-bg-muted-text)] underline">
                   {selectedAmount} ج.م
                 </strong>{" "}
                 ؟
               </span>
             }>
-            <div className="text-[var(--color-bg-text)] text-right space-y-2 mb-4">
+            <div className="text-[var(--color-bg-text-dark)] text-right space-y-2 mb-4">
               <p className="text-md">
                 سيتم خصم مبلغ{" "}
                 <strong className="text-[var(--color-primary-base)]">
                   {selectedAmount} ج.م
                 </strong>{" "}
                 من رصيدك لصالح الطلب:
-                <strong className="mr-1 text-[var(--color-primary-base)]">
-                  {newPost.title}
-                </strong>
+                <strong className="mr-1">{newPost.title}</strong>
               </p>
               <div className="px-2">
                 <BulletPoints content={`تفاصيل الطلب: ${newPost.details}`} />
@@ -375,7 +380,7 @@ const PostCard = ({ newPost }) => {
                   content={`البريد الإلكترونى لصاحب الطلب: ${newPost.submittedBy.email}`}
                 />
               </div>
-              <p className="bg-[var(--color-danger-dark)] rounded border border-[var(--color-bg-divider)] p-1 px-2 mt-6 text-center font-bold">
+              <p className="bg-[var(--color-danger-light)] text-[var(--color-bg-text)] rounded border border-[var(--color-bg-divider)] p-1 px-2 mt-6 text-center font-bold">
                 يرجى التأكد من صحة المبلغ قبل تأكيد العملية.
               </p>
             </div>

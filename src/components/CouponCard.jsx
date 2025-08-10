@@ -1,11 +1,9 @@
-// CouponCard component displays coupon details, manages coupon redemption logic, and shows real-time usage updates.
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { useAuth } from "../context/authContext";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import CardLayout from "../layouts/CardLayout";
-import ImageIcon from "../icons/ImageIcon";
 import FormLayout from "../layouts/FormLayout";
 import {
   doc,
@@ -19,6 +17,7 @@ import { getAuth } from "firebase/auth";
 import { db } from "../Firebase/Firebase";
 import BulletPoints from "./BulletPoints";
 import Loader from "./Loader";
+import NoPhoto from "./NoPhoto";
 
 // ------------------------- //
 // State variables
@@ -36,7 +35,7 @@ const CouponCard = ({ newCoupon }) => {
     setSelectedAmount(null);
   };
 
-  const handleConfirmDonation = async () => {
+  const handleConfirmCouponUSed = async () => {
     setShowPopup(false);
     toast.loading("جاري تنفيذ استخدام الكوبون...");
     setIsLoading(true);
@@ -199,79 +198,76 @@ const CouponCard = ({ newCoupon }) => {
               <img
                 src={newCoupon.submittedBy.userPhoto}
                 alt="profile"
-                className="w-16 h-16 rounded-full object-cover border-2 border-[var(--color-secondary-base)]"
+                className="w-16 h-16 rounded-full object-cover border border-[var(--color-bg-divider)]"
               />
             ) : (
-              <div className="w-16 h-16 rounded-full bg-[var(--color-secondary-base)] flex items-center justify-center text-[var(--color-bg-muted-text)] text-2xl">
-                <ImageIcon height={36} width={36} />
-              </div>
+              <NoPhoto />
             )}
           </div>
           <div className="flex flex-col items-start flex-1">
             <span className="font-bold text-lg text-[var(--color-primary-base)]">
-              {newCoupon.submittedBy?.userName || "اسم المؤسسة"}
+              {newCoupon.submittedBy?.userName || "اسم المستخدم"}
             </span>
-            <span className="text-xs text-[var(--color-bg-text)]">
+            <span className="text-xs text-[var(--color-bg-text-dark)]">
               {formattedTime}
             </span>
           </div>
         </div>
 
+        {/* صورة + progress bar clip */}
         <div className="mb-2">
-          {newCoupon.attachedFiles ? (
-            <img
-              src={newCoupon.attachedFiles}
-              alt="attachment"
-              className="w-full h-40 sm:h-48 md:h-56 lg:h-64  xl:h-72 2xl:h-80 object-contain rounded-lg border border-[var(--color-bg-divider)]"
-            />
-          ) : (
-            <div className="w-full h-40 sm:h-48 md:h-56 lg:h-64  xl:h-72 2xl:h-80 object-contain rounded-lg border border-[var(--color-bg-divider)] text-[var(--color-bg-muted-text)]">
-              لا توجد صورة
+          <div className="relative w-full sm:aspect-[4/3] md:aspect-[16/9] xl:aspect-[21/9] rounded-lg border border-[var(--color-bg-divider)] overflow-hidden">
+            {newCoupon.attachedFiles ? (
+              <img
+                src={newCoupon.attachedFiles}
+                alt="attachment"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center text-[var(--color-bg-muted-text)]">
+                لا توجد صورة
+              </div>
+            )}
+
+            <div className="absolute bottom-0 left-0 w-full">
+              <div className="w-full h-7 bg-[var(--color-primary-disabled)] border-t-1 border-[var(--color-bg-divider)] overflow-hidden relative">
+                <div
+                  className="h-full bg-[var(--color-primary-base)] transition-all duration-300 text-md font-bold text-[var(--color-bg-text)] flex items-center justify-center"
+                  style={{ width: `${donationPercentage}%` }}>
+                  {Math.round(donationPercentage)}%
+                </div>
+              </div>
             </div>
-          )}
+          </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-2">
+        {/* العنوان وعدد الكوبونات */}
+        <div className="flex flex-col gap-2 mb-2">
           <h2 className="font-bold text-xl sm:text-2xl text-[var(--color-primary-base)] line-clamp-2">
             {newCoupon.title || "عنوان الطلب"}
           </h2>
-          <span className="bg-[var(--color-bg-base)] text-[var(--color-primary-base)] px-4 py-2 rounded-md font-bold text-sm sm:text-base text-center">
-            عدد الكوبونات: {stock}
+          <span className="text-[var(--color-primary-base)] border border-[var(--color-bg-divider)] px-4 py-2 rounded font-bold text-sm sm:text-base text-center">
+            عدد الكوبونات: {stock - totalCouponUsed}
           </span>
         </div>
-        <p className="text-sm text-[var(--color-bg-text)] mb-4 line-clamp-2">
+
+        <p className="text-sm text-[var(--color-bg-text-dark)] mb-4 line-clamp-2">
           {newCoupon.details || "تفاصيل الطلب..."}
         </p>
 
+        {/* أزرار الإستخدام */}
         {role === "مستفيد" && (
           <button
             onClick={() => handleDonateClick(1)}
-            className={`w-full px-6 py-3 rounded font-bold text-md transition ${
+            className={`w-full px-6 py-3 rounded font-bold text-md mb-2 transition ${
               isCompleted || hasUsed
-                ? "bg-[var(--color-secondary-disabled)] text-[var(--color-bg-muted-text)] cursor-not-allowed"
-                : "bg-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] text-[var(--color-secondary-base)]"
+                ? "bg-[var(--color-primary-disabled)] text-[var(--color-bg-muted-text)] cursor-not-allowed"
+                : "bg-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] text-[var(--color-bg-text)] cursor-pointer"
             }`}
             disabled={isCompleted || hasUsed}>
             استخدام كوبون
           </button>
         )}
-
-        <div className="w-full mt-2">
-          <div className="w-full h-6 rounded bg-[var(--color-secondary-disabled)] border-2 border-[var(--color-secondary-base)] overflow-hidden relative">
-            <div
-              className="h-full bg-[var(--color-primary-base)] transition-all duration-300 text-md font-bold text-[var(--color-secondary-base)] flex items-center justify-center"
-              style={{ width: `${donationPercentage}%` }}>
-              {Math.round(donationPercentage)}%
-            </div>
-          </div>
-          <p className="text-md font-bold text-[var(--color-bg-muted-text)] text-center mt-1">
-            {!isCompleted
-              ? `${totalCouponUsed} / ${stock} كوبون — المتبقي: ${
-                  stock - totalCouponUsed
-                } كوبون`
-              : "العدد مكتمل"}
-          </p>
-        </div>
       </CardLayout>
       <>
         {/* Use confirmation popup */}
@@ -279,22 +275,22 @@ const CouponCard = ({ newCoupon }) => {
           <div className="fixed inset-0 flex items-center justify-center bg-gray-950/90 backdrop-blur-md z-50">
             <FormLayout
               formTitle={
-                <span className="bg-[var(--color-secondary-base)] rounded border border-[var(--color-bg-divider)] p-1 px-2">
+                <span className="text-[var(--color-primary-base)] rounded">
                   تأكيد استخدام عدد{" "}
-                  <strong className="text-[var(--color-bg-text)] underline">
+                  <strong className="text-[var(--color-bg-muted-text)] underline">
                     ١
                   </strong>{" "}
                   كوبون
                 </span>
               }>
-              <div className="text-[var(--color-bg-text)] text-right space-y-2 mb-4">
+              <div className="text-[var(--color-bg-text-dark)] text-right space-y-2 mb-4">
                 <p className="text-md">
                   سيتم إستخدام{" "}
                   <strong className="text-[var(--color-primary-base)]">
                     ١
                   </strong>{" "}
                   كوبون من رصيد كوبونات الجهة:
-                  <strong className="mr-1 text-[var(--color-primary-base)]">
+                  <strong className="mr-1">
                     {newCoupon.submittedBy?.userName || "اسم المؤسسة"}
                   </strong>
                 </p>
@@ -307,11 +303,11 @@ const CouponCard = ({ newCoupon }) => {
                     content={`البريد الإلكتروني للجهة: ${newCoupon.submittedBy?.email}`}
                   />
                 </div>
-                <p className="bg-[var(--color-danger-dark)] rounded border border-[var(--color-bg-divider)] p-1 px-2 mt-6 text-center font-bold">
+                <p className="bg-[var(--color-danger-light)] text-[var(--color-bg-text)] rounded border border-[var(--color-bg-divider)] p-1 px-2 mt-6 text-center font-bold">
                   يرجى التأكد من صحة البيانات قبل تأكيد العملية.
                 </p>
               </div>
-              <div className="flex justify-center gap-4 mt-4">
+              <div className="flex justify-center gap-4">
                 <button
                   className="danger px-6 py-2 rounded font-semibold"
                   onClick={closePopup}>
@@ -319,7 +315,7 @@ const CouponCard = ({ newCoupon }) => {
                 </button>
                 <button
                   className="success px-6 py-2 rounded font-semibold"
-                  onClick={handleConfirmDonation}>
+                  onClick={handleConfirmCouponUSed}>
                   {isLoading ? <Loader /> : "تأكيد"}
                 </button>
               </div>

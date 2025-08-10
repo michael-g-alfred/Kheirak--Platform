@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import InputField from "./InputField";
+import Divider from "./Divider";
 import FormLayout from "../layouts/FormLayout";
 import { useState } from "react";
 import SubmitButton from "./SubmitButton";
@@ -119,17 +120,17 @@ export default function SignInForm() {
         <SubmitButton buttonTitle="تسجيل الدخول" isLoading={isLoading} />
         <div className="text-center">
           <div className="flex items-center gap-4 mb-4">
-            <hr className="flex-grow rounded border-1  border-[var(--color-bg-divider)]" />
+            <Divider />
             <span className="text-[var(--color-bg-muted-text)] text-md">
               أو
             </span>
-            <hr className="flex-grow rounded border-1  border-[var(--color-bg-divider)]" />
+            <Divider />
           </div>
           <button
             type="button"
             onClick={handleGoogleSignIn}
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-2 px-6 py-2 bg-[var(--color-secondary-base)] hover:bg-[var(--color-secondary-pressed)] text-[var(--color-bg-muted-text)] border border-[var(--color-bg-divider)] rounded-lg cursor-pointer disabled:cursor-not-allowed disabled:bg-[var(--color-secondary-disabled)]">
+            className="w-full flex items-center justify-center gap-2 px-6 py-2 text-[var(--color-primary-base)] border border-[var(--color-bg-divider)] rounded-lg cursor-pointer disabled:cursor-not-allowed disabled:bg-[var(--color-primary-disabled)]">
             <span>التسجيل بإستخدام جوجل</span>
             <img src={GoogleIcon} alt="Google" className="w-5 h-5" />
           </button>

@@ -42,7 +42,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-[var(--color-bg-base)] text-[var(--color-bg-text)] border-t border-[var(--color-bg-divider)] py-4 px-4">
+    <footer className="bg-[var(--color-bg-base)] text-[var(--color-primary-base)] border-t border-[var(--color-bg-divider)] py-4 px-4 shadow-xs">
       <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-8 justify-items-center items-center">
         {/* روابط التنقل */}
         <div>
@@ -54,7 +54,7 @@ export default function Footer() {
               <li key={link.to} className="text-right">
                 <Link
                   to={link.to}
-                  className="hover:text-[var(--color-primary-base)] transition">
+                  className="hover:text-[var(--color-primary-hover)] transition-transform duration-200 hover:scale-110">
                   {link.label}
                 </Link>
               </li>
@@ -74,7 +74,7 @@ export default function Footer() {
                 href={link.href}
                 target="_blank"
                 rel="noreferrer"
-                className="w-12 h-8 flex justify-center items-center bg-[var(--color-primary-base)] text-[var(--color-secondary-base)] hover:bg-[var(--color-secondary-base)] hover:text-[var(--color-bg-text)] rounded-xl hover:border border-[var(--color-bg-divider)]">
+                className="w-12 h-8 flex justify-center items-center bg-[var(--color-primary-base)] text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)] rounded-xl transition-transform duration-200 hover:scale-110">
                 {link.icon}
               </a>
             ))}
@@ -93,7 +93,7 @@ export default function Footer() {
                 href={info.link}
                 target="_blank"
                 rel="noreferrer"
-                className="w-12 h-8 flex justify-center items-center bg-[var(--color-primary-base)] text-[var(--color-secondary-base)] hover:bg-[var(--color-secondary-base)] hover:text-[var(--color-bg-text)] rounded-xl hover:border border-[var(--color-bg-divider)]">
+                className="w-12 h-8 flex justify-center items-center bg-[var(--color-primary-base)] text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)] rounded-xl transition-transform duration-200 hover:scale-110">
                 {info.icon}
               </a>
             ))}

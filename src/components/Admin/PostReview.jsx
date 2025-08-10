@@ -70,9 +70,10 @@ export default function PostReview() {
               key={post.id}
               title={post.title}
               status={post.status}>
-              <div className="text-md text-[var(--color-bg-text)] space-y-1 text-right">
+              <div className="text-md text-[var(--color-bg-text-dark)] space-y-1 text-right">
                 <p>
-                  <strong>مقدم الطلب: </strong> {post.submittedBy?.userName || "غير محدد"}
+                  <strong>مقدم الطلب: </strong>{" "}
+                  {post.submittedBy?.userName || "غير محدد"}
                 </p>
                 <p>
                   <strong>تفاصيل الطلب: </strong> {post.details}

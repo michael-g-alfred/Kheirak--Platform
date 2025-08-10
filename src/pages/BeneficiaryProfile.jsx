@@ -83,17 +83,16 @@ export default function BeneficiaryProfile() {
       ) : (
         <CardsLayout colNum={4}>
           {myPosts.map((post) => {
-            const totalReceived = post.donors?.reduce(
-              (sum, d) => sum + Number(d.amount || 0),
-              0
-            ) || 0;
+            const totalReceived =
+              post.donors?.reduce((sum, d) => sum + Number(d.amount || 0), 0) ||
+              0;
 
             return (
               <DynamicCardLayout
                 key={post.id}
                 title={post.title}
                 status={post.status}>
-                <div className="text-md text-[var(--color-bg-text)] space-y-1 text-right">
+                <div className="text-md text-[var(--color-bg-text-dark)] space-y-1 text-right">
                   <p>
                     <strong>المبلغ المطلوب:</strong> {post.amount} ج.م
                   </p>

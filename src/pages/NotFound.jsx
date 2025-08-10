@@ -8,14 +8,11 @@ export default function NotFound() {
   return (
     <PageLayout x="center" y="center">
       <div dir="rtl" className="text-center space-y-6">
-        <div role="img" aria-label="وجه حزين" className="text-8xl">
-          😭
-        </div>
         <div>
-          <h1 className="text-4xl font-bold text-[var(--color-bg-text)] mb-2">
+          <h1 className="text-4xl font-bold text-[var(--color-primary-base)] mb-2">
             404
           </h1>
-          <h2 className="text-2xl text-[var(--color-bg-text)] mb-6">
+          <h2 className="text-2xl text-[var(--color-primary-base)] mb-6">
             الصفحة غير موجودة
           </h2>
           <p className="text-lg text-[var(--color-bg-muted-text)] mb-8 max-w-md mx-auto">
@@ -33,7 +30,7 @@ export default function NotFound() {
             backgroundColor: hover
               ? "var(--color-primary-hover)"
               : "var(--color-primary-base)",
-            color: "var(--color-secondary-base)",
+            color: "var(--color-bg-text)",
           }}
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
