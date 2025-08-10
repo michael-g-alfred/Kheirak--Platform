@@ -299,11 +299,11 @@ const PostCard = ({ newPost }) => {
                 key={index}
                 onClick={() => handleDonateClick(amt)}
                 className={`flex-1 min-w-[60px] p-2 rounded font-bold text-xs text-center transition
-        ${
-          isCompleted
-            ? "bg-[var(--color-primary-disabled)]  text-[var(--color-bg-muted-text)] cursor-not-allowed"
-            : "bg-[var(--color-primary-base)] text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)] cursor-pointer"
-        }`}
+                ${
+                  isCompleted
+                    ? "bg-[var(--color-primary-disabled)]  text-[var(--color-bg-muted-text)] cursor-not-allowed"
+                    : "bg-[var(--color-primary-base)] text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)] cursor-pointer "
+                } focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)]`}
                 disabled={isCompleted}>
                 {amt} ج.م
               </button>
@@ -315,11 +315,11 @@ const PostCard = ({ newPost }) => {
               disabled={isCompleted}
               placeholder="مبلغ آخر"
               className={`flex-1 min-w-[60px] text-center p-2 rounded font-bold text-xs transition outline-none
-      ${
-        isCompleted
-          ? "bg-[var(--color-primary-disabled)] text-[var(--color-bg-muted-text)] cursor-not-allowed"
-          : "border border-[var(--color-bg-divider)] bg-[var(--color-bg-base)] text-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] hover:text-[var(--color-bg-text)] cursor-pointer"
-      }`}
+              ${
+                isCompleted
+                  ? "bg-[var(--color-primary-disabled)] text-[var(--color-bg-muted-text)] cursor-not-allowed"
+                  : "border border-[var(--color-bg-divider)] bg-[var(--color-bg-base)] text-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] hover:text-[var(--color-bg-text)] cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)]"
+              }`}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   const value = e.target.value.trim();
@@ -386,12 +386,12 @@ const PostCard = ({ newPost }) => {
             </div>
             <div className="flex justify-center gap-4 mt-4">
               <button
-                className="danger px-6 py-2 rounded font-semibold"
+                className="danger px-6 py-2 rounded font-semibold focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-danger-light)]"
                 onClick={closePopup}>
                 إغلاق
               </button>
               <button
-                className="success px-6 py-2 rounded font-semibold"
+                className="success px-6 py-2 rounded font-semibold focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-success-light)]"
                 onClick={handleConfirmDonation}>
                 {isLoading ? <Loader /> : "تأكيد"}
               </button>

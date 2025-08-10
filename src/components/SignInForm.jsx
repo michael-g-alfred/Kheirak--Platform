@@ -120,11 +120,11 @@ export default function SignInForm() {
         <SubmitButton buttonTitle="تسجيل الدخول" isLoading={isLoading} />
         <div className="text-center">
           <div className="flex items-center gap-4 mb-4">
-            <Divider />
+            <Divider flexGrow />{" "}
             <span className="text-[var(--color-bg-muted-text)] text-md">
               أو
             </span>
-            <Divider />
+            <Divider flexGrow />{" "}
           </div>
           <button
             type="button"

@@ -34,7 +34,7 @@ const InputField = ({
             id={id}
             {...register}
             {...props}
-            className={`w-full px-4 py-2 rounded-lg bg-[var(--color-bg-base)] appearance-none text-[var(--color-primary-base)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] cursor-pointer ${
+            className={`w-full px-4 py-2 rounded-lg bg-[var(--color-bg-base)] appearance-none text-[var(--color-primary-base)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)] cursor-pointer ${
               error
                 ? "border-[var(--color-danger-dark-plus)]"
                 : "border-[var(--color-bg-divider)]"
@@ -61,7 +61,7 @@ const InputField = ({
           placeholder={placeholder}
           {...register}
           {...props}
-          className={`w-full px-4 py-2 rounded-lg border-1 bg-[var(--color-bg-base)] text-[var(--color-primary-base)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] ${
+          className={`w-full px-4 py-2 rounded-lg border-1 bg-[var(--color-bg-base)] text-[var(--color-primary-base)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)] ${
             error
               ? "border-[var(--color-danger-dark-plus)]"
               : "border-[var(--color-bg-divider)]"
@@ -73,7 +73,7 @@ const InputField = ({
           type="file"
           {...register}
           {...props}
-          className={`w-full px-4 py-2 rounded-lg border-1 border-dashed bg-[var(--color-bg-base)] appearance-none text-[var(--color-primary-base)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] ${
+          className={`w-full px-4 py-2 rounded-lg border-1 border-dashed bg-[var(--color-bg-base)] appearance-none text-[var(--color-primary-base)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)] ${
             error
               ? "border-[var(--color-danger-dark-plus)]"
               : "border-[var(--color-bg-divider)]"
@@ -87,7 +87,7 @@ const InputField = ({
             placeholder={placeholder}
             {...register}
             {...props}
-            className={`w-full px-4 py-2 rounded-lg border-1 bg-[var(--color-bg-base)] appearance-none text-[var(--color-primary-base)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)] ${
+            className={`w-full px-4 py-2 rounded-lg border-1 bg-[var(--color-bg-base)] appearance-none text-[var(--color-primary-base)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)] ${
               error
                 ? "border-[var(--color-danger-dark-plus)]"
                 : "border-[var(--color-bg-divider)]"

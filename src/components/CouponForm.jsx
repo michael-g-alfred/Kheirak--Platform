@@ -86,7 +86,7 @@ export default function CouponForm({ onClose }) {
         <div className="flex justify-end">
           <button
             onClick={onClose}
-            className="p-2 danger_Outline font-bold rounded-full focus:outline-none"
+            className="p-2 danger_Outline font-bold rounded-full focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-danger-light)] disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Close form"
             type="button">
             <CloseIcon />
