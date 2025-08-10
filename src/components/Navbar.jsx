@@ -21,7 +21,7 @@ const NavLinksList = ({ tabs, isMobile, onClick }) => (
             isMobile
               ? "block p-2 text-base w-full"
               : "cursor-pointer p-2 text-sm md:text-md"
-          } transition-colors duration-200 rounded-sm ${
+          } transition-colors duration-200 rounded focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)] ${
             tab.id === "registration"
               ? isActive
                 ? "text-[var(--color-bg-text)] bg-[var(--color-primary-base)] font-bold"
@@ -159,7 +159,7 @@ const Navbar = () => {
           {/* Mobile menu button */}
           <div className="md:hidden">
             <button
-              className="text-[var(--color-bg-text)] hover:text-gray-300 focus:outline-none focus:text-gray-300"
+              className="text-[var(--color-primary-base)] hover:text-[var(--color-primary-hover)]"
               onClick={() => setIsMenuOpen(!isMenuOpen)}>
               {isMenuOpen ? <CloseIcon /> : <MenuIcon />}
             </button>
@@ -167,7 +167,7 @@ const Navbar = () => {
           {/* Logo */}
           <NavLink
             to="/"
-            className="flex-shrink-0 flex items-center cursor-pointer">
+            className="flex-shrink-0 flex items-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)] rounded">
             <img
               src={Logo}
               alt="Logo"

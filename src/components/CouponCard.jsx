@@ -262,7 +262,7 @@ const CouponCard = ({ newCoupon }) => {
             className={`w-full px-6 py-3 rounded font-bold text-md mb-2 transition ${
               isCompleted || hasUsed
                 ? "bg-[var(--color-primary-disabled)] text-[var(--color-bg-muted-text)] cursor-not-allowed"
-                : "bg-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] text-[var(--color-bg-text)] cursor-pointer"
+                : "bg-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] text-[var(--color-bg-text)] cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)]"
             }`}
             disabled={isCompleted || hasUsed}>
             استخدام كوبون
@@ -307,14 +307,14 @@ const CouponCard = ({ newCoupon }) => {
                   يرجى التأكد من صحة البيانات قبل تأكيد العملية.
                 </p>
               </div>
-              <div className="flex justify-center gap-4">
+              <div className="flex justify-center gap-4 mt-4">
                 <button
-                  className="danger px-6 py-2 rounded font-semibold"
+                  className="danger px-6 py-2 rounded font-semibold focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-danger-light)]"
                   onClick={closePopup}>
                   إغلاق
                 </button>
                 <button
-                  className="success px-6 py-2 rounded font-semibold"
+                  className="success px-6 py-2 rounded font-semibold focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-success-light)]"
                   onClick={handleConfirmCouponUSed}>
                   {isLoading ? <Loader /> : "تأكيد"}
                 </button>

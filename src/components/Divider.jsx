@@ -1,7 +1,9 @@
-export default function Divider({ ...props }) {
+export default function Divider({ flexGrow = false, ...props }) {
   return (
     <hr
-      className="flex-grow my-4 border-[var(--color-bg-divider)] border-[0.5px] rounded"
+      className={`my-4 border-[var(--color-bg-divider)] border-[0.5px] rounded ${
+        flexGrow ? "flex-grow" : ""
+      }`}
       {...props}
     />
   );

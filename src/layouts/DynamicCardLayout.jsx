@@ -1,11 +1,28 @@
+import { useState, useEffect } from "react";
+
 export default function DynamicCardLayout({
   title,
   children,
   clampTitle,
   status,
+  delay = 0,
 }) {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    setShow(true);
+  }, []);
+
   return (
-    <div className="relative rounded-lg p-4 border border-[var(--color-bg-divider)] bg-[var(--color-bg-card)] overflow-hidden">
+    <div
+      className={`relative rounded-lg p-4 border border-[var(--color-bg-divider)] bg-[var(--color-bg-card)] overflow-hidden
+        `}
+      dir="rtl"
+      style={{
+        opacity: show ? 1 : 0,
+        transform: show ? "translateY(0)" : "translateY(20px)",
+        transition: `opacity 0.8s ease ${delay}s, transform 0.8s ease ${delay}s`,
+      }}>
       {/* الشريط الجانبي */}
       <span
         className={`absolute top-0 left-0 h-full w-3 rounded-l ${

@@ -1,6 +1,6 @@
 import uploadImageToCloudinary from "../utils/cloudinary";
 import { useAuth } from "../context/authContext";
-import ImageIcon from "../icons/ImageIcon";
+import NotificationBadge from "../components/NotificationBadge";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { doc, updateDoc } from "firebase/firestore";
@@ -124,7 +124,7 @@ export default function UserInfo({ info = true }) {
       )}
       <button
         onClick={handleLogout}
-        className="min-w-fit px-6 py-2 danger_Outline rounded"
+        className="min-w-fit sm:w-auto px-6 py-2 danger_Outline rounded text-center focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-danger-light)] disabled:opacity-50 disabled:cursor-not-allowed"
         aria-label="تسجيل الخروج من الحساب">
         تسجيل الخروج
       </button>
