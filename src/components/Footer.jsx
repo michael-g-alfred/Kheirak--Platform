@@ -74,7 +74,7 @@ export default function Footer() {
                 href={link.href}
                 target="_blank"
                 rel="noreferrer"
-                className="w-12 h-8 flex justify-center items-center bg-[var(--color-primary-base)] text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)] rounded-xl transition-transform duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)]">
+                className="w-12 h-8 flex justify-center items-center bg-[var(--color-primary-base)] text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)] rounded-lg transition-transform duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)]">
                 {link.icon}
               </a>
             ))}
@@ -93,7 +93,7 @@ export default function Footer() {
                 href={info.link}
                 target="_blank"
                 rel="noreferrer"
-                className="w-12 h-8 flex justify-center items-center bg-[var(--color-primary-base)] text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)] rounded-xl transition-transform duration-200 hover:scale-110
+                className="w-12 h-8 flex justify-center items-center bg-[var(--color-primary-base)] text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)] rounded-lg transition-transform duration-200 hover:scale-110
                 focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)]">
                 {info.icon}
               </a>

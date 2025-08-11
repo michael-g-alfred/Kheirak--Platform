@@ -8,7 +8,7 @@ import { useFetchCollection } from "../../hooks/useFetchCollection";
 import { useUpdateStatus } from "../../hooks/useUpdateStatus";
 import { getStatusColor } from "../../utils/statusUtils";
 
-export default function PostReview() {
+export default function PostReview({ statusFilter = "الكل" }) {
   const { data: posts, loading, error } = useFetchCollection(["Posts"]);
   const { updatingId, updateStatus } = useUpdateStatus("Posts");
 
@@ -22,11 +22,16 @@ export default function PostReview() {
     return <Loader />;
   }
 
+  const filteredPosts =
+    statusFilter === "الكل"
+      ? posts
+      : posts.filter((post) => post.status === statusFilter);
+
   return (
     <>
-      {posts.length > 0 ? (
+      {filteredPosts.length > 0 ? (
         <CardsLayout>
-          {posts.map((post) => (
+          {filteredPosts.map((post) => (
             <DynamicCardLayout
               key={post.id}
               title={post.title}

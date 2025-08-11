@@ -259,7 +259,7 @@ const CouponCard = ({ newCoupon }) => {
         {role === "مستفيد" && (
           <button
             onClick={() => handleDonateClick(1)}
-            className={`w-full px-6 py-3 rounded font-bold text-md mb-2 transition ${
+            className={`w-full px-6 py-3 rounded-lg font-bold text-md mb-2 transition ${
               isCompleted || hasUsed
                 ? "bg-[var(--color-primary-disabled)] text-[var(--color-bg-muted-text)] cursor-not-allowed"
                 : "bg-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] text-[var(--color-bg-text)] cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)]"

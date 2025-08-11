@@ -3,7 +3,7 @@ import AlertIcon from "../icons/AlertIcon";
 export default function NoData({ h2 }) {
   return (
     <div
-      className="md:w-2/3 mx-auto rounded-lg p-8 text-center"
+      className="md:w-2/3 mx-auto rounded p-8 text-center"
       dir="rtl"
       role="status"
       aria-live="polite">

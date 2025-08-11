@@ -12,11 +12,18 @@ const InputField = ({
   error,
   select = false,
   options = [],
+  value,
+  onChange,
   ...props
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = type === "password";
   const inputType = isPassword ? (showPassword ? "text" : "password") : type;
+
+  // Helpers to avoid passing undefined handlers when using register
+  const inputProps = register ? { ...register } : {};
+  if (value !== undefined) inputProps.value = value;
+  if (onChange) inputProps.onChange = onChange;
 
   return (
     <div>
@@ -32,7 +39,7 @@ const InputField = ({
         <div className="relative">
           <select
             id={id}
-            {...register}
+            {...inputProps}
             {...props}
             className={`w-full px-4 py-2 rounded-lg bg-[var(--color-bg-base)] appearance-none text-[var(--color-primary-base)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)] cursor-pointer ${
               error
@@ -59,7 +66,7 @@ const InputField = ({
         <textarea
           id={id}
           placeholder={placeholder}
-          {...register}
+          {...inputProps}
           {...props}
           className={`w-full px-4 py-2 rounded-lg border-1 bg-[var(--color-bg-base)] text-[var(--color-primary-base)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)] ${
             error
@@ -71,7 +78,7 @@ const InputField = ({
         <input
           id={id}
           type="file"
-          {...register}
+          {...inputProps}
           {...props}
           className={`w-full px-4 py-2 rounded-lg border-1 border-dashed bg-[var(--color-bg-base)] appearance-none text-[var(--color-primary-base)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)] ${
             error
@@ -85,12 +92,15 @@ const InputField = ({
             id={id}
             type={inputType}
             placeholder={placeholder}
-            {...register}
+            {...inputProps}
             {...props}
             onInput={(e) => {
               const val = e.target.value;
               if (val !== "" && Number(val) < 1) {
                 e.target.value = "";
+              }
+              if (props.onInput) {
+                props.onInput(e);
               }
             }}
             className={`w-full px-4 py-2 rounded-lg border-1 bg-[var(--color-bg-base)] appearance-none text-[var(--color-primary-base)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)] ${

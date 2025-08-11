@@ -22,7 +22,7 @@ export default function NotFound() {
         </div>
         <Link
           to="/"
-          className={`inline-block w-80 px-6 py-3 rounded-lg font-bold text-center transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+          className={`inline-block w-80 px-6 py-3 rounded font-bold text-center transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
             hover ? "transform scale-105" : ""
           }`}
           style={{

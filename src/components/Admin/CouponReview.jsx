@@ -8,7 +8,7 @@ import { useFetchCollection } from "../../hooks/useFetchCollection";
 import { useUpdateStatus } from "../../hooks/useUpdateStatus";
 import { getStatusColor } from "../../utils/statusUtils";
 
-export default function CouponReview() {
+export default function CouponReview({ statusFilter = "الكل" }) {
   const { data: coupons, loading, error } = useFetchCollection(["Coupons"]);
   const { updatingId, updateStatus } = useUpdateStatus("Coupons");
 
@@ -22,11 +22,16 @@ export default function CouponReview() {
     return <Loader />;
   }
 
+  const filteredCoupons =
+    statusFilter === "الكل"
+      ? coupons
+      : coupons.filter((coupon) => coupon.status === statusFilter);
+
   return (
     <>
-      {coupons.length > 0 ? (
+      {filteredCoupons.length > 0 ? (
         <CardsLayout>
-          {coupons.map((coupon) => (
+          {filteredCoupons.map((coupon) => (
             <DynamicCardLayout
               key={coupon.id}
               title={coupon.title}

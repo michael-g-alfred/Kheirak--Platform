@@ -298,7 +298,7 @@ const PostCard = ({ newPost }) => {
               <button
                 key={index}
                 onClick={() => handleDonateClick(amt)}
-                className={`flex-1 min-w-[60px] p-2 rounded font-bold text-xs text-center transition
+                className={`flex-1 min-w-[60px] p-2 rounded-lg font-bold text-xs text-center transition
                 ${
                   isCompleted
                     ? "bg-[var(--color-primary-disabled)]  text-[var(--color-bg-muted-text)] cursor-not-allowed"
@@ -314,7 +314,7 @@ const PostCard = ({ newPost }) => {
               inputMode="numeric"
               disabled={isCompleted}
               placeholder="مبلغ آخر"
-              className={`flex-1 min-w-[60px] text-center p-2 rounded font-bold text-xs transition outline-none
+              className={`flex-1 min-w-[60px] text-center p-2 rounded-lg font-bold text-xs transition outline-none
     ${
       isCompleted
         ? "bg-[var(--color-primary-disabled)] text-[var(--color-bg-muted-text)] cursor-not-allowed"

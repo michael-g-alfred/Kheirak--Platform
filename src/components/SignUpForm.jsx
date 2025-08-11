@@ -168,7 +168,7 @@ const SignUpForm = () => {
 
         {/* زر الدخول */}
         <SubmitButton buttonTitle="إنشاء حساب" isLoading={isLoading} />
-        <div className="text-center rounded-lg">
+        <div className="text-center">
           <div className="flex items-center gap-4 mb-4">
             <Divider flexGrow />
             <span className="text-[var(--color-bg-muted-text)] text-md">
