@@ -18,6 +18,7 @@ const OrgProfile = lazy(() => import("../pages/OrgProfile"));
 const BeneficiaryProfile = lazy(() => import("../pages/BeneficiaryProfile"));
 const Notifications = lazy(() => import("../pages/Notifications"));
 import LogoIcon from "../icons/LogoIcon";
+import AdminMessages from "../pages/AdminMessages";
 
 function ProtectedRoute({ children, allowedRoles }) {
   const { role } = useAuth();
@@ -56,10 +57,18 @@ export default function AppRoutes() {
 
         {/* Admin */}
         <Route
-          path="/dashboard"
+          path="/admin-dashboard"
           element={
             <ProtectedRoute allowedRoles={["مشرف"]}>
               <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin-messages"
+          element={
+            <ProtectedRoute allowedRoles={["مشرف"]}>
+              <AdminMessages />
             </ProtectedRoute>
           }
         />

@@ -21,7 +21,7 @@ const NavLinksList = ({ tabs, isMobile, onClick }) => (
             isMobile
               ? "block p-2 text-base w-full"
               : "cursor-pointer p-2 text-sm md:text-md"
-          } transition-colors duration-200 rounded focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)] ${
+          } transition-colors duration-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)] ${
             tab.id === "registration"
               ? isActive
                 ? "text-[var(--color-bg-text)] bg-[var(--color-primary-base)] font-bold"
@@ -86,7 +86,11 @@ const Navbar = () => {
     },
   ];
 
-  const adminTabs = [{ id: "dashboard", label: "لوحة التحكم" }, ...baseTabs];
+  const adminTabs = [
+    { id: "admin-dashboard", label: "لوحة التحكم" },
+    { id: "admin-messages", label: "الرسائل" },
+    ...baseTabs,
+  ];
 
   const tabs = useMemo(() => {
     const beneficiaryTabsWithUser = [
@@ -170,7 +174,7 @@ const Navbar = () => {
           {/* Logo */}
           <NavLink
             to="/"
-            className="flex-shrink-0 flex items-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)] rounded">
+            className="flex-shrink-0 flex items-center cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)] rounded-lg">
             <img
               src={Logo}
               alt="Logo"
