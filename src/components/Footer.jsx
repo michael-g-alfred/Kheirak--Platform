@@ -54,7 +54,7 @@ export default function Footer() {
               <li key={link.to} className="text-right">
                 <Link
                   to={link.to}
-                  className="hover:text-[var(--color-primary-hover)] transition-transform duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-1     focus:ring-[var(--color-primary-base)] rounded">
+                  className="hover:text-[var(--color-primary-hover)] hover:underline transition-transform duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-[var(--color-primary-base)] rounded">
                   {link.label}
                 </Link>
               </li>

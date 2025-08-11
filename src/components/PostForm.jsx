@@ -127,7 +127,12 @@ export default function PostForm({ onClose }) {
           id="amount"
           type="number"
           placeholder="اكتب المبلغ المطلوب"
-          register={register("amount", { required: "هذا الحقل مطلوب" })}
+          register={register("amount", {
+            required: "هذا الحقل مطلوب",
+            valueAsNumber: true,
+            validate: (value) =>
+              value >= 1 || "المبلغ يجب أن يكون رقم موجب أكبر من صفر",
+          })}
           error={errors.amount}
         />
 

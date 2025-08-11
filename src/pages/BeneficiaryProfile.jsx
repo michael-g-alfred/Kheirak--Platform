@@ -9,27 +9,13 @@ import NoData from "../components/NoData";
 import DynamicCardLayout from "../layouts/DynamicCardLayout";
 import CardsLayout from "../layouts/CardsLayout";
 import UserInfo from "../components/UserInfo";
+import { getStatusColor } from "../utils/statusUtils";
 
 export default function BeneficiaryProfile() {
   const [myPosts, setMyPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const { currentUser } = useAuth();
   const userEmail = currentUser?.email;
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "مقبول":
-        return "bg-green-500";
-      case "مرفوض":
-        return "bg-red-500";
-      case "قيد المراجعة":
-        return "bg-yellow-500";
-      case "مكتمل":
-        return "bg-blue-500";
-      default:
-        return "bg-gray-500";
-    }
-  };
 
   useEffect(() => {
     if (!userEmail) {

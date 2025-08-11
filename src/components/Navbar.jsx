@@ -159,6 +159,9 @@ const Navbar = () => {
           {/* Mobile menu button */}
           <div className="md:hidden">
             <button
+              type="button"
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isMenuOpen}
               className="text-[var(--color-primary-base)] hover:text-[var(--color-primary-hover)]"
               onClick={() => setIsMenuOpen(!isMenuOpen)}>
               {isMenuOpen ? <CloseIcon /> : <MenuIcon />}

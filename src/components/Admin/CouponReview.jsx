@@ -6,25 +6,11 @@ import Loader from "../Loader";
 import { toast } from "react-hot-toast";
 import { useFetchCollection } from "../../hooks/useFetchCollection";
 import { useUpdateStatus } from "../../hooks/useUpdateStatus";
+import { getStatusColor } from "../../utils/statusUtils";
 
 export default function CouponReview() {
   const { data: coupons, loading, error } = useFetchCollection(["Coupons"]);
   const { updatingId, updateStatus } = useUpdateStatus("Coupons");
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "مقبول":
-        return "bg-green-500";
-      case "مرفوض":
-        return "bg-red-500";
-      case "قيد المراجعة":
-        return "bg-yellow-500";
-      case "مكتمل":
-        return "bg-blue-500";
-      default:
-        return "bg-gray-500";
-    }
-  };
 
   useEffect(() => {
     if (error) {

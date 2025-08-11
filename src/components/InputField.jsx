@@ -87,6 +87,12 @@ const InputField = ({
             placeholder={placeholder}
             {...register}
             {...props}
+            onInput={(e) => {
+              const val = e.target.value;
+              if (val !== "" && Number(val) < 1) {
+                e.target.value = "";
+              }
+            }}
             className={`w-full px-4 py-2 rounded-lg border-1 bg-[var(--color-bg-base)] appearance-none text-[var(--color-primary-base)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)] ${
               error
                 ? "border-[var(--color-danger-dark-plus)]"

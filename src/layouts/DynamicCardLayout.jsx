@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { getStatusColor } from "../utils/statusUtils";
 
 export default function DynamicCardLayout({
   title,
@@ -25,17 +26,9 @@ export default function DynamicCardLayout({
       }}>
       {/* الشريط الجانبي */}
       <span
-        className={`absolute top-0 left-0 h-full w-3 rounded-l ${
-          status === "قيد المراجعة"
-            ? "bg-yellow-500"
-            : status === "مقبول"
-            ? "bg-green-500"
-            : status === "مرفوض"
-            ? "bg-red-500"
-            : status === "مكتمل"
-            ? "bg-blue-500"
-            : "bg-gray-300"
-        }`}
+        className={`absolute top-0 left-0 h-full w-3 rounded-l ${getStatusColor(
+          status
+        )}`}
       />
       <h2
         className={`text-2xl font-semibold mb-2 text-[var(--color-primary-base)] ${

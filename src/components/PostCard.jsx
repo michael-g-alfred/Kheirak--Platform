@@ -315,24 +315,31 @@ const PostCard = ({ newPost }) => {
               disabled={isCompleted}
               placeholder="مبلغ آخر"
               className={`flex-1 min-w-[60px] text-center p-2 rounded font-bold text-xs transition outline-none
-              ${
-                isCompleted
-                  ? "bg-[var(--color-primary-disabled)] text-[var(--color-bg-muted-text)] cursor-not-allowed"
-                  : "border border-[var(--color-bg-divider)] bg-[var(--color-bg-base)] text-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] hover:text-[var(--color-bg-text)] cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)]"
-              }`}
+    ${
+      isCompleted
+        ? "bg-[var(--color-primary-disabled)] text-[var(--color-bg-muted-text)] cursor-not-allowed"
+        : "border border-[var(--color-bg-divider)] bg-[var(--color-bg-base)] text-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] hover:text-[var(--color-bg-text)] cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)]"
+    }`}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   const value = e.target.value.trim();
-                  if (value && !isNaN(value)) {
-                    handleDonateClick(value);
+                  const numValue = Number(value);
+                  if (value && !isNaN(numValue) && numValue >= 1) {
+                    handleDonateClick(numValue);
                     e.target.value = "";
+                  } else {
+                    toast.error("الرجاء إدخال مبلغ صحيح أكبر من صفر");
                   }
                 }
               }}
               onBlur={(e) => {
                 const value = e.target.value.trim();
-                if (value && !isNaN(value)) {
-                  handleDonateClick(value);
+                const numValue = Number(value);
+                if (value && !isNaN(numValue) && numValue >= 1) {
+                  handleDonateClick(numValue);
+                  e.target.value = "";
+                } else if (value) {
+                  toast.error("الرجاء إدخال مبلغ صحيح أكبر من صفر");
                   e.target.value = "";
                 }
               }}

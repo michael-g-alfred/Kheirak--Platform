@@ -138,7 +138,12 @@ export default function CouponForm({ onClose }) {
           id="stock"
           type="number"
           placeholder="اكتب الكمية المتاحة من الكوبون"
-          register={register("stock", { required: "هذا الحقل مطلوب" })}
+          register={register("stock", {
+            required: "هذا الحقل مطلوب",
+            valueAsNumber: true,
+            validate: (value) =>
+              value >= 1 || "الكمية يجب أن تكون رقم موجب أكبر من صفر",
+          })}
           error={errors.stock}
         />
 

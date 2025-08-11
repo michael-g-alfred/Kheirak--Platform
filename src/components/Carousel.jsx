@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import ChevronLeftIcon from "../icons/ChevronLeftIcon";
 import ChevronRightIcon from "../icons/ChevronRightIcon";
 
@@ -43,17 +43,24 @@ const Carousel = () => {
     return () => clearInterval(interval);
   }, [isPaused]);
 
-  const goToSlide = (index) => {
+  // Preload next image
+  useEffect(() => {
+    const nextIndex = (current + 1) % slides.length;
+    const img = new Image();
+    img.src = slides[nextIndex].image;
+  }, [current]);
+
+  const goToSlide = useCallback((index) => {
     setCurrent(index);
-  };
+  }, []);
 
-  const goToPrevious = () => {
+  const goToPrevious = useCallback(() => {
     setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
-  };
+  }, []);
 
-  const goToNext = () => {
+  const goToNext = useCallback(() => {
     setCurrent((prev) => (prev + 1) % slides.length);
-  };
+  }, []);
 
   return (
     <div
@@ -75,20 +82,20 @@ const Carousel = () => {
 
         {/* Navigation Arrows */}
         <button
-          onClick={goToNext}
-          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-[var(--color-bg-card)]/50 backdrop-blur-sm text-[var(--color-primary-base)] border border-[var(--color-bg-divider)] p-2 hover:bg-[var(--color-bg-card)]/70  rounded-full *:transition-all duration-200"
+          onClick={goToPrevious}
+          className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-[var(--color-bg-card)]/50 backdrop-blur-sm text-[var(--color-primary-base)] border border-[var(--color-bg-divider)] p-2 hover:bg-[var(--color-bg-card)]/70 rounded-full transition-all duration-200"
           aria-label="الصورة السابقة">
           <ChevronLeftIcon />
         </button>
 
         <button
-          onClick={goToPrevious}
-          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-[var(--color-bg-card)]/50 backdrop-blur-sm text-[var(--color-primary-base)] border border-[var(--color-bg-divider)] p-2 hover:bg-[var(--color-bg-card)]/70  rounded-full *:transition-all duration-200"
+          onClick={goToNext}
+          className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-[var(--color-bg-card)]/50 backdrop-blur-sm text-[var(--color-primary-base)] border border-[var(--color-bg-divider)] p-2 hover:bg-[var(--color-bg-card)]/70 rounded-full transition-all duration-200"
           aria-label="الصورة التالية">
           <ChevronRightIcon />
         </button>
 
-        <h2 className="absolute bottom-6 right-0 left-0 text-lg sm:text-xl md:text-2xl font-semibold bg-[var(--color-bg-card)]/50 backdrop-blur-sm text-[var(--color-primary-base)] border-y border-[var(--color-bg-divider)] px-4 py-3">
+        <h2 className="absolute bottom-8 right-0 left-0 text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl font-semibold bg-[var(--color-bg-card)]/50 backdrop-blur-sm text-[var(--color-primary-base)] border-y border-[var(--color-bg-divider)] px-4 py-3">
           {slides[current].title}
         </h2>
       </div>
@@ -99,7 +106,7 @@ const Carousel = () => {
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-200 ${
+            className={`w-5 h-5 rounded-full transition-all duration-200 ${
               index === current
                 ? "bg-[var(--color-primary-base)] scale-110"
                 : "bg-[var(--color-primary-disabled)] hover:bg-[var(--color-primary-base)]/50"

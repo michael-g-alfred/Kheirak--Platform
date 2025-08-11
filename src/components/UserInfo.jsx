@@ -20,7 +20,6 @@ export default function UserInfo({ info = true }) {
       toast.success("تم تسجيل الخروج بنجاح");
       navigate("/");
     } catch (error) {
-      console.error("Error logging out:", error);
       toast.error("خطأ في تسجيل الخروج");
     }
   };
@@ -46,7 +45,6 @@ export default function UserInfo({ info = true }) {
       toast.loading("جاري رفع الصورة...");
 
       const imageUrl = await uploadImageToCloudinary(file);
-      console.log("Uploaded image URL:", imageUrl);
 
       const userDocRef = doc(db, "Users", currentUser.uid);
       await updateDoc(userDocRef, {
@@ -64,7 +62,6 @@ export default function UserInfo({ info = true }) {
       toast.dismiss();
       toast.success("تم تحديث صورة الملف الشخصي بنجاح");
     } catch (error) {
-      console.error("Error uploading image:", error);
       toast.dismiss();
       toast.error("خطأ في رفع الصورة");
     } finally {
