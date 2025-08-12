@@ -24,7 +24,7 @@ export default function NotificationsPage() {
     user ? ["Notifications", user.email, "user_Notifications"] : []
   );
 
-  const { deleting, deleteAllNotifications } = useDeleteAllNotifications(user);
+  const { deleting, handleDeleteAll } = useDeleteAllNotifications(user);
 
   useEffect(() => {
     if (error) {
@@ -43,7 +43,7 @@ export default function NotificationsPage() {
         {notifications.length > 0 && !loadingNotifications && (
           <div className="flex justify-end mb-6">
             <button
-              onClick={deleteAllNotifications}
+              onClick={handleDeleteAll}
               disabled={deleting}
               className="w-full sm:w-auto px-6 py-2 danger_Outline rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-danger-light)] disabled:opacity-50 disabled:cursor-not-allowed"
               aria-label="حذف جميع الإشعارات">
