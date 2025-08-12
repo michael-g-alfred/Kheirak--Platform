@@ -5,6 +5,8 @@ import InputField from "./InputField";
 import FormLayout from "../layouts/FormLayout";
 import SubmitButton from "./SubmitButton";
 import { toast } from "react-hot-toast";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "../firebase/firebase";
 
 const schema = yup.object().shape({
   name: yup.string().required("الاسم مطلوب").min(2, "قصير جدًا"),
@@ -29,19 +31,15 @@ export default function ContactForm() {
   const onSubmit = async (data) => {
     try {
       toast.loading("جاري إرسال الرسالة...");
-      
-      // محاكاة تأخير الشبكة - في التطبيق الحقيقي، هذا سيكون API call
-      await new Promise((res) => setTimeout(res, 1000));
-      
-      // في التطبيق الحقيقي، هنا سيتم إرسال البيانات إلى الخادم
-      console.log("Contact form data:", {
+
+      await addDoc(collection(db, "ContactMessages"), {
         name: data.name,
         email: data.email,
         phone: data.phone || "لا يوجد",
         message: data.message,
-        timestamp: new Date().toISOString()
+        timestamp: serverTimestamp(),
       });
-      
+
       toast.dismiss();
       toast.success("تم إرسال الرسالة بنجاح! سنتواصل معك قريباً.");
       reset();
@@ -57,7 +55,8 @@ export default function ContactForm() {
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-6 text-right"
-        dir="rtl">
+        dir="rtl"
+      >
         <InputField
           label="الاسم *"
           id="name"
