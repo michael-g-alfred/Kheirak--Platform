@@ -9,30 +9,12 @@ import Loader from "../components/Loader";
 import { useAuth } from "../context/authContext";
 import Divider from "../components/Divider";
 import { toast } from "react-hot-toast";
+import { categories, categoryIcons } from "../utils/categories";
 
 export default function Coupons() {
   const { role, loading } = useAuth();
   const [showCouponForm, setShowCouponForm] = useState(false);
   const [selectedType, setSelectedType] = useState("الكل");
-
-  const categories = [
-    "الكل",
-    "طعام",
-    "دواء",
-    "ملابس",
-    "كهرباء",
-    "خدمات",
-    "تعليم",
-  ];
-  const categoryIcons = {
-    الكل: "📦",
-    طعام: "🍔",
-    دواء: "💊",
-    ملابس: "👕",
-    كهرباء: "💡",
-    خدمات: "🛠️",
-    تعليم: "🎓",
-  };
 
   const filterFn = (coupon) => coupon.status === "مقبول";
 
@@ -86,12 +68,14 @@ export default function Coupons() {
             isSelected
               ? "bg-[var(--color-primary-base)] text-[var(--color-bg-text)]"
               : "bg-[var(--color-primary-disabled)] text-[var(--color-bg-muted-text)]"
-          }`}>
+          }`}
+              >
                 <span className="text-lg">{categoryIcons[type]}</span>
                 <span
                   className={`text-md ${
                     isSelected ? "font-bold" : "font-medium"
-                  }`}>
+                  }`}
+                >
                   {type}
                 </span>
               </button>
