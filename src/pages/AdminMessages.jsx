@@ -17,6 +17,7 @@ import CardsLayout from "../layouts/CardsLayout";
 import CardLayout from "../layouts/CardLayout";
 import CommentIcon from "../icons/CommentIcon";
 import PaginationControls from "../components/PaginationControls";
+import { db } from "../Firebase/Firebase";
 
 export default function AdminMessages() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -96,9 +97,23 @@ export default function AdminMessages() {
         <NoData h2="لا توجد رسائل حالياً" />
       ) : (
         <>
-          <CardsLayout>
+          <CardsLayout colNum={2} smEnabled={false}>
             {currentMessages.map((msg) => (
-              <CardLayout key={msg.id} title={msg.name}>
+              <CardLayout
+                key={msg.id}
+                title={
+                  <div className="flex items-center gap-2">
+                    {msg.name}
+                    {!msg.read && (
+                      <span className="text-xs bg-[var(--color-warning-light)]  text-[var(--color-bg-text)] px-3 py-1 rounded">
+                        غير مقروء
+                      </span>
+                    )}
+                  </div>
+                }
+                className={
+                  !msg.read ? "bg-yellow-50 border-l-4 border-yellow-400" : ""
+                }>
                 {msg.email && (
                   <p className="flex items-center gap-2">
                     <MailIcon /> {msg.email}
@@ -114,7 +129,9 @@ export default function AdminMessages() {
                   {msg.message}
                 </p>
                 <p className="text-xs text-[var(--color-bg-muted-text)] mt-2">
-                  {msg.timestamp?.toDate().toLocaleString()}
+                  {msg.timestamp
+                    ? new Date(msg.timestamp.toDate()).toLocaleString("ar-EG")
+                    : ""}
                 </p>
                 <div className="flex gap-2 mt-3">
                   {!msg.read ? (

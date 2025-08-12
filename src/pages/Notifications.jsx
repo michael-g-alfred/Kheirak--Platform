@@ -62,14 +62,14 @@ export default function NotificationsPage() {
           ) : notifications.length === 0 ? (
             <NoData h2="لا توجد إشعارات" />
           ) : (
-            <CardsLayout colNum={1}>
+            <CardsLayout colNum={1} smEnabled={false}>
               {notifications.map((notif) => (
                 <CardLayout key={notif.id} title={notif.title || "إشعار"}>
                   <article className="text-md text-[var(--color-bg-text-dark)] space-y-1 text-right">
                     <p>{notif.message || "لا يوجد محتوى"}</p>
                     <time className="text-sm text-[var(--color-muted)] block">
                       {notif.timestamp
-                        ? new Date(notif.timestamp).toLocaleString("ar-SA")
+                        ? new Date(notif.timestamp).toLocaleString("ar-EG")
                         : "تاريخ غير محدد"}
                     </time>
                   </article>

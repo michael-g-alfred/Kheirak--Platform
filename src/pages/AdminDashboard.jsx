@@ -4,7 +4,6 @@ import PostReview from "../components/Admin/PostReview";
 import CouponReview from "../components/Admin/CouponReview";
 import PageLayout from "../layouts/PageLayout";
 import Header_Subheader from "../components/Header_Subheader";
-import { useAuth } from "../context/authContext";
 import UserInfo from "../components/UserInfo";
 import Divider from "../components/Divider";
 import InputField from "../components/InputField";
@@ -84,8 +83,6 @@ export default function AdminDashboard() {
 
   const [filterCouponsOpen, setFilterCouponsOpen] = useState(false);
   const [couponStatusFilter, setCouponStatusFilter] = useState("الكل");
-
-  const { currentUser, logout } = useAuth();
 
   useEffect(() => {
     setLastUpdated(
