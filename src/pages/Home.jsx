@@ -2,16 +2,16 @@ import { useState } from "react";
 import { Outlet, NavLink, useLocation } from "react-router-dom";
 import PageLayout from "../layouts/PageLayout";
 import Carousel from "../components/Carousel";
-import Posts from "./Posts"; // adjust the path if necessary
+import Posts from "./Posts";
+import { useAuth } from "../context/authContext";
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState("posts");
   const location = useLocation();
 
-  const navLinkBaseClass = "flex-1 p-6 font-semibold";
-  const navLinkBaseStyle = {
-    textAlign: "center",
-  };
+  const navLinkBaseClass = "flex-1 p-6 font-semibold text-center";
+
+  const { role } = useAuth();
 
   return (
     <PageLayout>
@@ -26,7 +26,6 @@ export default function Home() {
             onClick={() => setActiveTab("posts")}
             className={navLinkBaseClass}
             style={{
-              ...navLinkBaseStyle,
               backgroundColor:
                 activeTab === "posts"
                   ? "var(--color-primary-base)"
@@ -39,12 +38,34 @@ export default function Home() {
             aria-current={activeTab === "posts" ? "page" : undefined}>
             الطلبات
           </NavLink>
+
+          {role === "متبرع" && (
+            <NavLink
+              to="/campaign"
+              onClick={() => setActiveTab("campaign")}
+              className={navLinkBaseClass}
+              style={{
+                backgroundColor:
+                  activeTab === "campaign"
+                    ? "var(--color-primary-base)"
+                    : "var(--color-primary-disabled)",
+                color:
+                  activeTab === "campaign"
+                    ? "var(--color-bg-text)"
+                    : "var(--color-bg-muted-text)",
+                borderRight: ".125rem solid var(--color-bg-divider)",
+                borderLeft: ".125rem solid var(--color-bg-divider)",
+              }}
+              aria-current={activeTab === "campaign" ? "page" : undefined}>
+              الحملات
+            </NavLink>
+          )}
+
           <NavLink
             to="/coupons"
             onClick={() => setActiveTab("coupons")}
             className={navLinkBaseClass}
             style={{
-              ...navLinkBaseStyle,
               backgroundColor:
                 activeTab === "coupons"
                   ? "var(--color-primary-base)"
