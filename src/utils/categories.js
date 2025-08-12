@@ -1,24 +1,16 @@
 // categories for coupons
 export const categories = [
-  "الكل",
-  "طعام",
-  "دواء",
-  "ملابس",
-  "كهرباء",
-  "خدمات",
-  "تعليم",
+  { name: "الكل", icon: "📦" },
+  { name: "طعام", icon: "🍔" },
+  { name: "كشوفات", icon: "🥼" },
+  { name: "خصومات", icon: "🏷️" },
+  { name: "ملابس", icon: "👕" },
+  { name: "كهرباء", icon: "💡" },
+  { name: "خدمات", icon: "🛠️" },
+  { name: "تعليم", icon: "🎓" },
 ];
-// icons for categories
-export const categoryIcons = {
-  الكل: "📦",
-  طعام: "🍔",
-  دواء: "💊",
-  ملابس: "👕",
-  كهرباء: "💡",
-  خدمات: "🛠️",
-  تعليم: "🎓",
-};
+
 // options for copon form
 export const categoryOptions = categories
-  .filter((cat) => cat !== "الكل")
-  .map((cat) => ({ value: cat, label: cat }));
+  .filter((cat) => cat.name !== "الكل")
+  .map((cat) => ({ value: cat.name, label: cat.name }));

@@ -228,32 +228,24 @@ const CouponCard = ({ newCoupon }) => {
                 لا توجد صورة
               </div>
             )}
-
-            <div className="absolute bottom-0 left-0 w-full">
-              <div className="w-full h-7 bg-[var(--color-primary-disabled)] border-t-1 border-[var(--color-bg-divider)] overflow-hidden relative">
-                <div
-                  className="h-full bg-[var(--color-primary-base)] transition-all duration-300 text-md font-bold text-[var(--color-bg-text)] flex items-center justify-center"
-                  style={{ width: `${donationPercentage}%` }}>
-                  {Math.round(donationPercentage)}%
-                </div>
-              </div>
-            </div>
           </div>
         </div>
 
         {/* العنوان وعدد الكوبونات */}
         <div className="flex flex-col gap-2 mb-2">
           <h2 className="font-bold text-xl sm:text-2xl text-[var(--color-primary-base)] line-clamp-2">
-            {newCoupon.title || "عنوان الطلب"}
+            {newCoupon.title || "عنوان الكوبون"}
           </h2>
-          <span className="text-[var(--color-primary-base)] border border-[var(--color-bg-divider)] px-4 py-2 rounded font-bold text-sm sm:text-base text-center">
-            عدد الكوبونات: {stock - totalCouponUsed}
-          </span>
+          <p className="text-sm text-[var(--color-bg-text-dark)] line-clamp-2">
+            النوع: <strong>{newCoupon.type}</strong>
+          </p>
+          <p className="text-sm text-[var(--color-bg-text-dark)] line-clamp-2">
+            {newCoupon.details || "تفاصيل الكوبون..."}
+          </p>
+          <p className="w-full text-[var(--color-primary-base)] border border-[var(--color-bg-divider)] px-4 py-2 rounded font-bold text-sm sm:text-base text-center">
+            عدد الكوبونات المتاحة: {stock - totalCouponUsed}
+          </p>
         </div>
-
-        <p className="text-sm text-[var(--color-bg-text-dark)] mb-4 line-clamp-2">
-          {newCoupon.details || "تفاصيل الطلب..."}
-        </p>
 
         {/* أزرار الإستخدام */}
         {role === "مستفيد" && (

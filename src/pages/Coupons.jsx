@@ -9,7 +9,7 @@ import Loader from "../components/Loader";
 import { useAuth } from "../context/authContext";
 import Divider from "../components/Divider";
 import { toast } from "react-hot-toast";
-import { categories, categoryIcons } from "../utils/categories";
+import { categories } from "../utils/categories";
 
 export default function Coupons() {
   const { role, loading } = useAuth();
@@ -56,27 +56,25 @@ export default function Coupons() {
       <Divider />
       {Coupons.length > 0 && (
         <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-7 gap-2 items-center justify-center">
-          {categories.map((type) => {
-            const isSelected = selectedType === type;
+          {categories.map(({ name, icon }) => {
+            const isSelected = selectedType === name;
 
             return (
               <button
-                key={type}
-                onClick={() => setSelectedType(type)}
+                key={name}
+                onClick={() => setSelectedType(name)}
                 className={`flex items-center justify-center gap-2 px-6 py-2 rounded-full
           ${
             isSelected
               ? "bg-[var(--color-primary-base)] text-[var(--color-bg-text)]"
               : "bg-[var(--color-primary-disabled)] text-[var(--color-bg-muted-text)]"
-          }`}
-              >
-                <span className="text-lg">{categoryIcons[type]}</span>
+          }`}>
+                <span className="text-lg">{icon}</span>
                 <span
                   className={`text-md ${
                     isSelected ? "font-bold" : "font-medium"
-                  }`}
-                >
-                  {type}
+                  }`}>
+                  {name}
                 </span>
               </button>
             );
