@@ -4,9 +4,7 @@ import PostReview from "../components/Admin/PostReview";
 import CouponReview from "../components/Admin/CouponReview";
 import PageLayout from "../layouts/PageLayout";
 import Header_Subheader from "../components/Header_Subheader";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
-import { toast } from "react-hot-toast";
 import UserInfo from "../components/UserInfo";
 import Divider from "../components/Divider";
 import InputField from "../components/InputField";
@@ -20,6 +18,62 @@ const statusOptions = [
   { value: "مرفوض", label: "مرفوض" },
   { value: "مكتمل", label: "مكتمل" },
 ];
+
+function ReviewSection({
+  id,
+  title,
+  filterOpen,
+  setFilterOpen,
+  lastUpdated,
+  statusFilter,
+  setStatusFilter,
+  statusOptions,
+  ReviewComponent,
+}) {
+  return (
+    <section aria-labelledby={`${id}-heading`}>
+      <div className="flex flex-col items-start gap-2 mb-2">
+        <div className="flex items-center justify-between w-full">
+          <h2
+            id={`${id}-heading`}
+            className="text-xl font-semibold text-[var(--color-primary-base)]">
+            {title}
+          </h2>
+
+          {/* زرار فتح/غلق الفلتر */}
+          <button
+            onClick={() => setFilterOpen((prev) => !prev)}
+            aria-pressed={filterOpen}
+            aria-label={
+              filterOpen ? `إغلاق فلتر ${title}` : `فتح فلتر ${title}`
+            }
+            className="px-6 py-2 border border-[var(--color-primary-base)] rounded text-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] hover:text-[var(--color-bg-text)] transition">
+            {filterOpen ? <FilterOffIcon /> : <FilterIcon />}
+          </button>
+        </div>
+        <p className="text-xs text-[var(--color-bg-muted-text)] mb-2">
+          (آخر تحديث: {lastUpdated})
+        </p>
+      </div>
+
+      {/* خيارات الفلترة باستخدام InputField */}
+      {filterOpen && (
+        <div className="p-4 border border-[var(--color-bg-divider)] rounded bg-[var(--color-bg-card)]">
+          <InputField
+            label={`حالة ${title}`}
+            id={`${id}Status`}
+            select={true}
+            options={statusOptions}
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          />
+        </div>
+      )}
+
+      <ReviewComponent statusFilter={statusFilter} />
+    </section>
+  );
+}
 
 export default function AdminDashboard() {
   const [lastUpdated, setLastUpdated] = useState(null);
@@ -42,19 +96,6 @@ export default function AdminDashboard() {
     );
   }, []);
 
-  const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      toast.success("تم تسجيل الخروج بنجاح");
-      navigate("/");
-    } catch (error) {
-      console.error("Error logging out:", error);
-      toast.error("خطأ في تسجيل الخروج");
-    }
-  };
-
   return (
     <PageLayout>
       <div dir="rtl">
@@ -76,96 +117,32 @@ export default function AdminDashboard() {
           <Divider />
 
           {/* قسم مراجعة البوستات */}
-          <section aria-labelledby="posts-heading">
-            <div className="flex flex-col items-start gap-2 mb-2">
-              <div className="flex items-center justify-between w-full">
-                <h2
-                  id="posts-heading"
-                  className="text-xl font-semibold text-[var(--color-primary-base)]">
-                  مراجعة البوستات
-                </h2>
-
-                {/* زرار فتح/غلق الفلتر */}
-                <button
-                  onClick={() => setFilterPostsOpen((prev) => !prev)}
-                  aria-pressed={filterPostsOpen}
-                  aria-label={
-                    filterPostsOpen
-                      ? "إغلاق فلتر البوستات"
-                      : "فتح فلتر البوستات"
-                  }
-                  className="px-6 py-2 border border-[var(--color-primary-base)] rounded text-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] hover:text-[var(--color-bg-text)] transition">
-                  {filterPostsOpen ? <FilterOffIcon /> : <FilterIcon />}
-                </button>
-              </div>
-              <p className="text-xs text-[var(--color-bg-muted-text)] mb-2">
-                (آخر تحديث: {lastUpdated})
-              </p>
-            </div>
-
-            {/* خيارات الفلترة باستخدام InputField */}
-            {filterPostsOpen && (
-              <div className="p-4 border border-[var(--color-bg-divider)] rounded bg-[var(--color-bg-card)]">
-                <InputField
-                  label="حالة البوستات"
-                  id="postStatus"
-                  select={true}
-                  options={statusOptions}
-                  value={postStatusFilter}
-                  onChange={(e) => setPostStatusFilter(e.target.value)}
-                />
-              </div>
-            )}
-
-            <PostReview statusFilter={postStatusFilter} />
-          </section>
+          <ReviewSection
+            id="posts"
+            title="مراجعة البوستات"
+            filterOpen={filterPostsOpen}
+            setFilterOpen={setFilterPostsOpen}
+            lastUpdated={lastUpdated}
+            statusFilter={postStatusFilter}
+            setStatusFilter={setPostStatusFilter}
+            statusOptions={statusOptions}
+            ReviewComponent={PostReview}
+          />
 
           <Divider />
 
           {/* قسم مراجعة الكوبونات */}
-          <section aria-labelledby="coupons-heading">
-            <div className="flex flex-col items-start gap-2 mb-2">
-              <div className="flex items-center justify-between w-full">
-                <h2
-                  id="coupons-heading"
-                  className="text-xl font-semibold text-[var(--color-primary-base)]">
-                  مراجعة الكوبونات
-                </h2>
-
-                {/* زرار فتح/غلق فلتر الكوبونات */}
-                <button
-                  onClick={() => setFilterCouponsOpen((prev) => !prev)}
-                  aria-pressed={filterCouponsOpen}
-                  aria-label={
-                    filterCouponsOpen
-                      ? "إغلاق فلتر الكوبونات"
-                      : "فتح فلتر الكوبونات"
-                  }
-                  className="px-6 py-2 border border-[var(--color-primary-base)] rounded text-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] hover:text-[var(--color-bg-text)] transition">
-                  {filterCouponsOpen ? <FilterOffIcon /> : <FilterIcon />}
-                </button>
-              </div>
-              <p className="text-xs text-[var(--color-bg-muted-text)] mb-2">
-                (آخر تحديث: {lastUpdated})
-              </p>
-            </div>
-
-            {/* خيارات فلترة الكوبونات باستخدام InputField */}
-            {filterCouponsOpen && (
-              <div className="p-4 border border-[var(--color-bg-divider)] rounded bg-[var(--color-bg-card)]">
-                <InputField
-                  label="حالة الكوبونات"
-                  id="couponStatus"
-                  select={true}
-                  options={statusOptions}
-                  value={couponStatusFilter}
-                  onChange={(e) => setCouponStatusFilter(e.target.value)}
-                />
-              </div>
-            )}
-
-            <CouponReview statusFilter={couponStatusFilter} />
-          </section>
+          <ReviewSection
+            id="coupons"
+            title="مراجعة الكوبونات"
+            filterOpen={filterCouponsOpen}
+            setFilterOpen={setFilterCouponsOpen}
+            lastUpdated={lastUpdated}
+            statusFilter={couponStatusFilter}
+            setStatusFilter={setCouponStatusFilter}
+            statusOptions={statusOptions}
+            ReviewComponent={CouponReview}
+          />
         </main>
       </div>
     </PageLayout>

@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { db } from "../Firebase/Firebase";
+import { useEffect } from "react";
 import { toast } from "react-hot-toast";
 
 import PageLayout from "../layouts/PageLayout";
@@ -11,10 +10,9 @@ import CardsLayout from "../layouts/CardsLayout";
 
 import { useFetchCollection } from "../hooks/useFetchCollection";
 import { getAuth } from "firebase/auth";
-import { collection, getDocs, deleteDoc, doc } from "firebase/firestore";
+import { useDeleteAllNotifications } from "../hooks/useDeleteAllNotifications";
 
 export default function NotificationsPage() {
-  const [deleting, setDeleting] = useState(false);
   const auth = getAuth();
   const user = auth.currentUser;
 
@@ -26,53 +24,13 @@ export default function NotificationsPage() {
     user ? ["Notifications", user.email, "user_Notifications"] : []
   );
 
+  const { deleting, deleteAllNotifications } = useDeleteAllNotifications(user);
+
   useEffect(() => {
     if (error) {
       toast.error("خطأ في جلب الإشعارات");
     }
   }, [error]);
-
-  const handleDeleteAll = async () => {
-    if (!user || deleting) return;
-
-    const confirmDelete = window.confirm(
-      "هل أنت متأكد أنك تريد حذف كل الإشعارات؟"
-    );
-    if (!confirmDelete) return;
-
-    setDeleting(true);
-
-    try {
-      const notifRef = collection(
-        db,
-        "Notifications",
-        user.email,
-        "user_Notifications"
-      );
-
-      const snapshot = await getDocs(notifRef);
-
-      if (snapshot.empty) {
-        toast.info("لا توجد إشعارات لحذفها");
-        setDeleting(false);
-        return;
-      }
-
-      const deletions = snapshot.docs.map((docItem) =>
-        deleteDoc(
-          doc(db, "Notifications", user.email, "user_Notifications", docItem.id)
-        )
-      );
-
-      await Promise.all(deletions);
-      toast.success("تم حذف جميع الإشعارات بنجاح");
-    } catch (error) {
-      console.error("Error deleting notifications:", error);
-      toast.error("خطأ في حذف الإشعارات");
-    } finally {
-      setDeleting(false);
-    }
-  };
 
   return (
     <PageLayout>
@@ -85,7 +43,7 @@ export default function NotificationsPage() {
         {notifications.length > 0 && !loadingNotifications && (
           <div className="flex justify-end mb-6">
             <button
-              onClick={handleDeleteAll}
+              onClick={deleteAllNotifications}
               disabled={deleting}
               className="w-full sm:w-auto px-6 py-2 danger_Outline rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-danger-light)] disabled:opacity-50 disabled:cursor-not-allowed"
               aria-label="حذف جميع الإشعارات">
@@ -122,7 +80,7 @@ export default function NotificationsPage() {
                         src={notif.imageUrl}
                         alt={notif.imageAlt || "صورة الإشعار"}
                         className="w-32 h-32 mx-auto rounded border"
-                        loadingNotifications="lazy"
+                        loading="lazy"
                         onError={(e) => {
                           e.target.style.display = "none";
                         }}

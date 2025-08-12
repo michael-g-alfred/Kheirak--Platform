@@ -1,46 +1,38 @@
 import PageLayout from "../layouts/PageLayout";
 import Header_Subheader from "../components/Header_Subheader";
-import { useState, useEffect } from "react";
-import {
-  collection,
-  onSnapshot,
-  query,
-  orderBy,
-  updateDoc,
-  deleteDoc,
-  doc,
-} from "firebase/firestore";
-import { db } from "../firebase/firebase";
+import { useState } from "react";
+import { updateDoc, deleteDoc, doc } from "firebase/firestore";
 import Loader from "../components/Loader";
 import NoData from "../components/NoData";
+import Searchbar from "../components/Searchbar";
+import TrashIcon from "../icons/TrashIcon";
+import MailIcon from "../icons/MailIcon";
+import PhoneIcon from "../icons/PhoneIcon";
+import { useFetchCollection } from "../hooks/useFetchCollection";
+import { toast } from "react-hot-toast";
+import { usePagination } from "../hooks/usePagination";
+import EyeIcon from "../icons/EyeIcon";
+import EyeOffIcon from "../icons/EyeOffIcon";
+import CardsLayout from "../layouts/CardsLayout";
+import CardLayout from "../layouts/CardLayout";
+import CommentIcon from "../icons/CommentIcon";
+import PaginationControls from "../components/PaginationControls";
 
 export default function AdminMessages() {
-  const [messages, setMessages] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+
+  const {
+    data: messages,
+    loading,
+    error,
+  } = useFetchCollection(
+    ["ContactMessages"],
+    null,
+    (a, b) => b.timestamp?.toDate() - a.timestamp?.toDate()
+  );
+
   const unreadCount = messages.filter((msg) => !msg.read).length;
-  const [currentPage, setCurrentPage] = useState(1);
-  const messagesPerPage = 2;
 
-  useEffect(() => {
-    const q = query(
-      collection(db, "ContactMessages"),
-      orderBy("timestamp", "desc")
-    );
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const fetched = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setMessages(fetched);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
-  // filter messages
   const filteredMessages = messages.filter(
     (msg) =>
       msg.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -48,25 +40,40 @@ export default function AdminMessages() {
       msg.message?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // pagination
-  const indexOfLast = currentPage * messagesPerPage;
-  const indexOfFirst = indexOfLast - messagesPerPage;
-  const currentMessages = filteredMessages.slice(indexOfFirst, indexOfLast);
-  const totalPages = Math.ceil(filteredMessages.length / messagesPerPage);
+  const {
+    currentPage,
+    totalPages,
+    currentData: currentMessages,
+    nextPage,
+    prevPage,
+  } = usePagination(filteredMessages);
 
-  // handle read messages
   const markAsRead = async (id) => {
-    await updateDoc(doc(db, "ContactMessages", id), { read: true });
+    try {
+      await updateDoc(doc(db, "ContactMessages", id), { read: true });
+      toast.success("تم تعليم الرسالة كمقروءة");
+    } catch {
+      toast.error("حدث خطأ أثناء تحديث الرسالة");
+    }
   };
 
   const markAsUnread = async (id) => {
-    await updateDoc(doc(db, "ContactMessages", id), { read: false });
+    try {
+      await updateDoc(doc(db, "ContactMessages", id), { read: false });
+      toast.success("تم تعليم الرسالة كغير مقروءة");
+    } catch {
+      toast.error("حدث خطأ أثناء تحديث الرسالة");
+    }
   };
 
-  // handle delete messages
   const deleteMessage = async (id) => {
     if (window.confirm("هل أنت متأكد من حذف الرسالة؟")) {
-      await deleteDoc(doc(db, "ContactMessages", id));
+      try {
+        await deleteDoc(doc(db, "ContactMessages", id));
+        toast.success("تم حذف الرسالة بنجاح");
+      } catch {
+        toast.error("حدث خطأ أثناء حذف الرسالة");
+      }
     }
   };
 
@@ -77,14 +84,10 @@ export default function AdminMessages() {
         p="عرض جميع الرسائل الواردة من المستخدمين"
       />
 
-      {/* search bar */}
-      <input
-        type="text"
-        placeholder="🔍 ابحث في الرسائل..."
-        className="border p-2 rounded w-full mb-4 text-right"
-        dir="rtl"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+      <Searchbar
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        placeholder="ابحث في الرسائل..."
       />
 
       {loading ? (
@@ -93,70 +96,55 @@ export default function AdminMessages() {
         <NoData h2="لا توجد رسائل حالياً" />
       ) : (
         <>
-          <div className="space-y-4 mt-4">
+          <CardsLayout>
             {currentMessages.map((msg) => (
-              <div
-                key={msg.id}
-                className={`p-4 border rounded-lg shadow-sm ${
-                  msg.read ? "bg-white" : "bg-yellow-50"
-                }`}
-              >
-                <h3 className="font-bold text-lg">{msg.name}</h3>
-                <p className="text-sm text-gray-500">{msg.email}</p>
-                {msg.phone && <p>📞 {msg.phone}</p>}
-                <p className="mt-2">{msg.message}</p>
-                <p className="text-xs text-gray-400 mt-2">
+              <CardLayout key={msg.id} title={msg.name}>
+                {msg.email && (
+                  <p className="flex items-center gap-2">
+                    <MailIcon /> {msg.email}
+                  </p>
+                )}
+                {msg.phone && (
+                  <p className="flex items-center gap-2">
+                    <PhoneIcon /> {msg.phone}
+                  </p>
+                )}
+                <p className="flex items-center gap-2">
+                  <CommentIcon />
+                  {msg.message}
+                </p>
+                <p className="text-xs text-[var(--color-bg-muted-text)] mt-2">
                   {msg.timestamp?.toDate().toLocaleString()}
                 </p>
-
-                {/*read/unread buttons */}
                 <div className="flex gap-2 mt-3">
                   {!msg.read ? (
                     <button
                       onClick={() => markAsRead(msg.id)}
-                      className="text-green-500 text-lg"
-                    >
-                      ✅ تعليم كمقروء
+                      className="text-[var(--color-success-light)]">
+                      <EyeIcon />
                     </button>
                   ) : (
                     <button
                       onClick={() => markAsUnread(msg.id)}
-                      className="text-yellow-500 text-lg"
-                    >
-                      ✉️ تعليم كغير مقروء
+                      className="text-[var(--color-warning-light)]">
+                      <EyeOffIcon />
                     </button>
                   )}
                   <button
                     onClick={() => deleteMessage(msg.id)}
-                    className="text-red-500 text-lg"
-                  >
-                    🗑 حذف
+                    className="text-[var(--color-danger-light)]">
+                    <TrashIcon />
                   </button>
                 </div>
-              </div>
+              </CardLayout>
             ))}
-          </div>
-
-          {/* pagination buttons */}
-          <div className="flex gap-2 justify-center mt-4">
-            <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage((prev) => prev - 1)}
-              className="px-3 py-1 border rounded disabled:opacity-50"
-            >
-              السابق
-            </button>
-            <span>
-              {currentPage} / {totalPages}
-            </span>
-            <button
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage((prev) => prev + 1)}
-              className="px-3 py-1 border rounded disabled:opacity-50"
-            >
-              التالي
-            </button>
-          </div>
+          </CardsLayout>
+          <PaginationControls
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPrev={prevPage}
+            onNext={nextPage}
+          />
         </>
       )}
     </PageLayout>

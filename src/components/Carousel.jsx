@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from "react";
 import ChevronLeftIcon from "../icons/ChevronLeftIcon";
 import ChevronRightIcon from "../icons/ChevronRightIcon";
+import { useCarousel } from "../hooks/useCarousel";
 
 const slides = [
   {
@@ -30,37 +30,8 @@ const slides = [
 ];
 
 const Carousel = () => {
-  const [current, setCurrent] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-
-  useEffect(() => {
-    if (isPaused) return;
-
-    const interval = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % slides.length);
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, [isPaused]);
-
-  // Preload next image
-  useEffect(() => {
-    const nextIndex = (current + 1) % slides.length;
-    const img = new Image();
-    img.src = slides[nextIndex].image;
-  }, [current]);
-
-  const goToSlide = useCallback((index) => {
-    setCurrent(index);
-  }, []);
-
-  const goToPrevious = useCallback(() => {
-    setCurrent((prev) => (prev - 1 + slides.length) % slides.length);
-  }, []);
-
-  const goToNext = useCallback(() => {
-    setCurrent((prev) => (prev + 1) % slides.length);
-  }, []);
+  const { current, setIsPaused, goToSlide, goToPrevious, goToNext } =
+    useCarousel(slides);
 
   return (
     <div
