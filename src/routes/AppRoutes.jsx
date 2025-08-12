@@ -1,10 +1,7 @@
-import React, { lazy, Suspense } from "react";
+import { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "../context/authContext/index";
 
-const Home = lazy(() => import("../pages/Home"));
-const Posts = lazy(() => import("../pages/Posts"));
-const Coupons = lazy(() => import("../pages/Coupons"));
 import About from "../pages/About";
 import Services from "../pages/Services";
 import Portfolio from "../pages/Portfolio";
@@ -12,13 +9,17 @@ import Contact from "../pages/Contact";
 import NotFound from "../pages/NotFound";
 import Registration from "../pages/Registration";
 import ChooseRole from "../pages/ChooseRole";
-const AdminDashboard = lazy(() => import("../pages/AdminDashboard"));
-const DonorProfile = lazy(() => import("../pages/DonorProfile"));
-const OrgProfile = lazy(() => import("../pages/OrgProfile"));
-const BeneficiaryProfile = lazy(() => import("../pages/BeneficiaryProfile"));
-const Notifications = lazy(() => import("../pages/Notifications"));
 import LogoIcon from "../icons/LogoIcon";
 import AdminMessages from "../pages/AdminMessages";
+const Home = lazy(() => import("../pages/Home"));
+const Posts = lazy(() => import("../pages/Posts"));
+const Coupons = lazy(() => import("../pages/Coupons"));
+const Campaign = lazy(() => import("../pages/Campaign"));
+const AdminDashboard = lazy(() => import("../pages/AdminDashboard"));
+const BeneficiaryProfile = lazy(() => import("../pages/BeneficiaryProfile"));
+const DonorProfile = lazy(() => import("../pages/DonorProfile"));
+const OrgProfile = lazy(() => import("../pages/OrgProfile"));
+const Notifications = lazy(() => import("../pages/Notifications"));
 
 function ProtectedRoute({ children, allowedRoles }) {
   const { role } = useAuth();
@@ -45,6 +46,14 @@ export default function AppRoutes() {
         <Route path="/" element={<Home />}>
           <Route path="posts" element={<Posts />} />
           <Route path="coupons" element={<Coupons />} />
+          <Route
+            path="campaign"
+            element={
+              <ProtectedRoute allowedRoles={["متبرع"]}>
+                <Campaign />
+              </ProtectedRoute>
+            }
+          />
         </Route>
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Services />} />
