@@ -3,7 +3,7 @@ import { toast } from "react-hot-toast";
 import Loader from "./Loader";
 import { useAuth } from "../context/authContext";
 import { useFetchCollection } from "../hooks/useFetchCollection";
-import useIsMobile from "../hooks/useIsMobile";
+import { useIsMobile } from "../hooks/useIsMobile";
 
 export default function NotificationBadge() {
   const { currentUser } = useAuth();

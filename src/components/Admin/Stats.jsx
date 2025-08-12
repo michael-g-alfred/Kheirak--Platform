@@ -1,19 +1,13 @@
 import React from "react";
 import CardsLayout from "../../layouts/CardsLayout";
 import Loader from "../Loader";
-import { useAdminStats } from "../../hooks/useAdminState";
+import { useAdminStats } from "../../hooks/useAdminStats";
 
 export default function Stats() {
   const { stats, isLoading, lastUpdated } = useAdminStats();
 
   if (isLoading) {
-    return (
-      <div className="w-full flex justify-center py-8">
-        <div className="text-[var(--color-bg-text)] font-bold">
-          <Loader />
-        </div>
-      </div>
-    );
+    return <Loader />;
   }
 
   return (
