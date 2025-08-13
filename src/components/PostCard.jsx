@@ -3,7 +3,6 @@ import { useAuth } from "../context/authContext";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import CardLayout from "../layouts/CardLayout";
-import ImageIcon from "../icons/ImageIcon";
 import FormLayout from "../layouts/FormLayout";
 import {
   doc,

@@ -1,8 +1,8 @@
-export default function ImageIcon({ width, height }) {
+export default function ImageIcon({ size = 20 }) {
   return (
     <svg
-      width={width}
-      height={height}
+      width={size}
+      height={size}
       viewBox="0 0 24 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg">

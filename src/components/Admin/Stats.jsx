@@ -4,7 +4,7 @@ import Loader from "../Loader";
 import { useAdminStats } from "../../hooks/useAdminStats";
 
 export default function Stats() {
-  const { stats, isLoading, lastUpdated } = useAdminStats();
+  const { stats, isLoading } = useAdminStats();
 
   if (isLoading) {
     return <Loader />;
@@ -37,9 +37,6 @@ export default function Stats() {
           },
         ]}
       />
-      <p className="text-xs text-[var(--color-bg-text)] text-center mt-4">
-        آخر تحديث: {lastUpdated}
-      </p>
     </>
   );
 }
