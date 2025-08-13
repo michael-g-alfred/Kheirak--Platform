@@ -43,7 +43,7 @@ const InputField = ({
             {...props}
             className={`w-full px-4 py-2 rounded-lg bg-[var(--color-bg-base)] appearance-none text-[var(--color-primary-base)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)] cursor-pointer ${
               error
-                ? "border-[var(--color-danger-dark-plus)]"
+                ? "border-[var(--color-danger-light)]"
                 : "border-[var(--color-bg-divider)]"
             } border relative`}>
             <option value="" disabled hidden>
@@ -70,7 +70,7 @@ const InputField = ({
           {...props}
           className={`w-full px-4 py-2 rounded-lg border-1 bg-[var(--color-bg-base)] text-[var(--color-primary-base)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)] ${
             error
-              ? "border-[var(--color-danger-dark-plus)]"
+              ? "border-[var(--color-danger-light)]"
               : "border-[var(--color-bg-divider)]"
           }`}
         />
@@ -82,7 +82,7 @@ const InputField = ({
           {...props}
           className={`w-full px-4 py-2 rounded-lg border-1 border-dashed bg-[var(--color-bg-base)] appearance-none text-[var(--color-primary-base)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)] ${
             error
-              ? "border-[var(--color-danger-dark-plus)]"
+              ? "border-[var(--color-danger-light)]"
               : "border-[var(--color-bg-divider)]"
           }`}
         />
@@ -105,7 +105,7 @@ const InputField = ({
             }}
             className={`w-full px-4 py-2 rounded-lg border-1 bg-[var(--color-bg-base)] appearance-none text-[var(--color-primary-base)] placeholder-[var(--color-bg-muted-text)] focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)] ${
               error
-                ? "border-[var(--color-danger-dark-plus)]"
+                ? "border-[var(--color-danger-light)]"
                 : "border-[var(--color-bg-divider)]"
             }`}
           />
@@ -124,7 +124,7 @@ const InputField = ({
       )}
 
       {error && (
-        <p className="bg-[var(--color-danger-dark-plus)] text-[var(--color-danger-light)] mt-1 text-sm rounded px-1 py-0.5">
+        <p className="text-[var(--color-danger-light)] mt-2 text-sm">
           {error.message}
         </p>
       )}

@@ -20,7 +20,10 @@ import Divider from "./Divider";
 
 const schema = yup.object().shape({
   userName: yup.string().required("اسم المستخدم مطلوب"),
-  email: yup.string().email("صيغة البريد غير صحيحة").required("البريد مطلوب"),
+  email: yup
+    .string()
+    .email("صيغة البريد غير صحيحة")
+    .required("البريد الإلكترونى مطلوب"),
   password: yup
     .string()
     .min(6, "كلمة المرور يجب أن تكون 6 أحرف على الأقل")
