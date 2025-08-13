@@ -166,9 +166,13 @@ const Navbar = () => {
               type="button"
               aria-label={isMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={isMenuOpen}
-              className="text-[var(--color-primary-base)] hover:text-[var(--color-primary-hover)]"
+              className={`${
+                isMenuOpen
+                  ? "text-[var(--color-danger-light)] hover:text-[var(--color-danger-dark)]"
+                  : "text-[var(--color-primary-base)] hover:text-[var(--color-primary-hover)]"
+              }`}
               onClick={() => setIsMenuOpen(!isMenuOpen)}>
-              {isMenuOpen ? <CloseIcon /> : <MenuIcon />}
+              {isMenuOpen ? <CloseIcon size={28} /> : <MenuIcon size={28} />}
             </button>
           </div>
           {/* Logo */}
