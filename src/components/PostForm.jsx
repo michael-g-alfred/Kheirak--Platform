@@ -61,8 +61,8 @@ export default function PostForm({ onClose }) {
         timestamp: serverTimestamp(),
         submittedBy: {
           userName: userName || "مستخدم",
-          userId: currentUser.uid,
-          email: currentUser.email,
+          userId: currentUser?.uid || "anonymous",
+          email: currentUser?.email || "unknown@kheirak",
           userPhoto: userData?.photoURL || "",
         },
         donors: [],

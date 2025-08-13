@@ -1,19 +1,14 @@
 import { useState, useEffect, useRef } from "react";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
 import { db } from "../Firebase/Firebase";
 
-export function useFetchCollection(
-  collectionPath,
-  filterFn = null,
-  sortFn = null
-) {
+export function useFetchCollection(collectionPath, filterFn = null) {
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Use refs to store filterFn and sortFn to avoid re-running effect due to new references
+  // Use refs to store filterFn to avoid re-running effect due to new references
   const filterFnRef = useRef(filterFn);
-  const sortFnRef = useRef(sortFn);
 
   // Update refs if the functions change (optional)
   useEffect(() => {
@@ -21,13 +16,13 @@ export function useFetchCollection(
   }, [filterFn]);
 
   useEffect(() => {
-    sortFnRef.current = sortFn;
-  }, [sortFn]);
-
-  useEffect(() => {
     setIsLoading(true);
-    const unsubscribe = onSnapshot(
+    const q = query(
       collection(db, ...collectionPath),
+      orderBy("timestamp", "desc")
+    );
+    const unsubscribe = onSnapshot(
+      q,
       (snapshot) => {
         let fetchedData = snapshot.docs.map((doc) => ({
           id: doc.id,
@@ -36,10 +31,6 @@ export function useFetchCollection(
 
         if (filterFnRef.current) {
           fetchedData = fetchedData.filter(filterFnRef.current);
-        }
-
-        if (sortFnRef.current) {
-          fetchedData.sort(sortFnRef.current);
         }
 
         setData(fetchedData);

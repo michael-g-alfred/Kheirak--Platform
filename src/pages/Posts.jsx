@@ -19,17 +19,11 @@ export default function Posts() {
 
   const filterFn = (post) => post.status === "مقبول";
 
-  const sortFn = (a, b) => {
-    const aDate = new Date(a.createdAt?.seconds * 1000 || 0);
-    const bDate = new Date(b.createdAt?.seconds * 1000 || 0);
-    return bDate - aDate;
-  };
-
   const {
     data: posts,
     loading: loadingPosts,
     error,
-  } = useFetchCollection(["Posts"], filterFn, sortFn);
+  } = useFetchCollection(["Posts"], filterFn);
 
   const handleCloseForm = () => {
     setShowPostForm(false);
