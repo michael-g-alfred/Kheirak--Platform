@@ -21,7 +21,7 @@ export default function CardsLayout({
     <div
       className={`grid grid-cols-1 ${
         smEnabled ? "sm:grid-cols-2" : ""
-      } ${lgCols} gap-6 mt-6`}>
+      } ${lgCols} gap-2 mt-6`}>
       {list && list.length > 0
         ? list.map((item, index) => (
             <CardLayout

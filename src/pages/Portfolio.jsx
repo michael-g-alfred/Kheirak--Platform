@@ -25,11 +25,11 @@ export default function Portfolio() {
                 نعمل حالياً على إعداد معرض شامل لأعمالنا وإنجازاتنا. سيتم عرض
                 مشاريعنا وحملاتنا الخيرية قريباً.
               </p>
-              <div className="bg-[var(--color-primary-disabled)] rounded-lg p-6 text-right">
+              <div className="bg-[var(--color-bg-card)] border border-[var(--color-bg-divider)] rounded-lg p-6 text-right">
                 <h3 className="text-xl font-semibold text-[var(--color-bg-text-dark)] mb-3">
                   ما سيتم عرضه قريباً:
                 </h3>
-                <ul className="space-y-2 text-[var(--color-bg-text)]">
+                <ul className="space-y-2 text-[var(--color-bg-text-dark)]">
                   <li className="flex items-center">
                     <span className="ml-2">📸</span>
                     صور من حملاتنا الخيرية

@@ -18,17 +18,11 @@ export default function Coupons() {
 
   const filterFn = (coupon) => coupon.status === "مقبول";
 
-  const sortFn = (a, b) => {
-    const aDate = new Date(a.createdAt?.seconds * 1000 || 0);
-    const bDate = new Date(b.createdAt?.seconds * 1000 || 0);
-    return bDate - aDate;
-  };
-
   const {
     data: Coupons,
     loading: loadingCoupons,
     error,
-  } = useFetchCollection(["Coupons"], filterFn, sortFn);
+  } = useFetchCollection(["Coupons"], filterFn);
 
   const handleCloseForm = () => {
     setShowCouponForm(false);
@@ -55,7 +49,7 @@ export default function Coupons() {
       )}
       <Divider />
       {Coupons.length > 0 && (
-        <div className="grid grid-cols-3 md:grid-cols-5 lg:grid-cols-7 gap-2 items-center justify-center">
+        <div className="flex flex-wrap justify-center gap-2 items-center">
           {categories.map(({ name, icon }) => {
             const isSelected = selectedType === name;
 
