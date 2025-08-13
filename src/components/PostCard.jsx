@@ -18,6 +18,7 @@ import Loader from "./Loader";
 import { toast } from "react-hot-toast";
 import BulletPoints from "./BulletPoints";
 import NoPhoto from "./NoPhoto";
+import ConfirmModal from "./ConfirmModal";
 
 const PostCard = ({ newPost }) => {
   const [showPopup, setShowPopup] = useState(false);
@@ -251,7 +252,7 @@ const PostCard = ({ newPost }) => {
 
         {/* صورة + progress bar clip */}
         <div className="mb-2">
-          <div className="relative w-full sm:aspect-[4/3] md:aspect-[16/9] xl:aspect-[21/9] rounded-lg border border-[var(--color-bg-divider)] overflow-hidden">
+          <div className="relative w-full sm:aspect-[4/3] md:aspect-[16/9] xl:aspect-[21/9]rounded-lg border border-[var(--color-bg-divider)] overflow-hidden rounded-lg">
             {newPost.attachedFiles ? (
               <img
                 src={newPost.attachedFiles}
@@ -309,20 +310,21 @@ const PostCard = ({ newPost }) => {
             ))}
 
             <input
-              type="text"
-              inputMode="numeric"
+              type="number"
+              step="1"
+              min="1"
               disabled={isCompleted}
               placeholder="مبلغ آخر"
               className={`flex-1 min-w-[60px] text-center p-2 rounded-lg font-bold text-xs transition outline-none
-    ${
-      isCompleted
-        ? "bg-[var(--color-primary-disabled)] text-[var(--color-bg-muted-text)] cursor-not-allowed"
-        : "border border-[var(--color-bg-divider)] bg-[var(--color-bg-base)] text-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] hover:text-[var(--color-bg-text)] cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)]"
-    }`}
+${
+  isCompleted
+    ? "bg-[var(--color-primary-disabled)] text-[var(--color-bg-muted-text)] cursor-not-allowed"
+    : "border border-[var(--color-bg-divider)] bg-[var(--color-bg-base)] text-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] hover:text-[var(--color-bg-text)] cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)]"
+}`}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   const value = e.target.value.trim();
-                  const numValue = Number(value);
+                  const numValue = parseInt(value, 10);
                   if (value && !isNaN(numValue) && numValue >= 1) {
                     handleDonateClick(numValue);
                     e.target.value = "";
@@ -333,7 +335,7 @@ const PostCard = ({ newPost }) => {
               }}
               onBlur={(e) => {
                 const value = e.target.value.trim();
-                const numValue = Number(value);
+                const numValue = parseInt(value, 10);
                 if (value && !isNaN(numValue) && numValue >= 1) {
                   handleDonateClick(numValue);
                   e.target.value = "";
@@ -355,55 +357,23 @@ const PostCard = ({ newPost }) => {
       </CardLayout>
 
       {showPopup && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-950/90 backdrop-blur-md z-50">
-          <FormLayout
-            className="bg-[var(--color-bg-card)]"
-            formTitle={
-              <span className="text-[var(--color-primary-base)] rounded">
-                تأكيد تحويل{" "}
-                <strong className="text-[var(--color-bg-muted-text)] underline">
-                  {selectedAmount} ج.م
-                </strong>{" "}
-                ؟
-              </span>
-            }>
-            <div className="text-[var(--color-bg-text-dark)] text-right space-y-2 mb-4">
-              <p className="text-md">
-                سيتم خصم مبلغ{" "}
-                <strong className="text-[var(--color-primary-base)]">
-                  {selectedAmount} ج.م
-                </strong>{" "}
-                من رصيدك لصالح الطلب:
-                <strong className="mr-1">{newPost.title}</strong>
-              </p>
-              <div className="px-2">
-                <BulletPoints content={`تفاصيل الطلب: ${newPost.details}`} />
-                <BulletPoints content={`المبلغ الكلى المطلوب: ${amount} ج.م`} />
-                <BulletPoints
-                  content={`صاحب البوست: ${newPost.submittedBy.userName}`}
-                />
-                <BulletPoints
-                  content={`البريد الإلكترونى لصاحب الطلب: ${newPost.submittedBy.email}`}
-                />
-              </div>
-              <p className="bg-[var(--color-danger-light)] text-[var(--color-bg-text)] rounded border border-[var(--color-bg-divider)] p-1 px-2 mt-6 text-center font-bold">
-                يرجى التأكد من صحة المبلغ قبل تأكيد العملية.
-              </p>
-            </div>
-            <div className="flex justify-center gap-4 mt-4">
-              <button
-                className="danger px-6 py-2 rounded font-semibold focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-danger-light)]"
-                onClick={closePopup}>
-                إغلاق
-              </button>
-              <button
-                className="success px-6 py-2 rounded font-semibold focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-success-light)]"
-                onClick={handleConfirmDonation}>
-                {isLoading ? <Loader /> : "تأكيد"}
-              </button>
-            </div>
-          </FormLayout>
-        </div>
+        <ConfirmModal
+          title={`تأكيد تحويل ${selectedAmount} ج.م`}
+          description={`سيتم خصم مبلغ ${selectedAmount} ج.م من رصيدك لصالح الطلب: ${newPost.title}`}
+          bulletPoints={[
+            `تفاصيل الطلب: ${newPost.details}`,
+            `المبلغ الكلي المطلوب: ${amount} ج.م`,
+            `صاحب البوست: ${newPost.submittedBy.userName}`,
+            `البريد الإلكتروني: ${newPost.submittedBy.email}`,
+          ]}
+          showInput={false}
+          warningText="يرجى التأكد من صحة المبلغ قبل التأكيد."
+          confirmText="تأكيد"
+          cancelText="إغلاق"
+          onConfirm={handleConfirmDonation}
+          onClose={closePopup}
+          isLoading={isLoading}
+        />
       )}
     </>
   );
