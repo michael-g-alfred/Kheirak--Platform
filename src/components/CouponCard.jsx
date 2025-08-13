@@ -19,6 +19,7 @@ import BulletPoints from "./BulletPoints";
 import Loader from "./Loader";
 import NoPhoto from "./NoPhoto";
 import ImageIcon from "../icons/ImageIcon";
+import ConfirmModal from "./ConfirmModal";
 
 // ------------------------- //
 // State variables
@@ -265,55 +266,24 @@ const CouponCard = ({ newCoupon }) => {
       <>
         {/* Use confirmation popup */}
         {showPopup && (
-          <div className="fixed inset-0 flex items-center justify-center bg-gray-950/90 backdrop-blur-md z-50">
-            <FormLayout
-              formTitle={
-                <span className="text-[var(--color-primary-base)] rounded">
-                  تأكيد استخدام عدد{" "}
-                  <strong className="text-[var(--color-bg-muted-text)] underline">
-                    ١
-                  </strong>{" "}
-                  كوبون
-                </span>
-              }>
-              <div className="text-[var(--color-bg-text-dark)] text-right space-y-2 mb-4">
-                <p className="text-md">
-                  سيتم إستخدام{" "}
-                  <strong className="text-[var(--color-primary-base)]">
-                    ١
-                  </strong>{" "}
-                  كوبون من رصيد كوبونات الجهة:
-                  <strong className="mr-1">
-                    {newCoupon.submittedBy?.userName || "اسم المؤسسة"}
-                  </strong>
-                </p>
-                <div className="px-2">
-                  <BulletPoints content={`عنوان الكوبون: ${newCoupon.title}`} />
-                  <BulletPoints
-                    content={`تفاصيل الكوبون: ${newCoupon.details}`}
-                  />
-                  <BulletPoints
-                    content={`البريد الإلكتروني للجهة: ${newCoupon.submittedBy?.email}`}
-                  />
-                </div>
-                <p className="bg-[var(--color-danger-light)] text-[var(--color-bg-text)] rounded border border-[var(--color-bg-divider)] p-1 px-2 mt-6 text-center font-bold">
-                  يرجى التأكد من صحة البيانات قبل تأكيد العملية.
-                </p>
-              </div>
-              <div className="flex justify-center gap-4 mt-4">
-                <button
-                  className="danger px-6 py-2 rounded font-semibold focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-danger-light)]"
-                  onClick={closePopup}>
-                  إغلاق
-                </button>
-                <button
-                  className="success px-6 py-2 rounded font-semibold focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-success-light)]"
-                  onClick={handleConfirmCouponUSed}>
-                  {isLoading ? <Loader /> : "تأكيد"}
-                </button>
-              </div>
-            </FormLayout>
-          </div>
+          <ConfirmModal
+            title="تأكيد استخدام كوبون"
+            description={`سيتم استخدام ${1} كوبون من الجهة: ${
+              newCoupon.submittedBy?.userName
+            }`}
+            bulletPoints={[
+              `عنوان الكوبون: ${newCoupon.title}`,
+              `تفاصيل الكوبون: ${newCoupon.details}`,
+              `البريد الإلكتروني للجهة: ${newCoupon.submittedBy.email}`,
+            ]}
+            showInput={false}
+            warningText="يرجى التأكد من صحة البيانات قبل التأكيد."
+            confirmText="تأكيد"
+            cancelText="إغلاق"
+            onConfirm={handleConfirmCouponUSed}
+            onClose={closePopup}
+            isLoading={isLoading}
+          />
         )}
       </>
     </>
