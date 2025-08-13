@@ -13,7 +13,6 @@ import { campaignsData } from "../store/campaignsData";
 import CardsLayout from "../layouts/CardsLayout";
 import SelectableCard from "../components/SelectableCard";
 import CampaignItemCard from "../components/CampaignItemCard";
-import PurchaseModal from "../components/PurchaseModal";
 import ConfirmModal from "../components/ConfirmModal";
 
 export default function Campaigns() {
