@@ -58,7 +58,7 @@ const InputField = ({
               </option>
             ))}
           </select>
-          <div className="pointer-events-none absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--color-bg-muted-text)]">
+          <div className="pointer-events-none absolute left-3 top-1/2 transform -translate-y-1/2 text-[var(--color-bg-muted-text)] hover:text-[var(--color-primary-base)]">
             <ArrowBadgeDownIcon />
           </div>
         </div>
