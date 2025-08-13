@@ -12,7 +12,7 @@ import PaginationControls from "../PaginationControls";
 
 export default function CouponReview({ statusFilter = "الكل" }) {
   const { data: coupons, loading, error } = useFetchCollection(["Coupons"]);
-  const { updatingId, updateStatus } = useUpdateStatus("Coupons");
+  const { updatingStatus, updateStatus } = useUpdateStatus("Coupons");
 
   useEffect(() => {
     if (error) {
@@ -108,17 +108,19 @@ export default function CouponReview({ statusFilter = "الكل" }) {
                       onClick={() => updateStatus(coupon.id, "مقبول")}
                       className="success px-6 py-3 rounded text-md focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-success-light)] disabled:opacity-50 disabled:cursor-not-allowed"
                       disabled={
-                        coupon.status === "مقبول" || updatingId === coupon.id
+                        coupon.status === "مقبول" ||
+                        updatingStatus === coupon.id
                       }>
-                      {updatingId === coupon.id ? <Loader /> : "قبول"}
+                      {updatingStatus === coupon.id ? <Loader /> : "قبول"}
                     </button>
                     <button
                       onClick={() => updateStatus(coupon.id, "مرفوض")}
                       className="danger px-6 py-3 rounded text-md focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-danger-light)] disabled:opacity-50 disabled:cursor-not-allowed"
                       disabled={
-                        coupon.status === "مرفوض" || updatingId === coupon.id
+                        coupon.status === "مرفوض" ||
+                        updatingStatus === coupon.id
                       }>
-                      {updatingId === coupon.id ? <Loader /> : "رفض"}
+                      {updatingStatus === coupon.id ? <Loader /> : "رفض"}
                     </button>
                   </div>
                 )}

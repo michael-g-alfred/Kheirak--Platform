@@ -85,11 +85,13 @@ export default function AdminMessages() {
         p="عرض جميع الرسائل الواردة من المستخدمين"
       />
 
-      <Searchbar
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        placeholder="ابحث في الرسائل..."
-      />
+      {messages.length > 0 && (
+        <Searchbar
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          placeholder="ابحث في الرسائل..."
+        />
+      )}
 
       {loading ? (
         <Loader />
@@ -105,14 +107,11 @@ export default function AdminMessages() {
                   <div className="flex items-center gap-2">
                     {msg.name}
                     {!msg.read && (
-                      <span className="text-xs bg-[var(--color-warning-light)]  text-[var(--color-bg-text)] px-3 py-1 rounded">
+                      <span className="text-xs bg-[var(--color-warning-dark-plus)]  text-[var(--color-bg-text)] px-3 py-1 rounded">
                         غير مقروء
                       </span>
                     )}
                   </div>
-                }
-                className={
-                  !msg.read ? "bg-yellow-50 border-l-4 border-yellow-400" : ""
                 }>
                 {msg.email && (
                   <p className="flex items-center gap-2">
@@ -143,7 +142,7 @@ export default function AdminMessages() {
                   ) : (
                     <button
                       onClick={() => markAsUnread(msg.id)}
-                      className="text-[var(--color-warning-light)]">
+                      className="text-[var(--color-warning-dark-plus)]">
                       <EyeOffIcon />
                     </button>
                   )}

@@ -1,6 +1,11 @@
 import { useState, useEffect, useRef } from "react";
-import { collection, onSnapshot, query, orderBy } from "firebase/firestore";
-import { db } from "../Firebase/Firebase";
+import {
+  db,
+  collection,
+  onSnapshot,
+  query,
+  orderBy,
+} from "../Firebase/Firebase";
 
 export function useFetchCollection(collectionPath, filterFn = null) {
   const [data, setData] = useState([]);

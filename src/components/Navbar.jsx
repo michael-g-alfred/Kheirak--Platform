@@ -75,11 +75,12 @@ const Navbar = () => {
     { id: "about", label: "من نحن" },
     { id: "services", label: "الخدمات" },
     { id: "portfolio", label: "أعمالنا" },
-    { id: "contact", label: "تواصل معنا" },
   ];
 
   const guestTabs = [
     ...baseTabs,
+    { id: "contact", label: "تواصل معنا" },
+
     {
       id: "registration",
       label: "تسجيل الدخول",
@@ -104,6 +105,7 @@ const Navbar = () => {
         label: <NotificationBadge />,
       },
       ...baseTabs,
+      { id: "contact", label: "تواصل معنا" },
     ];
 
     const donorTabsWithUser = [
@@ -117,6 +119,7 @@ const Navbar = () => {
         label: <NotificationBadge />,
       },
       ...baseTabs,
+      { id: "contact", label: "تواصل معنا" },
     ];
 
     const orgTabsWithUser = [
@@ -130,6 +133,7 @@ const Navbar = () => {
         label: <NotificationBadge />,
       },
       ...baseTabs,
+      { id: "contact", label: "تواصل معنا" },
     ];
 
     switch (role) {

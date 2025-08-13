@@ -1,6 +1,5 @@
 import uploadImageToCloudinary from "../utils/cloudinary";
 import { useAuth } from "../context/authContext";
-import NotificationBadge from "../components/NotificationBadge";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { doc, updateDoc } from "firebase/firestore";

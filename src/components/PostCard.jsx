@@ -3,7 +3,6 @@ import { useAuth } from "../context/authContext";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import CardLayout from "../layouts/CardLayout";
-import FormLayout from "../layouts/FormLayout";
 import {
   doc,
   onSnapshot,
@@ -14,9 +13,7 @@ import {
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { db } from "../Firebase/Firebase";
-import Loader from "./Loader";
 import { toast } from "react-hot-toast";
-import BulletPoints from "./BulletPoints";
 import NoPhoto from "./NoPhoto";
 import ConfirmModal from "./ConfirmModal";
 

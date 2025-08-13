@@ -4,7 +4,6 @@ import { useAuth } from "../context/authContext";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import CardLayout from "../layouts/CardLayout";
-import FormLayout from "../layouts/FormLayout";
 import {
   doc,
   onSnapshot,
@@ -15,8 +14,6 @@ import {
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { db } from "../Firebase/Firebase";
-import BulletPoints from "./BulletPoints";
-import Loader from "./Loader";
 import NoPhoto from "./NoPhoto";
 import ImageIcon from "../icons/ImageIcon";
 import ConfirmModal from "./ConfirmModal";

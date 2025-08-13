@@ -6,7 +6,7 @@ import FormLayout from "../layouts/FormLayout";
 import SubmitButton from "./SubmitButton";
 import { toast } from "react-hot-toast";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "../firebase/firebase";
+import { db, collection, addDoc, serverTimestamp } from "../Firebase/Firebase";
 
 const schema = yup.object().shape({
   name: yup.string().required("الاسم مطلوب").min(2, "قصير جدًا"),
@@ -55,8 +55,7 @@ export default function ContactForm() {
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-6 text-right"
-        dir="rtl"
-      >
+        dir="rtl">
         <InputField
           label="الاسم *"
           id="name"

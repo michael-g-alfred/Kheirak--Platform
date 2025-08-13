@@ -1,4 +1,3 @@
-import React from "react";
 import CardsLayout from "../../layouts/CardsLayout";
 import Loader from "../Loader";
 import { useAdminStats } from "../../hooks/useAdminStats";
