@@ -20,8 +20,14 @@ export default function NotificationsPage() {
     data: notifications,
     loading: loadingNotifications,
     error,
+    sortFn: sortFnNotifications,
   } = useFetchCollection(
     user ? ["Notifications", user.email, "user_Notifications"] : []
+  );
+
+  // ترتيب الإشعارات حسب التاريخ (الأحدث أولًا)
+  const sortedNotifications = [...notifications].sort(
+    (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
   );
 
   const { deleting, handleDeleteAll } = useDeleteAllNotifications(user);
@@ -63,7 +69,7 @@ export default function NotificationsPage() {
             <NoData h2="لا توجد إشعارات" />
           ) : (
             <CardsLayout colNum={1} smEnabled={false}>
-              {notifications.map((notif) => (
+              {sortedNotifications.map((notif) => (
                 <CardLayout key={notif.id} title={notif.title || "إشعار"}>
                   <article className="text-md text-[var(--color-bg-text-dark)] space-y-1 text-right">
                     <p>{notif.message || "لا يوجد محتوى"}</p>

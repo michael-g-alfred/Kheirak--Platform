@@ -16,7 +16,6 @@ export function useAdminStats() {
   });
 
   const [isLoading, setIsLoading] = useState(false);
-  const [lastUpdated, setLastUpdated] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,13 +58,6 @@ export function useAdminStats() {
           completedCoupons,
           pendingCoupons,
         });
-
-        setLastUpdated(
-          new Date().toLocaleString("ar-EG", {
-            dateStyle: "full",
-            timeStyle: "short",
-          })
-        );
       } catch (error) {
         console.error("خطأ في جلب البيانات:", error);
       } finally {
@@ -76,5 +68,5 @@ export function useAdminStats() {
     fetchData();
   }, []);
 
-  return { stats, isLoading, lastUpdated };
+  return { stats, isLoading };
 }

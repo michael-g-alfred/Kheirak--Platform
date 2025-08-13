@@ -18,6 +18,7 @@ import { db } from "../Firebase/Firebase";
 import BulletPoints from "./BulletPoints";
 import Loader from "./Loader";
 import NoPhoto from "./NoPhoto";
+import ImageIcon from "../icons/ImageIcon";
 
 // ------------------------- //
 // State variables
@@ -224,8 +225,8 @@ const CouponCard = ({ newCoupon }) => {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-[var(--color-bg-muted-text)]">
-                لا توجد صورة
+              <div className="w-full h-full flex items-center justify-center bg-[var(--color-primary-disabled)] text-[var(--color-bg-muted-text)]">
+                <ImageIcon size={48} />
               </div>
             )}
           </div>
