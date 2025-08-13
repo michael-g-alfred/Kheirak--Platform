@@ -94,22 +94,6 @@ export default function AdminDashboard() {
             show={couponsShow}
             setShow={setCouponsShow}
           />
-
-          <Divider />
-
-          {/* قسم مراجعة الحملات */}
-          <ReviewSection
-            id="campaigns"
-            title="مراجعة الحملات"
-            filterOpen={filterCampaignsOpen}
-            setFilterOpen={setFilterCampaignsOpen}
-            statusFilter={campaignStatusFilter}
-            setStatusFilter={setCampaignStatusFilter}
-            statusOptions={statusOptions}
-            ReviewComponent={CouponReview}
-            show={campaignsShow}
-            setShow={setCampaignsShow}
-          />
         </main>
       </div>
     </PageLayout>
