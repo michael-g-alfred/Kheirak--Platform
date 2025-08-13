@@ -14,7 +14,7 @@ import AdminMessages from "../pages/AdminMessages";
 const Home = lazy(() => import("../pages/Home"));
 const Posts = lazy(() => import("../pages/Posts"));
 const Coupons = lazy(() => import("../pages/Coupons"));
-const Campaign = lazy(() => import("../pages/Campaign"));
+const Campaigns = lazy(() => import("../pages/Campaigns"));
 const AdminDashboard = lazy(() => import("../pages/AdminDashboard"));
 const BeneficiaryProfile = lazy(() => import("../pages/BeneficiaryProfile"));
 const DonorProfile = lazy(() => import("../pages/DonorProfile"));
@@ -47,10 +47,10 @@ export default function AppRoutes() {
           <Route path="posts" element={<Posts />} />
           <Route path="coupons" element={<Coupons />} />
           <Route
-            path="campaign"
+            path="campaigns"
             element={
               <ProtectedRoute allowedRoles={["متبرع"]}>
-                <Campaign />
+                <Campaigns />
               </ProtectedRoute>
             }
           />
