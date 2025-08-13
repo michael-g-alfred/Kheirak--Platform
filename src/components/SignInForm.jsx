@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 import InputField from "./InputField";
 import Divider from "./Divider";
 import FormLayout from "../layouts/FormLayout";
@@ -29,12 +31,22 @@ const getFriendlyFirebaseError = (code) => {
   }
 };
 
+const schema = yup.object({
+  email: yup
+    .string()
+    .required("البريد الإلكترونى مطلوب")
+    .email("صيغة البريد غير صحيحة"),
+  password: yup.string().required("كلمة المرور مطلوبة"),
+});
+
 export default function SignInForm() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
 
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -95,13 +107,7 @@ export default function SignInForm() {
           id="email"
           type="email"
           placeholder="example@example.com"
-          register={register("email", {
-            required: "البريد مطلوب",
-            pattern: {
-              value: /^\S+@\S+$/i,
-              message: "صيغة البريد غير صحيحة",
-            },
-          })}
+          register={register("email")}
           error={errors.email}
         />
 
@@ -111,9 +117,7 @@ export default function SignInForm() {
           id="password"
           type="password"
           placeholder="**********"
-          register={register("password", {
-            required: "كلمة المرور مطلوبة",
-          })}
+          register={register("password")}
           error={errors.password}
         />
         {/* زر الدخول */}
