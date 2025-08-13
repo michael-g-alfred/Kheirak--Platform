@@ -5,7 +5,6 @@ import InputField from "./InputField";
 import FormLayout from "../layouts/FormLayout";
 import SubmitButton from "./SubmitButton";
 import { toast } from "react-hot-toast";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db, collection, addDoc, serverTimestamp } from "../Firebase/Firebase";
 
 const schema = yup.object().shape({
