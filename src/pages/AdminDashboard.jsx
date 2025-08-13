@@ -6,75 +6,17 @@ import PageLayout from "../layouts/PageLayout";
 import Header_Subheader from "../components/Header_Subheader";
 import UserInfo from "../components/UserInfo";
 import Divider from "../components/Divider";
-import InputField from "../components/InputField";
-import FilterOffIcon from "../icons/FilterOffIcon";
-import FilterIcon from "../icons/FilterIcon";
-
-const statusOptions = [
-  { value: "الكل", label: "الكل" },
-  { value: "قيد المراجعة", label: "قيد المراجعة" },
-  { value: "مقبول", label: "مقبول" },
-  { value: "مرفوض", label: "مرفوض" },
-  { value: "مكتمل", label: "مكتمل" },
-];
-
-function ReviewSection({
-  id,
-  title,
-  filterOpen,
-  setFilterOpen,
-  lastUpdated,
-  statusFilter,
-  setStatusFilter,
-  statusOptions,
-  ReviewComponent,
-}) {
-  return (
-    <section aria-labelledby={`${id}-heading`}>
-      <div className="flex flex-col items-start gap-2 mb-2">
-        <div className="flex items-center justify-between w-full">
-          <h2
-            id={`${id}-heading`}
-            className="text-xl font-semibold text-[var(--color-primary-base)]">
-            {title}
-          </h2>
-
-          {/* زرار فتح/غلق الفلتر */}
-          <button
-            onClick={() => setFilterOpen((prev) => !prev)}
-            aria-pressed={filterOpen}
-            aria-label={
-              filterOpen ? `إغلاق فلتر ${title}` : `فتح فلتر ${title}`
-            }
-            className="px-6 py-2 border border-[var(--color-primary-base)] rounded text-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] hover:text-[var(--color-bg-text)] transition">
-            {filterOpen ? <FilterOffIcon /> : <FilterIcon />}
-          </button>
-        </div>
-        <p className="text-xs text-[var(--color-bg-muted-text)] mb-2">
-          (آخر تحديث: {lastUpdated})
-        </p>
-      </div>
-
-      {/* خيارات الفلترة باستخدام InputField */}
-      {filterOpen && (
-        <div className="p-4 border border-[var(--color-bg-divider)] rounded bg-[var(--color-bg-card)]">
-          <InputField
-            label={`حالة ${title}`}
-            id={`${id}Status`}
-            select={true}
-            options={statusOptions}
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-          />
-        </div>
-      )}
-
-      <ReviewComponent statusFilter={statusFilter} />
-    </section>
-  );
-}
+import ReviewSection from "../components/Admin/ReviewSection";
 
 export default function AdminDashboard() {
+  const statusOptions = [
+    { value: "الكل", label: "الكل" },
+    { value: "قيد المراجعة", label: "قيد المراجعة" },
+    { value: "مقبول", label: "مقبول" },
+    { value: "مرفوض", label: "مرفوض" },
+    { value: "مكتمل", label: "مكتمل" },
+  ];
+
   const [lastUpdated, setLastUpdated] = useState(null);
 
   // حالات الفلترة
@@ -82,7 +24,15 @@ export default function AdminDashboard() {
   const [postStatusFilter, setPostStatusFilter] = useState("الكل");
 
   const [filterCouponsOpen, setFilterCouponsOpen] = useState(false);
-  const [couponStatusFilter, setCouponStatusFilter] = useState("الكل");
+  const [couponsStatusFilter, setCouponsStatusFilter] = useState("الكل");
+
+  const [filterCampaignsOpen, setFilterCampaignsOpen] = useState(false);
+  const [campaignStatusFilter, setCampaignStatusFilter] = useState("الكل");
+
+  // حالات الرؤية
+  const [postsShow, setPostsShow] = useState(true);
+  const [couponsShow, setCouponsShow] = useState(true);
+  const [campaignsShow, setCampaignsShow] = useState(true);
 
   useEffect(() => {
     setLastUpdated(
@@ -105,13 +55,15 @@ export default function AdminDashboard() {
 
         <main role="main" aria-label="لوحة تحكم الأدمن">
           <section aria-labelledby="stats-heading">
-            <h2 id="stats-heading" className="sr-only">
-              الإحصائيات العامة
-            </h2>
             <Stats />
           </section>
 
           <Divider />
+
+          {/* آخر تحديث */}
+          <div className="py-2 mb-6 bg-[var(--color-bg-card)] border border-[var(--color-bg-divider)] rounded text-center text-[var(--color-primary-base)] text-sm">
+            آخر تحديث: {lastUpdated}
+          </div>
 
           {/* قسم مراجعة البوستات */}
           <ReviewSection
@@ -119,11 +71,12 @@ export default function AdminDashboard() {
             title="مراجعة البوستات"
             filterOpen={filterPostsOpen}
             setFilterOpen={setFilterPostsOpen}
-            lastUpdated={lastUpdated}
             statusFilter={postStatusFilter}
             setStatusFilter={setPostStatusFilter}
             statusOptions={statusOptions}
             ReviewComponent={PostReview}
+            show={postsShow}
+            setShow={setPostsShow}
           />
 
           <Divider />
@@ -134,11 +87,28 @@ export default function AdminDashboard() {
             title="مراجعة الكوبونات"
             filterOpen={filterCouponsOpen}
             setFilterOpen={setFilterCouponsOpen}
-            lastUpdated={lastUpdated}
-            statusFilter={couponStatusFilter}
-            setStatusFilter={setCouponStatusFilter}
+            statusFilter={couponsStatusFilter}
+            setStatusFilter={setCouponsStatusFilter}
             statusOptions={statusOptions}
             ReviewComponent={CouponReview}
+            show={couponsShow}
+            setShow={setCouponsShow}
+          />
+
+          <Divider />
+
+          {/* قسم مراجعة الحملات */}
+          <ReviewSection
+            id="campaigns"
+            title="مراجعة الحملات"
+            filterOpen={filterCampaignsOpen}
+            setFilterOpen={setFilterCampaignsOpen}
+            statusFilter={campaignStatusFilter}
+            setStatusFilter={setCampaignStatusFilter}
+            statusOptions={statusOptions}
+            ReviewComponent={CouponReview}
+            show={campaignsShow}
+            setShow={setCampaignsShow}
           />
         </main>
       </div>
