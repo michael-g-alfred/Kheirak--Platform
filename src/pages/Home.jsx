@@ -41,22 +41,22 @@ export default function Home() {
 
           {role === "متبرع" && (
             <NavLink
-              to="/campaign"
-              onClick={() => setActiveTab("campaign")}
+              to="/campaigns"
+              onClick={() => setActiveTab("campaigns")}
               className={navLinkBaseClass}
               style={{
                 backgroundColor:
-                  activeTab === "campaign"
+                  activeTab === "campaigns"
                     ? "var(--color-primary-base)"
                     : "var(--color-primary-disabled)",
                 color:
-                  activeTab === "campaign"
+                  activeTab === "campaigns"
                     ? "var(--color-bg-text)"
                     : "var(--color-bg-muted-text)",
                 borderRight: ".125rem solid var(--color-bg-divider)",
                 borderLeft: ".125rem solid var(--color-bg-divider)",
               }}
-              aria-current={activeTab === "campaign" ? "page" : undefined}>
+              aria-current={activeTab === "campaigns" ? "page" : undefined}>
               الحملات
             </NavLink>
           )}
