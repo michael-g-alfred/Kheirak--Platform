@@ -20,7 +20,7 @@ export default function Coupons() {
 
   const {
     data: Coupons,
-    loading: loadingCoupons,
+    isLoading,
     error,
   } = useFetchCollection(["Coupons"], filterFn);
 
@@ -28,7 +28,11 @@ export default function Coupons() {
     setShowCouponForm(false);
   };
 
-  if (loading || role === null) return null;
+  if (isLoading || loading) {
+    return <Loader />;
+  }
+
+  if (role === "مستخدم" || role === null) return null;
 
   if (error) {
     toast.error("خطأ في جلب الكوبونات");
@@ -62,14 +66,12 @@ export default function Coupons() {
             isSelected
               ? "bg-[var(--color-primary-base)] text-[var(--color-bg-text)]"
               : "bg-[var(--color-primary-disabled)] text-[var(--color-bg-muted-text)]"
-          }`}
-              >
+          }`}>
                 <span className="text-lg">{icon}</span>
                 <span
                   className={`text-md ${
                     isSelected ? "font-bold" : "font-medium"
-                  }`}
-                >
+                  }`}>
                   {name}
                 </span>
               </button>
@@ -79,7 +81,7 @@ export default function Coupons() {
       )}
       {Coupons.length > 0 && <Divider />}
 
-      {loadingCoupons ? (
+      {isLoading ? (
         <Loader />
       ) : Coupons.length === 0 ? (
         <NoData h2={"لا توجد كوبونات متاحة الآن"} />

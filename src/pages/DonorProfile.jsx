@@ -22,13 +22,11 @@ export default function DonorProfile() {
   );
 
   // User coupons
-  const { data: userCoupons, isLoading: loadingCoupons } = useFetchCollection(
+  const { data: userCoupons, isLoading } = useFetchCollection(
     ["Coupons"],
     (coupon) => coupon?.submittedBy?.email === userEmail,
     (a, b) => new Date(b.timestamp) - new Date(a.timestamp)
   );
-
-  const isLoading = loadingPosts || loadingCoupons;
 
   return (
     <PageLayout>

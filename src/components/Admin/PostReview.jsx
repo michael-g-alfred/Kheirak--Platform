@@ -11,7 +11,7 @@ import { usePagination } from "../../hooks/usePagination";
 import PaginationControls from "../PaginationControls";
 
 export default function PostReview({ statusFilter = "الكل" }) {
-  const { data: posts, loading, error } = useFetchCollection(["Posts"]);
+  const { data: posts, isLoading, error } = useFetchCollection(["Posts"]);
   const { updatingId, updateStatus } = useUpdateStatus("Posts");
 
   useEffect(() => {
@@ -19,10 +19,6 @@ export default function PostReview({ statusFilter = "الكل" }) {
       toast.error("خطأ أثناء تحميل الطلبات");
     }
   }, [error]);
-
-  if (loading) {
-    return <Loader />;
-  }
 
   const filteredPosts =
     statusFilter === "الكل"
@@ -36,6 +32,10 @@ export default function PostReview({ statusFilter = "الكل" }) {
     nextPage,
     prevPage,
   } = usePagination(filteredPosts, 6);
+
+  if (isLoading) {
+    return <Loader />;
+  }
   return (
     <>
       {filteredPosts.length > 0 ? (

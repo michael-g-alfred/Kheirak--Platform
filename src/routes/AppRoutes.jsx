@@ -22,10 +22,20 @@ const OrgProfile = lazy(() => import("../pages/OrgProfile"));
 const Notifications = lazy(() => import("../pages/Notifications"));
 
 function ProtectedRoute({ children, allowedRoles }) {
-  const { role } = useAuth();
+  const { role, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="w-full h-screen flex items-center justify-center">
+        <div className="text-center text-[var(--color-bg-text)] text-lg">
+          <LogoIcon />
+        </div>
+      </div>
+    );
+  }
 
   if (!allowedRoles.includes(role)) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/" />;
   }
 
   return children;

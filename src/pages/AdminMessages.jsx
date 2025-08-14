@@ -24,7 +24,7 @@ export default function AdminMessages() {
 
   const {
     data: messages,
-    loading,
+    isLoading,
     error,
   } = useFetchCollection(
     ["ContactMessages"],
@@ -93,7 +93,7 @@ export default function AdminMessages() {
         />
       )}
 
-      {loading ? (
+      {isLoading ? (
         <Loader />
       ) : messages.length === 0 ? (
         <NoData h2="لا توجد رسائل حالياً" />

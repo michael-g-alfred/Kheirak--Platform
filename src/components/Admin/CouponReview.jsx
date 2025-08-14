@@ -11,7 +11,7 @@ import { usePagination } from "../../hooks/usePagination";
 import PaginationControls from "../PaginationControls";
 
 export default function CouponReview({ statusFilter = "الكل" }) {
-  const { data: coupons, loading, error } = useFetchCollection(["Coupons"]);
+  const { data: coupons, isLoading, error } = useFetchCollection(["Coupons"]);
   const { updatingStatus, updateStatus } = useUpdateStatus("Coupons");
 
   useEffect(() => {
@@ -19,10 +19,6 @@ export default function CouponReview({ statusFilter = "الكل" }) {
       toast.error("خطأ أثناء تحميل الكوبونات");
     }
   }, [error]);
-
-  if (loading) {
-    return <Loader />;
-  }
 
   const filteredCoupons =
     statusFilter === "الكل"
@@ -36,6 +32,10 @@ export default function CouponReview({ statusFilter = "الكل" }) {
     nextPage,
     prevPage,
   } = usePagination(filteredCoupons, 6);
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <>

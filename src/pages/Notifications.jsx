@@ -18,7 +18,7 @@ export default function NotificationsPage() {
 
   const {
     data: notifications,
-    loading: loadingNotifications,
+    isLoading,
     error,
     sortFn: sortFnNotifications,
   } = useFetchCollection(
@@ -46,7 +46,7 @@ export default function NotificationsPage() {
           p="هنا تجد كل الإشعارات المتعلقة بحسابك."
         />
 
-        {notifications.length > 0 && !loadingNotifications && (
+        {notifications.length > 0 && !isLoading && (
           <div className="flex justify-end mb-6">
             <button
               onClick={handleDeleteAll}
@@ -63,7 +63,7 @@ export default function NotificationsPage() {
         )}
 
         <main role="main" aria-label="قائمة الإشعارات">
-          {loadingNotifications ? (
+          {isLoading ? (
             <Loader />
           ) : notifications.length === 0 ? (
             <NoData h2="لا توجد إشعارات" />

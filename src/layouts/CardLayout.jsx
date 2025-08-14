@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { motion } from "framer-motion";
 
 export default function CardLayout({
   title,
@@ -7,21 +8,13 @@ export default function CardLayout({
   clampTitle = false,
   delay = 0,
 }) {
-  const [show, setShow] = useState(false);
-
-  useEffect(() => {
-    setShow(true);
-  }, []);
-
   return (
-    <article
+    <motion.article
       className={`rounded-lg p-4 border border-[var(--color-bg-divider)] bg-[var(--color-bg-card)]`}
       dir="rtl"
-      style={{
-        opacity: show ? 1 : 0,
-        transform: show ? "translateY(0)" : "translateY(20px)",
-        transition: `opacity 0.8s ease ${delay}s, transform 0.8s ease ${delay}s`,
-      }}>
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, delay }}>
       {title && (
         <header>
           <h2
@@ -43,6 +36,6 @@ export default function CardLayout({
       )}
 
       {children && <>{children}</>}
-    </article>
+    </motion.article>
   );
 }

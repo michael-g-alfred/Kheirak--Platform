@@ -21,7 +21,7 @@ export default function Posts() {
 
   const {
     data: posts,
-    loading: loadingPosts,
+    isLoading,
     error,
   } = useFetchCollection(["Posts"], filterFn);
 
@@ -29,7 +29,7 @@ export default function Posts() {
     setShowPostForm(false);
   };
 
-  if (loading || role === null) return null;
+  if (role === "مستخدم" || role === null) return null;
 
   if (error) {
     toast.error("خطأ في جلب الطلبات");
@@ -40,6 +40,10 @@ export default function Posts() {
       post.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       post.description?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  if (isLoading || loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="px-6">
@@ -74,7 +78,7 @@ export default function Posts() {
         )}
 
         <main role="main" aria-label="قائمة الطلبات">
-          {loadingPosts ? (
+          {isLoading ? (
             <div className="flex justify-center py-8">
               <Loader />
             </div>
