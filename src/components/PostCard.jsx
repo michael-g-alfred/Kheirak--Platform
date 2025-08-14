@@ -13,6 +13,8 @@ import { db } from "../Firebase/Firebase";
 import { toast } from "react-hot-toast";
 import NoPhoto from "./NoPhoto";
 import ConfirmModal from "./ConfirmModal";
+import { categoryPartners } from "../data/categories";
+import ImageIcon from "../icons/ImageIcon";
 
 const PostCard = ({ newPost }) => {
   const [showPopup, setShowPopup] = useState(false);
@@ -88,6 +90,127 @@ const PostCard = ({ newPost }) => {
       return;
     }
 
+      const updateData = {
+        totalDonated: newTotal,
+        donors: arrayUnion({
+          email: user?.email || "unknown",
+          uid: user?.uid || "unknown",
+          amount: Number(selectedAmount),
+          date: new Date().toISOString(),
+        }),
+        isCompleted: newTotal >= amount,
+      };
+
+      if (newTotal >= amount) {
+        updateData.status = "مكتمل";
+      }
+
+      await updateDoc(postRef, updateData);
+      toast.dismiss();
+      toast.success(`تم التبرع بـ ${selectedAmount} ج.م`, {
+        position: "bottom-center",
+      });
+
+      const donorNotifRef = doc(
+        db,
+        "Notifications",
+        user.email,
+        "user_Notifications",
+        `${Date.now()}`
+      );
+
+      await setDoc(donorNotifRef, {
+        title: "شكرًا على تبرعك 💚",
+        message: `لقد تبرعت بمبلغ ${selectedAmount} :جنيه للطلب ${newPost.title}`,
+        timestamp: new Date().toISOString(),
+        read: false,
+        userId: user.uid,
+      });
+
+      if (newPost?.submittedBy?.email) {
+        const ownerNotifRef = doc(
+          db,
+          "Notifications",
+          newPost.submittedBy.email,
+          "user_Notifications",
+          `${Date.now() + 1}`
+        );
+
+        await setDoc(ownerNotifRef, {
+          title: "تم استلام تبرع جديد ✅",
+          message: `${
+            user?.email || "مستخدم"
+          } تبرع لك بمبلغ ${selectedAmount} جنيه.`,
+          timestamp: new Date().toISOString(),
+          read: false,
+          userId: newPost.submittedBy?.uid || "unknown",
+        });
+      }
+
+      if (newTotal >= amount) {
+        const snapshot = await getDoc(postRef);
+        const data = snapshot.data();
+
+        const donorMap = (data?.donors || []).reduce((acc, d) => {
+          if (d.email && !acc[d.email]) {
+            acc[d.email] = d.uid || "unknown";
+          }
+          return acc;
+        }, {});
+
+        for (const [email, uid] of Object.entries(donorMap)) {
+          const notificationRef = doc(
+            db,
+            "Notifications",
+            email,
+            "user_Notifications",
+            `${Date.now() + Math.floor(Math.random() * 1000)}`
+          );
+
+          await setDoc(notificationRef, {
+            title: "شكرًا على تبرعك 💚",
+            message: `شكراً لك! تم الوصول لهدف التبرع للطلب: ${newPost.title}.`,
+            timestamp: new Date().toISOString(),
+            read: false,
+            userId: uid,
+          });
+        }
+
+        if (newPost?.submittedBy?.email) {
+          const partners = categoryPartners[newPost.type] || [];
+          const partnersList = partners.length
+            ? partners.join("، ")
+            : "أحد نقاط التوزيع المعتمدة";
+
+          const qrData = JSON.stringify({
+            postId: newPost.id,
+            title: newPost.title,
+            type: newPost.type,
+            amount,
+            totalDonated: newTotal,
+            submittedBy: newPost.submittedBy,
+          });
+
+          const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(
+            qrData
+          )}&size=150x150`;
+
+          const qrNotificationRef = doc(
+            db,
+            "Notifications",
+            newPost.submittedBy.email,
+            "user_Notifications",
+            `${Date.now() + 2}`
+          );
+
+          await setDoc(qrNotificationRef, {
+            title: "اكتمل جمع التبرعات 🎉",
+            message: `تم اكتمال جمع التبرعات لطلبك "${newPost.title}". هذا هو رمز الاستجابة السريعة الذي يحتوي على تفاصيل الطلب. يمكن التوجهة إلى أحد شركائنا (${partnersList}) لاستلام الخدمة.`,
+            imageUrl: qrCodeURL,
+            timestamp: new Date().toISOString(),
+            read: false,
+            userId: newPost.submittedBy?.uid || "unknown",
+          });
     // Navigate to payment page with donation data
     navigate("/payment", {
       state: {
@@ -118,6 +241,7 @@ const PostCard = ({ newPost }) => {
   return (
     <>
       <CardLayout>
+        {/* بيانات صاحب الطلب */}
         <div className="flex items-center gap-2 mb-2">
           <div className="flex-shrink-0">
             {newPost.submittedBy?.userPhoto ? (
@@ -140,7 +264,7 @@ const PostCard = ({ newPost }) => {
           </div>
         </div>
 
-        {/* صورة + progress bar clip */}
+        {/* صورة + progress bar */}
         <div className="mb-2">
           <div className="relative w-full sm:aspect-[4/3] md:aspect-[16/9] xl:aspect-[21/9]rounded-lg border border-[var(--color-bg-divider)] overflow-hidden rounded-lg">
             {newPost.attachedFiles ? (
@@ -150,8 +274,8 @@ const PostCard = ({ newPost }) => {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-[var(--color-bg-muted-text)]">
-                لا توجد صورة
+              <div className="w-full h-full flex items-center justify-center bg-[var(--color-primary-disabled)] text-[var(--color-bg-muted-text)]">
+                <ImageIcon size={48} />
               </div>
             )}
 
@@ -209,7 +333,7 @@ const PostCard = ({ newPost }) => {
 ${
   isCompleted
     ? "bg-[var(--color-primary-disabled)] text-[var(--color-bg-muted-text)] cursor-not-allowed"
-    : "border border-[var(--color-bg-divider)] bg-[var(--color-bg-base)] text-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] hover:text-[var(--color-bg-text)] cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)]"
+    : "border border-[var(--color-bg-divider)] bg-[var(--color-bg-base)] text-[var(--color-primary-base)]  cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)]"
 }`}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {

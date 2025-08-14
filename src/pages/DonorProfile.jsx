@@ -101,7 +101,7 @@ export default function DonorProfile() {
               status={coupon.status}>
               <div className="text-md text-[var(--color-bg-text-dark)] space-y-1 text-right">
                 <p>
-                  <strong>تفاصيل القسيمة:</strong>{" "}
+                  <strong>تفاصيل الكوبون:</strong>{" "}
                   {coupon.details || "غير متوفر"}
                 </p>
                 <p>

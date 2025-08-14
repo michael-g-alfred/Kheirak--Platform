@@ -9,7 +9,7 @@ import {
 } from "firebase/firestore";
 import { useAuth } from "../context/authContext";
 import { toast } from "react-hot-toast";
-import { campaignsData } from "../store/campaignsData";
+import { campaignsData } from "../data/campaignsData";
 import CardsLayout from "../layouts/CardsLayout";
 import SelectableCard from "../components/SelectableCard";
 import CampaignItemCard from "../components/CampaignItemCard";
@@ -109,7 +109,8 @@ export default function Campaigns() {
             onClick={() => {
               setSelectedCampaign(campaign);
               setSelectedCategory(null);
-            }}>
+            }}
+          >
             <div>نوع الحملة: {campaign.type}</div>
           </SelectableCard>
         ))}
