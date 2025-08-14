@@ -9,7 +9,7 @@ import Loader from "../components/Loader";
 import { useAuth } from "../context/authContext";
 import Divider from "../components/Divider";
 import { toast } from "react-hot-toast";
-import { categories } from "../utils/categories";
+import { categories } from "../data/categories";
 
 export default function Coupons() {
   const { role, loading } = useAuth();
@@ -62,12 +62,14 @@ export default function Coupons() {
             isSelected
               ? "bg-[var(--color-primary-base)] text-[var(--color-bg-text)]"
               : "bg-[var(--color-primary-disabled)] text-[var(--color-bg-muted-text)]"
-          }`}>
+          }`}
+              >
                 <span className="text-lg">{icon}</span>
                 <span
                   className={`text-md ${
                     isSelected ? "font-bold" : "font-medium"
-                  }`}>
+                  }`}
+                >
                   {name}
                 </span>
               </button>

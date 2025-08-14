@@ -89,7 +89,7 @@ const CouponCard = ({ newCoupon }) => {
             );
             if (hoursDiff < 24) {
               usedRecently = true;
-            }j
+            }
           }
         }
 
@@ -186,6 +186,7 @@ const CouponCard = ({ newCoupon }) => {
     } catch (error) {
       toast.dismiss();
       toast.error(`حدث خطأ أثناء استخدام الكوبون ‼`);
+      console.error("Error using coupon:", error);
     }
 
     setIsLoading(false);

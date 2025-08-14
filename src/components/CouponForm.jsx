@@ -9,7 +9,7 @@ import { db } from "../Firebase/Firebase";
 import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { useAuth } from "../context/authContext";
 import { toast } from "react-hot-toast";
-import { categoryOptions } from "../utils/categories";
+import { categoryOptions } from "../data/categories";
 
 export default function CouponForm({ onClose }) {
   const { currentUser, userData, userName } = useAuth();
@@ -83,13 +83,15 @@ export default function CouponForm({ onClose }) {
     <FormLayout>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="space-y-4 max-w-md mx-auto">
+        className="space-y-4 max-w-md mx-auto"
+      >
         <div className="flex justify-end">
           <button
             onClick={onClose}
             className="p-2 danger_Outline font-bold rounded-full focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-danger-light)] disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Close form"
-            type="button">
+            type="button"
+          >
             <CloseIcon />
           </button>
         </div>
