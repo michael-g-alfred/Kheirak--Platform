@@ -16,6 +16,8 @@ import { db } from "../Firebase/Firebase";
 import { toast } from "react-hot-toast";
 import NoPhoto from "./NoPhoto";
 import ConfirmModal from "./ConfirmModal";
+import { categoryPartners } from "../data/categories";
+import ImageIcon from "../icons/ImageIcon";
 
 const PostCard = ({ newPost }) => {
   const [showPopup, setShowPopup] = useState(false);
@@ -183,9 +185,15 @@ const PostCard = ({ newPost }) => {
         }
 
         if (newPost?.submittedBy?.email) {
+          const partners = categoryPartners[newPost.type] || [];
+          const partnersList = partners.length
+            ? partners.join("، ")
+            : "أحد نقاط التوزيع المعتمدة";
+
           const qrData = JSON.stringify({
             postId: newPost.id,
             title: newPost.title,
+            type: newPost.type,
             amount,
             totalDonated: newTotal,
             submittedBy: newPost.submittedBy,
@@ -205,7 +213,7 @@ const PostCard = ({ newPost }) => {
 
           await setDoc(qrNotificationRef, {
             title: "اكتمل جمع التبرعات 🎉",
-            message: `تم اكتمال جمع التبرعات لطلبك "${newPost.title}". هذا هو رمز الاستجابة السريعة الذي يحتوي على تفاصيل الطلب.`,
+            message: `تم اكتمال جمع التبرعات لطلبك "${newPost.title}". هذا هو رمز الاستجابة السريعة الذي يحتوي على تفاصيل الطلب. يمكن التوجهة إلى أحد شركائنا (${partnersList}) لاستلام الخدمة.`,
             imageUrl: qrCodeURL,
             timestamp: new Date().toISOString(),
             read: false,
@@ -225,6 +233,7 @@ const PostCard = ({ newPost }) => {
   return (
     <>
       <CardLayout>
+        {/* بيانات صاحب الطلب */}
         <div className="flex items-center gap-2 mb-2">
           <div className="flex-shrink-0">
             {newPost.submittedBy?.userPhoto ? (
@@ -247,7 +256,7 @@ const PostCard = ({ newPost }) => {
           </div>
         </div>
 
-        {/* صورة + progress bar clip */}
+        {/* صورة + progress bar */}
         <div className="mb-2">
           <div className="relative w-full sm:aspect-[4/3] md:aspect-[16/9] xl:aspect-[21/9]rounded-lg border border-[var(--color-bg-divider)] overflow-hidden rounded-lg">
             {newPost.attachedFiles ? (
@@ -257,8 +266,8 @@ const PostCard = ({ newPost }) => {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-[var(--color-bg-muted-text)]">
-                لا توجد صورة
+              <div className="w-full h-full flex items-center justify-center bg-[var(--color-primary-disabled)] text-[var(--color-bg-muted-text)]">
+                <ImageIcon size={48} />
               </div>
             )}
 
@@ -316,7 +325,7 @@ const PostCard = ({ newPost }) => {
 ${
   isCompleted
     ? "bg-[var(--color-primary-disabled)] text-[var(--color-bg-muted-text)] cursor-not-allowed"
-    : "border border-[var(--color-bg-divider)] bg-[var(--color-bg-base)] text-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] hover:text-[var(--color-bg-text)] cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)]"
+    : "border border-[var(--color-bg-divider)] bg-[var(--color-bg-base)] text-[var(--color-primary-base)]  cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)]"
 }`}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {

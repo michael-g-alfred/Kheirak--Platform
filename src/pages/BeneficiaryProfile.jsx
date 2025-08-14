@@ -80,10 +80,10 @@ export default function BeneficiaryProfile() {
                 status={post.status}>
                 <div className="text-md text-[var(--color-bg-text-dark)] space-y-1 text-right">
                   <p>
-                    <strong>المبلغ المطلوب:</strong> {post.amount} ج.م
+                    <strong>تفاصيل الطلب: </strong> {post.details}
                   </p>
                   <p>
-                    <strong>المبلغ المستلم:</strong>{" "}
+                    <strong>المبلغ المستلم:</strong>
                     <span className="text-[var(--color-primary-base)]">
                       {totalReceived} ج.م
                     </span>
