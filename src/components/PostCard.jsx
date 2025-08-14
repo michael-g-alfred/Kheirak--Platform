@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
@@ -6,10 +7,6 @@ import CardLayout from "../layouts/CardLayout";
 import {
   doc,
   onSnapshot,
-  updateDoc,
-  arrayUnion,
-  getDoc,
-  setDoc,
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { db } from "../Firebase/Firebase";
@@ -24,6 +21,7 @@ const PostCard = ({ newPost }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const { role } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!newPost?.id) return;
@@ -62,12 +60,10 @@ const PostCard = ({ newPost }) => {
     setSelectedAmount(null);
   };
 
-  const handleConfirmDonation = async () => {
-    toast.loading("جاري تنفيذ التبرع...");
+  const handleConfirmDonation = () => {
     setIsLoading(true);
 
     if (Number(selectedAmount) <= 0 || isNaN(selectedAmount)) {
-      toast.dismiss();
       toast.error("يرجى إدخال مبلغ صحيح أكبر من صفر.");
       setIsLoading(false);
       closePopup();
@@ -76,150 +72,47 @@ const PostCard = ({ newPost }) => {
 
     const newTotal = totalDonated + Number(selectedAmount);
     if (newTotal > amount) {
-      toast.dismiss();
       toast.error("المبلغ يتجاوز القيمة المطلوبة.");
       setIsLoading(false);
       closePopup();
       return;
     }
 
-    try {
-      const postRef = doc(db, "Posts", newPost.id);
-      const auth = getAuth();
-      const user = auth.currentUser;
+    const auth = getAuth();
+    const user = auth.currentUser;
 
-      if (!user) {
-        toast.dismiss();
-        toast.error("يجب تسجيل الدخول أولاً");
-        setIsLoading(false);
-        closePopup();
-        return;
-      }
-
-      const updateData = {
-        totalDonated: newTotal,
-        donors: arrayUnion({
-          email: user?.email || "unknown",
-          uid: user?.uid || "unknown",
-          amount: Number(selectedAmount),
-          date: new Date().toISOString(),
-        }),
-        isCompleted: newTotal >= amount,
-      };
-
-      if (newTotal >= amount) {
-        updateData.status = "مكتمل";
-      }
-
-      await updateDoc(postRef, updateData);
-      toast.dismiss();
-      toast.success(`تم التبرع بـ ${selectedAmount} ج.م`, {
-        position: "bottom-center",
-      });
-
-      const donorNotifRef = doc(
-        db,
-        "Notifications",
-        user.email,
-        "user_Notifications",
-        `${Date.now()}`
-      );
-
-      await setDoc(donorNotifRef, {
-        title: "شكرًا على تبرعك 💚",
-        message: `لقد تبرعت بمبلغ ${selectedAmount} :جنيه للطلب ${newPost.title}`,
-        timestamp: new Date().toISOString(),
-        read: false,
-        userId: user.uid,
-      });
-
-      if (newPost?.submittedBy?.email) {
-        const ownerNotifRef = doc(
-          db,
-          "Notifications",
-          newPost.submittedBy.email,
-          "user_Notifications",
-          `${Date.now() + 1}`
-        );
-
-        await setDoc(ownerNotifRef, {
-          title: "تم استلام تبرع جديد ✅",
-          message: `${
-            user?.email || "مستخدم"
-          } تبرع لك بمبلغ ${selectedAmount} جنيه.`,
-          timestamp: new Date().toISOString(),
-          read: false,
-          userId: newPost.submittedBy?.uid || "unknown",
-        });
-      }
-
-      if (newTotal >= amount) {
-        const snapshot = await getDoc(postRef);
-        const data = snapshot.data();
-
-        const donorMap = (data?.donors || []).reduce((acc, d) => {
-          if (d.email && !acc[d.email]) {
-            acc[d.email] = d.uid || "unknown";
-          }
-          return acc;
-        }, {});
-
-        for (const [email, uid] of Object.entries(donorMap)) {
-          const notificationRef = doc(
-            db,
-            "Notifications",
-            email,
-            "user_Notifications",
-            `${Date.now() + Math.floor(Math.random() * 1000)}`
-          );
-
-          await setDoc(notificationRef, {
-            title: "شكرًا على تبرعك 💚",
-            message: `شكراً لك! تم الوصول لهدف التبرع للطلب: ${newPost.title}.`,
-            timestamp: new Date().toISOString(),
-            read: false,
-            userId: uid,
-          });
-        }
-
-        if (newPost?.submittedBy?.email) {
-          const qrData = JSON.stringify({
-            postId: newPost.id,
-            title: newPost.title,
-            amount,
-            totalDonated: newTotal,
-            submittedBy: newPost.submittedBy,
-          });
-
-          const qrCodeURL = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(
-            qrData
-          )}&size=150x150`;
-
-          const qrNotificationRef = doc(
-            db,
-            "Notifications",
-            newPost.submittedBy.email,
-            "user_Notifications",
-            `${Date.now() + 2}`
-          );
-
-          await setDoc(qrNotificationRef, {
-            title: "اكتمل جمع التبرعات 🎉",
-            message: `تم اكتمال جمع التبرعات لطلبك "${newPost.title}". هذا هو رمز الاستجابة السريعة الذي يحتوي على تفاصيل الطلب.`,
-            imageUrl: qrCodeURL,
-            timestamp: new Date().toISOString(),
-            read: false,
-            userId: newPost.submittedBy?.uid || "unknown",
-          });
-        }
-      }
-    } catch (error) {
-      toast.dismiss();
-      toast.error("حدث خطأ أثناء تنفيذ التبرع ‼. يرجى المحاولة مرة أخرى.");
+    if (!user) {
+      toast.error("يجب تسجيل الدخول أولاً");
+      setIsLoading(false);
+      closePopup();
+      return;
     }
 
-    setIsLoading(false);
+    // Navigate to payment page with donation data
+    navigate("/payment", {
+      state: {
+        donationData: {
+          postId: newPost.id,
+          postTitle: newPost.title,
+          postDetails: newPost.details,
+          donationAmount: Number(selectedAmount),
+          totalRequired: amount,
+          currentTotal: totalDonated,
+          recipient: {
+            name: newPost.submittedBy.userName,
+            email: newPost.submittedBy.email,
+            id: newPost.submittedBy.id
+          },
+          donor: {
+            email: user.email,
+            uid: user.uid
+          }
+        }
+      }
+    });
+
     closePopup();
+    setIsLoading(false);
   };
 
   return (
