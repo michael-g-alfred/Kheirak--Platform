@@ -15,6 +15,7 @@ const Home = lazy(() => import("../pages/Home"));
 const Posts = lazy(() => import("../pages/Posts"));
 const Coupons = lazy(() => import("../pages/Coupons"));
 const Campaigns = lazy(() => import("../pages/Campaigns"));
+const Payment = lazy(() => import("../pages/Payment"));
 const AdminDashboard = lazy(() => import("../pages/AdminDashboard"));
 const BeneficiaryProfile = lazy(() => import("../pages/BeneficiaryProfile"));
 const DonorProfile = lazy(() => import("../pages/DonorProfile"));
@@ -69,6 +70,14 @@ export default function AppRoutes() {
         <Route path="/services" element={<Services />} />
         <Route path="/portfolio" element={<Portfolio />} />
         <Route path="/contact" element={<Contact />} />
+        <Route
+          path="/payment"
+          element={
+            <ProtectedRoute allowedRoles={["متبرع"]}>
+              <Payment />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<NotFound />} />
 
         {/* Guest */}
