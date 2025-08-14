@@ -1,7 +1,7 @@
 import ImageIcon from "../icons/ImageIcon";
 
 const CampaignItemCard = ({ item, onSelect }) => (
-  <div className="border border-[var(--color-warning-light)] rounded-lg shadow-sm bg-[var(--color-bg-card)] px-6 py-4 text-center flex flex-col items-center min-h-[20rem]">
+  <div className="border border-[var(--color-primary-base)] rounded-lg shadow-sm bg-[var(--color-bg-card)] px-6 py-4 text-center flex flex-col items-center min-h-[20rem]">
     {item.image ? (
       <img
         src={item.image}

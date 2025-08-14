@@ -69,15 +69,18 @@ function ReviewSection({
 
       {/* خيارات الفلترة باستخدام InputField */}
       {filterOpen && (
-        <div className="p-4 border border-[var(--color-bg-divider)] rounded bg-[var(--color-bg-card)]">
-          <InputField
-            label={`حالة ${title}`}
-            id={`${id}Status`}
-            select={true}
-            options={statusOptions}
-            value={statusFilter}
-            onChange={handleStatusChange}
-          />
+        <div
+          className={`flex justify-end items-end transition-opacity duration-500 ease-in-out opacity-100`}>
+          <div className="lg:w-1/3 md:w-1/2 w-full p-4 border border-[var(--color-bg-divider)] rounded bg-[var(--color-bg-card)]">
+            <InputField
+              label={`حالة ${title}`}
+              id={`${id}Status`}
+              select={true}
+              options={statusOptions}
+              value={statusFilter}
+              onChange={handleStatusChange}
+            />
+          </div>
         </div>
       )}
 
