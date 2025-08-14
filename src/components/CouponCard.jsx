@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { useAuth } from "../context/authContext";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, differenceInHours } from "date-fns";
 import { ar } from "date-fns/locale";
 import CardLayout from "../layouts/CardLayout";
 import {
@@ -11,6 +11,14 @@ import {
   arrayUnion,
   getDoc,
   setDoc,
+  query,
+  getDocs,
+  where,
+  collection,
+  orderBy,
+  limit,
+  addDoc,
+  serverTimestamp,
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { db } from "../Firebase/Firebase";
@@ -50,6 +58,57 @@ const CouponCard = ({ newCoupon }) => {
         toast.error("يجب تسجيل الدخول أولاً");
         setIsLoading(false);
         return;
+      }
+      // Check the last usage of a coupon of the same type
+      // Before allowing the user to use a new coupon of the same type,
+      // we check in the "CouponUsage" collection if their last usage was less than 24 hours ago.
+      if (newCoupon?.type) {
+        const usageRef = collection(db, "CouponUsage");
+
+        //  Get the latest usage record for the current user and this coupon type
+
+        const q = query(
+          usageRef,
+          where("userId", "==", user.uid),
+          where("couponType", "==", newCoupon.type),
+          orderBy("timestamp", "desc"),
+          limit(1)
+        );
+
+        const querySnapshot = await getDocs(q);
+        let usedRecently = false;
+
+        if (!querySnapshot.empty) {
+          const lastUsage = querySnapshot.docs[0].data();
+
+          // Calculate the difference in hours between now and the last usage
+          if (lastUsage.timestamp) {
+            const hoursDiff = differenceInHours(
+              new Date(),
+              lastUsage.timestamp.toDate()
+            );
+            if (hoursDiff < 24) {
+              usedRecently = true;
+            }j
+          }
+        }
+
+        //  If less than 24 hours have passed, block usage and show an error message
+        if (usedRecently) {
+          toast.dismiss();
+          toast.error(
+            "لا يمكنك استخدام كوبون آخر من نفس النوع قبل مرور 24 ساعة"
+          );
+          setIsLoading(false);
+          return;
+        }
+
+        //  If allowed, record the new usage in the "CouponUsage" collection
+        await addDoc(usageRef, {
+          userId: user.uid,
+          couponType: newCoupon.type,
+          timestamp: serverTimestamp(),
+        });
       }
 
       const updateData = {
@@ -251,11 +310,12 @@ const CouponCard = ({ newCoupon }) => {
           <button
             onClick={() => handleDonateClick(1)}
             className={`w-full px-6 py-3 rounded-lg font-bold text-md mb-2 transition ${
-              isCompleted || hasUsed
+              isCompleted
                 ? "bg-[var(--color-primary-disabled)] text-[var(--color-bg-muted-text)] cursor-not-allowed"
                 : "bg-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] text-[var(--color-bg-text)] cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)]"
             }`}
-            disabled={isCompleted || hasUsed}>
+            disabled={isCompleted}
+          >
             استخدام كوبون
           </button>
         )}
