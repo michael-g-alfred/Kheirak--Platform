@@ -9,6 +9,7 @@ import { db } from "../Firebase/Firebase";
 import { collection, doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { useAuth } from "../context/authContext";
 import { toast } from "react-hot-toast";
+import { categoryOptions } from "../data/categories";
 
 export default function PostForm({ onClose }) {
   const { currentUser, userData, userName } = useAuth();
@@ -53,6 +54,7 @@ export default function PostForm({ onClose }) {
       const newPost = {
         id: docRef.id,
         title: data.title,
+        type: data.type,
         details: data.description,
         attachedFiles: imageUrl,
         amount: parseFloat(data.amount),
@@ -103,6 +105,15 @@ export default function PostForm({ onClose }) {
           placeholder="اكتب عنوان الطلب"
           register={register("title", { required: "هذا الحقل مطلوب" })}
           error={errors.title}
+        />
+
+        <InputField
+          label="نوع الطلب"
+          id="type"
+          select
+          options={categoryOptions}
+          register={register("type", { required: "هذا الحقل مطلوب" })}
+          error={errors.type}
         />
 
         <InputField
