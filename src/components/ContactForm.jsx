@@ -50,7 +50,10 @@ export default function ContactForm() {
   };
 
   return (
-    <FormLayout>
+    <div className="w-full max-w-screen-sm ml-auto mr-0 rounded-lg shadow p-4 sm:p-6 lg:p-8 border border-[var(--color-bg-divider)] bg-[var(--color-bg-card)]">
+      <h2 className="text-2xl font-bold mb-6 text-right text-[var(--color-primary-base)]">
+        تواصل معنا
+      </h2>
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-6 text-right"
@@ -90,6 +93,6 @@ export default function ContactForm() {
 
         <SubmitButton buttonTitle="إرسال" isLoading={isSubmitting} />
       </form>
-    </FormLayout>
+    </div>
   );
 }
