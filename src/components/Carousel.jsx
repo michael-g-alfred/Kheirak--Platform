@@ -6,25 +6,27 @@ const slides = [
   {
     id: 1,
     image:
-      "https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1635282373533-fddb9c1a7dee?q=80&w=1168&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     title: "ساهم في بناء منزل لأسرة محتاجة",
   },
   {
     id: 2,
     image:
-      "https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=800&q=80",
+      "https://i.pinimg.com/1200x/35/16/41/351641da092e8599d3735d73c65afbcf.jpg",
     title: "تبرّع لتوفير العلاج لطفل مصاب",
   },
   {
+    
+
     id: 3,
     image:
-      "https://images.unsplash.com/photo-1509099836639-18ba1795216d?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1752584157962-8821ce8b732b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     title: "شارك في توزيع سلال غذائية",
   },
   {
     id: 4,
     image:
-      "https://images.unsplash.com/photo-1544476915-ed1370594142?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1627423896085-e3e694d88e40?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
     title: "ادعم تعليم الأطفال في القرى",
   },
 ];
