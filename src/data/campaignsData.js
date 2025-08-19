@@ -4,6 +4,7 @@ export const campaignsData = [
     id: "campaign1",
     name: "حملة إطعام",
     type: "طعام",
+    image: "🍽️",
     categories: [
       {
         id: "restaurant1",
@@ -193,6 +194,7 @@ export const campaignsData = [
     id: "campaign2",
     name: "حملة كساء",
     type: "ملابس",
+    image: "👕",
     categories: [
       {
         id: "shop1",
@@ -382,6 +384,7 @@ export const campaignsData = [
     id: "campaign3",
     name: "حملة أدوات مدرسية",
     type: "أدوات مدرسية",
+    image: "📚",
     categories: [
       {
         id: "shop1",
@@ -571,6 +574,7 @@ export const campaignsData = [
     id: "campaign4",
     name: "حملة رعاية صحية",
     type: "صحة",
+    image: "🏥",
     categories: [
       {
         id: "clinic1",
@@ -760,6 +764,7 @@ export const campaignsData = [
     id: "campaign5",
     name: "حملة دعم التعليم",
     type: "تعليم",
+    image: "🎓",
     categories: [
       {
         id: "school1",
