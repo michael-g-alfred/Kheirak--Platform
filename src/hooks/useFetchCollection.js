@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import {
   db,
   collection,
@@ -12,20 +12,23 @@ export function useFetchCollection(collectionPath, filterFn = null) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Use refs to store filterFn to avoid re-running effect due to new references
   const filterFnRef = useRef(filterFn);
-
-  // Update refs if the functions change (optional)
   useEffect(() => {
     filterFnRef.current = filterFn;
   }, [filterFn]);
 
+  const memoizedPath = useMemo(
+    () => [...collectionPath],
+    [collectionPath.join("/")]
+  );
+
   useEffect(() => {
     setIsLoading(true);
     const q = query(
-      collection(db, ...collectionPath),
+      collection(db, ...memoizedPath),
       orderBy("timestamp", "desc")
     );
+
     const unsubscribe = onSnapshot(
       q,
       (snapshot) => {
@@ -48,7 +51,7 @@ export function useFetchCollection(collectionPath, filterFn = null) {
     );
 
     return () => unsubscribe();
-  }, [JSON.stringify(collectionPath)]);
+  }, [memoizedPath]);
 
   return { data, isLoading, error };
 }

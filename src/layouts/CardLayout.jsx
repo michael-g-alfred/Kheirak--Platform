@@ -1,20 +1,14 @@
 import React from "react";
 import { motion } from "framer-motion";
 
-export default function CardLayout({
-  title,
-  description,
-  children,
-  clampTitle = false,
-  delay = 0,
-}) {
+function CardLayout({ title, description, children, clampTitle = false }) {
   return (
     <motion.article
       className={`rounded-lg p-4 border border-[var(--color-bg-divider)] bg-[var(--color-bg-card)]`}
       dir="rtl"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay }}>
+      transition={{ duration: 0.8 }}>
       {title && (
         <header>
           <h2
@@ -39,3 +33,5 @@ export default function CardLayout({
     </motion.article>
   );
 }
+
+export default React.memo(CardLayout);

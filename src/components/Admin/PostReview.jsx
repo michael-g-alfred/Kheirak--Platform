@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import DynamicCardLayout from "../../layouts/DynamicCardLayout";
 import CardsLayout from "../../layouts/CardsLayout";
 import NoData from "../NoData";
@@ -10,7 +10,7 @@ import { getStatusColor } from "../../utils/statusUtils";
 import { usePagination } from "../../hooks/usePagination";
 import PaginationControls from "../PaginationControls";
 
-export default function PostReview({ statusFilter = "الكل" }) {
+function PostReview({ statusFilter = "الكل" }) {
   const { data: posts, isLoading, error } = useFetchCollection(["Posts"]);
   const { updatingId, updateStatus } = useUpdateStatus("Posts");
 
@@ -68,7 +68,7 @@ export default function PostReview({ statusFilter = "الكل" }) {
                                 href={file}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-[var(--color-bg-muted-text)] break-all underline">
+                                className="break-all underline">
                                 {file}
                               </a>
                             </li>
@@ -79,7 +79,7 @@ export default function PostReview({ statusFilter = "الكل" }) {
                           href={post.attachedFiles}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[var(--color-bg-muted-text)] break-all underline">
+                          className="break-all underline">
                           {post.attachedFiles}
                         </a>
                       )
@@ -135,3 +135,5 @@ export default function PostReview({ statusFilter = "الكل" }) {
     </>
   );
 }
+
+export default React.memo(PostReview);

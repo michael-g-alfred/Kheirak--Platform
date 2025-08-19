@@ -25,6 +25,7 @@ import { db } from "../Firebase/Firebase";
 import NoPhoto from "./NoPhoto";
 import ImageIcon from "../icons/ImageIcon";
 import ConfirmModal from "./ConfirmModal";
+import Divider from "./Divider";
 
 // ------------------------- //
 // State variables
@@ -251,31 +252,32 @@ const CouponCard = ({ newCoupon }) => {
   return (
     <>
       <CardLayout>
-        <div className="flex items-center gap-2 mb-2">
-          <div className="flex-shrink-0">
-            {newCoupon.submittedBy?.userPhoto ? (
-              <img
-                src={newCoupon.submittedBy.userPhoto}
-                alt="profile"
-                className="w-16 h-16 rounded-full object-cover border border-[var(--color-bg-divider)]"
-              />
-            ) : (
-              <NoPhoto />
-            )}
+        <div className="flex flex-col gap-2">
+          {/* بيانات صاحب الطلب */}
+          <div className="flex items-center gap-2">
+            <div className="flex-shrink-0">
+              {newCoupon.submittedBy?.userPhoto ? (
+                <img
+                  src={newCoupon.submittedBy.userPhoto}
+                  alt="profile"
+                  className="w-16 h-16 rounded-full object-cover border border-[var(--color-bg-divider)]"
+                />
+              ) : (
+                <NoPhoto />
+              )}
+            </div>
+            <div className="flex flex-col items-start flex-1">
+              <span className="font-bold text-lg text-[var(--color-primary-base)]">
+                {newCoupon.submittedBy?.userName || "اسم المستخدم"}
+              </span>
+              <span className="text-xs text-[var(--color-bg-text-dark)]">
+                {formattedTime}
+              </span>
+            </div>
           </div>
-          <div className="flex flex-col items-start flex-1">
-            <span className="font-bold text-lg text-[var(--color-primary-base)]">
-              {newCoupon.submittedBy?.userName || "اسم المستخدم"}
-            </span>
-            <span className="text-xs text-[var(--color-bg-text-dark)]">
-              {formattedTime}
-            </span>
-          </div>
-        </div>
 
-        {/* صورة + progress bar clip */}
-        <div className="mb-2">
-          <div className="relative w-full sm:aspect-[4/3] md:aspect-[16/9] xl:aspect-[21/9] rounded-lg border border-[var(--color-bg-divider)] overflow-hidden">
+          {/* صورة + progress bar clip */}
+          <div className="relative w-full h-50 rounded-lg border border-[var(--color-bg-divider)] overflow-hidden">
             {newCoupon.attachedFiles ? (
               <img
                 src={newCoupon.attachedFiles}
@@ -283,43 +285,45 @@ const CouponCard = ({ newCoupon }) => {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full flex items-center justify-center bg-[var(--color-primary-disabled)] text-[var(--color-bg-muted-text)]">
+              <div className="w-full h-full flex items-center justify-center bg-[var(--color-bg-card-dark)] text-[var(--color-bg-muted-text)]">
                 <ImageIcon size={48} />
               </div>
             )}
           </div>
-        </div>
 
-        {/* العنوان وعدد الكوبونات */}
-        <div className="flex flex-col gap-2 mb-2">
-          <h2 className="font-bold text-xl sm:text-2xl text-[var(--color-primary-base)] line-clamp-2">
-            {newCoupon.title || "عنوان الكوبون"}
-          </h2>
-          <p className="text-sm text-[var(--color-bg-text-dark)] line-clamp-2">
-            النوع: <strong>{newCoupon.type}</strong>
-          </p>
-          <p className="text-sm text-[var(--color-bg-text-dark)] line-clamp-2">
-            {newCoupon.details || "تفاصيل الكوبون..."}
-          </p>
-          <p className="w-full text-[var(--color-primary-base)] border border-[var(--color-bg-divider)] px-4 py-2 rounded font-bold text-sm sm:text-base text-center">
-            عدد الكوبونات المتاحة: {stock - totalCouponUsed}
-          </p>
-        </div>
+          {/* العنوان وعدد الكوبونات */}
+          <div className="flex flex-col gap-2">
+            <h2 className="text-center font-bold text-xl sm:text-2xl text-[var(--color-primary-base)] line-clamp-2">
+              {newCoupon.title || "عنوان الكوبون"}
+            </h2>
+            <p className="text-sm text-[var(--color-bg-text-dark)] line-clamp-2">
+              النوع: <strong>{newCoupon.type}</strong>
+            </p>
+            <p className="text-sm text-[var(--color-bg-text-dark)] line-clamp-2">
+              {newCoupon.details || "تفاصيل الكوبون..."}
+            </p>
 
-        {/* أزرار الإستخدام */}
-        {role === "مستفيد" && (
-          <button
-            onClick={() => handleDonateClick(1)}
-            className={`w-full px-6 py-3 rounded-lg font-bold text-md mb-2 transition ${
-              isCompleted
-                ? "bg-[var(--color-primary-disabled)] text-[var(--color-bg-muted-text)] cursor-not-allowed"
-                : "bg-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] text-[var(--color-bg-text)] cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)]"
-            }`}
-            disabled={isCompleted}
-          >
-            استخدام كوبون
-          </button>
-        )}
+            <p className="w-full text-[var(--color-primary-base)] bg-[var(--color-bg-card-dark)] px-4 py-2 font-bold text-sm sm:text-base text-center rounded-full">
+              عدد الكوبونات المتاحة: {stock - totalCouponUsed}
+            </p>
+          </div>
+
+          {role === "مستفيد" && <Divider my={0} />}
+
+          {/* أزرار الإستخدام */}
+          {role === "مستفيد" && (
+            <button
+              onClick={() => handleDonateClick(1)}
+              className={`w-full px-6 py-3 rounded-lg font-bold text-md transition ${
+                isCompleted
+                  ? "bg-[var(--color-primary-disabled)] text-[var(--color-bg-muted-text)] cursor-not-allowed"
+                  : "bg-[var(--color-primary-base)] hover:bg-[var(--color-primary-hover)] text-[var(--color-bg-text)] cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)]"
+              }`}
+              disabled={isCompleted}>
+              استخدام كوبون
+            </button>
+          )}
+        </div>
       </CardLayout>
       <>
         {/* Use confirmation popup */}

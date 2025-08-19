@@ -109,8 +109,7 @@ export default function Campaigns() {
             onClick={() => {
               setSelectedCampaign(campaign);
               setSelectedCategory(null);
-            }}
-          >
+            }}>
             <div>نوع الحملة: {campaign.type}</div>
           </SelectableCard>
         ))}

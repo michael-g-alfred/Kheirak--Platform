@@ -51,10 +51,7 @@ export default function ContactForm() {
 
   return (
     <FormLayout>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="space-y-6 text-right"
-        dir="rtl">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" dir="rtl">
         <InputField
           label="الاسم *"
           id="name"

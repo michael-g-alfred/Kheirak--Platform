@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import DynamicCardLayout from "../../layouts/DynamicCardLayout";
 import CardsLayout from "../../layouts/CardsLayout";
 import NoData from "../NoData";
@@ -10,7 +10,7 @@ import { getStatusColor } from "../../utils/statusUtils";
 import { usePagination } from "../../hooks/usePagination";
 import PaginationControls from "../PaginationControls";
 
-export default function CouponReview({ statusFilter = "الكل" }) {
+function CouponReview({ statusFilter = "الكل" }) {
   const { data: coupons, isLoading, error } = useFetchCollection(["Coupons"]);
   const { updatingStatus, updateStatus } = useUpdateStatus("Coupons");
 
@@ -69,7 +69,7 @@ export default function CouponReview({ statusFilter = "الكل" }) {
                                 href={file}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-[var(--color-bg-muted-text)] break-all underline">
+                                className="break-all underline">
                                 {file}
                               </a>
                             </li>
@@ -80,7 +80,7 @@ export default function CouponReview({ statusFilter = "الكل" }) {
                           href={coupon.attachedFiles}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-[var(--color-bg-muted-text)] break-all underline">
+                          className="break-all underline">
                           {coupon.attachedFiles}
                         </a>
                       )
@@ -141,3 +141,5 @@ export default function CouponReview({ statusFilter = "الكل" }) {
     </>
   );
 }
+
+export default React.memo(CouponReview);

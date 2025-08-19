@@ -15,9 +15,13 @@ export default function Footer() {
   ];
 
   const socialLinks = [
-    { href: "https://facebook.com", icon: <FacebookIcon /> },
-    { href: "https://twitter.com", icon: <XIcon /> },
-    { href: "https://instagram.com", icon: <InstagramIcon /> },
+    { href: "https://facebook.com", icon: <FacebookIcon />, label: "Facebook" },
+    { href: "https://twitter.com", icon: <XIcon />, label: "X (Twitter)" },
+    {
+      href: "https://instagram.com",
+      icon: <InstagramIcon />,
+      label: "Instagram",
+    },
   ];
 
   const contactInfo = [
@@ -74,6 +78,7 @@ export default function Footer() {
                 href={link.href}
                 target="_blank"
                 rel="noreferrer"
+                aria-label={link.label}
                 className="w-12 h-8 flex justify-center items-center bg-[var(--color-primary-base)] text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)] rounded-lg transition-transform duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)]">
                 {link.icon}
               </a>
@@ -93,6 +98,7 @@ export default function Footer() {
                 href={info.link}
                 target="_blank"
                 rel="noreferrer"
+                aria-label={`${info.label}: ${info.value}`}
                 className="w-12 h-8 flex justify-center items-center bg-[var(--color-primary-base)] text-[var(--color-bg-text)] hover:bg-[var(--color-primary-hover)] rounded-lg transition-transform duration-200 hover:scale-110
                 focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)]">
                 {info.icon}
