@@ -8,7 +8,7 @@ import NotificationBadge from "./NotificationBadge";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../Firebase/Firebase";
 import UserProfileTab from "./UserProfileTab";
-
+ 
 const NavLinksList = ({ tabs, isMobile, onClick }) => (
   <>
     {tabs.map((tab) => (
@@ -36,14 +36,14 @@ const NavLinksList = ({ tabs, isMobile, onClick }) => (
     ))}
   </>
 );
-
+ 
 const Navbar = () => {
   const { role, loading, currentUser } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+ 
   const [userName, setUserName] = useState(null);
   const [photoURL, setPhotoURL] = useState(currentUser?.photoURL);
-
+ 
   useEffect(() => {
     const fetchUserName = async () => {
       if (currentUser?.uid) {
@@ -60,39 +60,39 @@ const Navbar = () => {
         setUserName(null);
       }
     };
-
+ 
     fetchUserName();
   }, [currentUser?.uid]);
-
+ 
   useEffect(() => {
     if (currentUser?.photoURL) {
       setPhotoURL(currentUser.photoURL);
     }
   }, [currentUser?.photoURL]);
-
+ 
   const baseTabs = [
     { id: "home", label: "الرئيسية" },
     { id: "about", label: "من نحن" },
     { id: "services", label: "الخدمات" },
     { id: "portfolio", label: "أعمالنا" },
   ];
-
+ 
   const guestTabs = [
     ...baseTabs,
     { id: "contact", label: "تواصل معنا" },
-
+ 
     {
       id: "registration",
       label: "تسجيل الدخول",
     },
   ];
-
+ 
   const adminTabs = [
     { id: "admin-dashboard", label: "لوحة التحكم" },
     { id: "admin-messages", label: "الرسائل" },
     ...baseTabs,
   ];
-
+ 
   const tabs = useMemo(() => {
     const beneficiaryTabsWithUser = [
       UserProfileTab({
@@ -107,7 +107,7 @@ const Navbar = () => {
       ...baseTabs,
       { id: "contact", label: "تواصل معنا" },
     ];
-
+ 
     const donorTabsWithUser = [
       UserProfileTab({
         pathPrefix: "donor",
@@ -121,7 +121,7 @@ const Navbar = () => {
       ...baseTabs,
       { id: "contact", label: "تواصل معنا" },
     ];
-
+ 
     const orgTabsWithUser = [
       UserProfileTab({
         pathPrefix: "org",
@@ -135,7 +135,7 @@ const Navbar = () => {
       ...baseTabs,
       { id: "contact", label: "تواصل معنا" },
     ];
-
+ 
     switch (role) {
       case "مشرف":
         return adminTabs;
@@ -149,14 +149,14 @@ const Navbar = () => {
         return guestTabs;
     }
   }, [role, userName, photoURL]);
-
+ 
   if (loading || role === null) return null;
-
+ 
   return (
     <nav
       dir="rtl"
       className="shadow-xs border-b border-[var(--color-bg-divider)] bg-[var(--color-bg-base)] fixed top-0 right-0 left-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto px-4 md:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Navigation Tabs */}
           <div className="hidden md:block">
@@ -194,7 +194,7 @@ const Navbar = () => {
       {/* Mobile menu */}
       {isMenuOpen && (
         <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-[var(--color-bg-base)] text-right">
+          <div className="p-4 bg-[var(--color-bg-base)] text-right">
             <NavLinksList
               tabs={tabs}
               isMobile={true}
@@ -206,5 +206,5 @@ const Navbar = () => {
     </nav>
   );
 };
-
+ 
 export default Navbar;
