@@ -80,13 +80,22 @@ export default function BeneficiaryProfile() {
                 status={post.status}>
                 <div className="text-md text-[var(--color-bg-text-dark)] space-y-1 text-right">
                   <p>
-                    <strong>تفاصيل الطلب: </strong> {post.details}
+                    <strong>نوع الطلب: </strong> {post.type}
                   </p>
-                  <p>
-                    <strong>المبلغ المستلم:</strong>
-                    <span className="text-[var(--color-primary-base)]">
-                      {totalReceived} ج.م
-                    </span>
+                  <p className="line-clamp-3">
+                    <strong>تفاصيل الطلب: </strong> {post.details}
+                    <p>
+                      <strong>المبلغ المطلوب: </strong>
+                      <span className="text-[var(--color-primary-base)]">
+                        {post.amount} ج.م
+                      </span>
+                    </p>
+                    <p>
+                      <strong>إجمالي التبرعات: </strong>
+                      <span className="text-[var(--color-primary-base)]">
+                        {totalReceived} ج.م
+                      </span>
+                    </p>
                   </p>
                   <p className="mt-4 w-full">
                     <strong>الحالة: </strong>

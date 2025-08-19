@@ -58,8 +58,11 @@ export default function DonorProfile() {
                 status={post.status}>
                 <div className="text-md text-[var(--color-bg-text-dark)] space-y-1 text-right">
                   <p>
-                    <strong>صاحب الطلب:</strong>{" "}
+                    <strong>الجهة:</strong>{" "}
                     {post.submittedBy?.userName || "غير محدد"}
+                  </p>
+                  <p>
+                    <strong>نوع الطلب:</strong> {post.type || "غير محدد"}
                   </p>
                   <p>
                     <strong>المبلغ المتبرع به:</strong>{" "}

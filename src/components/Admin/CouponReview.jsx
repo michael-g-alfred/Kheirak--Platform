@@ -49,14 +49,17 @@ function CouponReview({ statusFilter = "الكل" }) {
                 status={coupon.status}>
                 <div className="text-md text-[var(--color-bg-text-dark)] space-y-1 text-right">
                   <p>
-                    <strong>المؤسسة: </strong>{" "}
+                    <strong>الجهة: </strong>{" "}
                     {coupon.submittedBy?.userName || "غير محدد"}
                   </p>
                   <p>
+                    <strong>نوع الكوبون: </strong> {coupon.type}
+                  </p>
+                  <p className="line-clamp-3">
                     <strong>تفاصيل الكوبون: </strong> {coupon.details}
                   </p>
                   <p>
-                    <strong>الكمية المتوفرة: </strong> {coupon.stock}
+                    <strong>عدد الكوبونات المتاحة:</strong> {coupon.stock}
                   </p>
                   <p>
                     <strong>المرفقات: </strong>
@@ -87,9 +90,6 @@ function CouponReview({ statusFilter = "الكل" }) {
                     ) : (
                       "لا يوجد"
                     )}
-                  </p>
-                  <p>
-                    <strong>النوع: </strong> {coupon.type}
                   </p>
                   <p className="mt-4 w-full">
                     <strong>الحالة: </strong>
