@@ -172,13 +172,20 @@ const PostCard = ({ newPost }) => {
         </div>
 
         {/* العنوان والمبلغ */}
+        {/* حالة المبلغ */}
         <div className="flex flex-col gap-2 mb-2">
           <h2 className="font-bold text-xl sm:text-2xl text-[var(--color-primary-base)] line-clamp-2">
             {newPost.title || "عنوان الطلب"}
           </h2>
-          <span className="text-[var(--color-primary-base)] border border-[var(--color-bg-divider)] px-4 py-2 rounded font-bold text-sm sm:text-base text-center">
-            المبلغ: {amount} ج.م
+          <span className="text-[var(--color-primary-base)]  px-4 py-2  font-bold text-sm sm:text-base text-right">
+             المبلغ المطلوب : <span className="text-gray-600  text-sm sm:text-base text-right">{amount} ج.م</span>
           </span>
+          <span className="text-[var(--color-primary-base)]  px-4 py-2  font-bold text-sm sm:text-base text-right">
+             المبلغ المدفوع :  <span className="text-gray-600  text-sm sm:text-base text-right">{totalDonated} ج.م</span>
+          </span>
+          <span className="text-[var(--color-primary-base)]  px-4 py-2  font-bold text-sm sm:text-base text-right">
+             المبلغ المتبقي :  <span className="text-gray-600  text-sm sm:text-base text-right">{remainingAmount} ج.م
+          </span></span> 
         </div>
 
         <p className="text-sm text-[var(--color-bg-text-dark)] mb-4 line-clamp-2">
@@ -242,12 +249,8 @@ ${
           </div>
         )}
 
-        {/* حالة المبلغ */}
-        <p className="w-full text-[var(--color-primary-base)] border-1 border-[var(--color-bg-divider)] p-2 rounded font-bold text-sm sm:text-base text-center">
-          {!isCompleted
-            ? `${totalDonated} / ${amount} ج.م — المتبقي: ${remainingAmount} ج.م`
-            : "المبلغ مكتمل"}
-        </p>
+        
+        
       </CardLayout>
 
       {showPopup && (

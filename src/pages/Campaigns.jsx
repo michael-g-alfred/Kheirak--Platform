@@ -1,12 +1,5 @@
-import { useState } from "react";
-import { db } from "../Firebase/Firebase";
-import {
-  collection,
-  doc,
-  setDoc,
-  serverTimestamp,
-  addDoc,
-} from "firebase/firestore";
+import { useState, useCallback, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
 import { toast } from "react-hot-toast";
 import { campaignsData } from "../data/campaignsData";
@@ -15,43 +8,65 @@ import SelectableCard from "../components/SelectableCard";
 import CampaignItemCard from "../components/CampaignItemCard";
 import ConfirmModal from "../components/ConfirmModal";
 
+// Constants
+const DEFAULT_QUANTITY = 1;
+const FALLBACK_EMAIL = "unknown@kheirak";
+const FALLBACK_USER_NAME = "مستخدم";
+const FALLBACK_USER_ID = "anonymous";
+
 export default function Campaigns() {
+  // State
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedItem, setSelectedItem] = useState(null);
-  const [quantity, setQuantity] = useState(1);
-  const [showPopup, setShowPopup] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [quantity, setQuantity] = useState(DEFAULT_QUANTITY);
+  const [showModal, setShowModal] = useState(false);
+
+  // Hooks
   const { currentUser, userName } = useAuth();
+  const navigate = useNavigate();
 
-  const closePopup = () => {
-    setShowPopup(false);
-    setSelectedItem(null);
-  };
+  // Computed values
+  const totalAmount = useMemo(() => {
+    return selectedItem ? selectedItem.price * quantity : 0;
+  }, [selectedItem, quantity]);
 
-  const confirmPurchase = async () => {
-    if (!selectedCampaign || !selectedCategory || !selectedItem) return;
-    setIsLoading(true);
-    try {
-      const couponsCol = collection(db, "Coupons");
-      const docRef = doc(couponsCol);
+  const isValidSelection = useMemo(() => {
+    return selectedCampaign && selectedCategory && selectedItem;
+  }, [selectedCampaign, selectedCategory, selectedItem]);
 
-      const newCoupon = {
-        id: docRef.id,
+  // Utility functions
+  const preparePaymentData = useCallback(() => {
+    if (!isValidSelection) return null;
+
+    return {
+      // Payment component expects these specific properties
+      postId: `campaign_${selectedCampaign.id}_${selectedItem.id}`,
+      postTitle: `كوبون ${selectedItem.name}`,
+      postDetails: `حملة: ${selectedCampaign.type} • فئة: ${selectedCategory.name} • السعر: ${selectedItem.price} ج.م`,
+      donationAmount: totalAmount,
+      currentTotal: 0, // For campaigns, we start from 0
+      totalRequired: totalAmount, // For campaigns, total required equals the amount being paid
+      donor: {
+        email: currentUser?.email || FALLBACK_EMAIL,
+        uid: currentUser?.uid || FALLBACK_USER_ID,
+        name: userName || currentUser?.email || FALLBACK_USER_NAME,
+      },
+      recipient: {
+        id: selectedCampaign.id,
+        email: FALLBACK_EMAIL, // For campaigns, we can use a default
+        name: selectedCampaign.name || selectedCampaign.type,
+      },
+      // Additional campaign-specific data
+      campaignData: {
+        type: 'campaign',
         title: `كوبون ${selectedItem.name}`,
         details: `حملة: ${selectedCampaign.type} • فئة: ${selectedCategory.name} • السعر: ${selectedItem.price} ج.م`,
-        type: selectedCampaign.type,
+        campaignType: selectedCampaign.type,
         attachedFiles: selectedItem.image || "",
-        stock: parseFloat(quantity),
-        totalCouponUsed: 0,
-        status: "قيد المراجعة",
-        timestamp: serverTimestamp(),
-        submittedBy: {
-          userName: userName || currentUser?.email || "مستخدم",
-          userId: currentUser?.uid || "anonymous",
-          email: currentUser?.email || "unknown@kheirak",
-          userPhoto: currentUser?.photoURL || "",
-        },
+        quantity: parseFloat(quantity),
+        price: selectedItem.price,
+        totalAmount,
         meta: {
           campaignId: selectedCampaign.id,
           campaignName: selectedCampaign.name,
@@ -60,128 +75,181 @@ export default function Campaigns() {
           itemId: selectedItem.id,
           itemName: selectedItem.name,
           price: selectedItem.price,
-          buyerEmail: currentUser?.email || "unknown@kheirak",
+          buyerEmail: currentUser?.email || FALLBACK_EMAIL,
         },
-      };
-
-      await setDoc(docRef, newCoupon);
-
-      if (currentUser?.email) {
-        await addDoc(
-          collection(
-            db,
-            "Notifications",
-            currentUser.email,
-            "user_Notifications"
-          ),
-          {
-            title: "تم إنشاء حملتك",
-            message: `تم إنشاء حملة ${selectedItem.name} وهي الآن قيد المراجعة`,
-            imageUrl: selectedItem.image || "",
-            imageAlt: selectedItem.name,
-            timestamp: Date.now(),
-          }
-        );
+        submittedBy: {
+          userName: userName || currentUser?.email || FALLBACK_USER_NAME,
+          userId: currentUser?.uid || FALLBACK_USER_ID,
+          email: currentUser?.email || FALLBACK_EMAIL,
+          userPhoto: currentUser?.photoURL || "",
+        }
       }
+    };
+  }, [
+    isValidSelection,
+    selectedItem,
+    selectedCampaign,
+    selectedCategory,
+    quantity,
+    totalAmount,
+    currentUser,
+    userName
+  ]);
 
-      toast.success(`تم شراء ${selectedItem.name} بنجاح وهي الآن قيد المراجعة`);
-      closePopup();
-    } catch {
-      toast.error("حدث خطأ أثناء العملية");
-    } finally {
-      setIsLoading(false);
+  // Event handlers
+  const handleCampaignSelect = useCallback((campaign) => {
+    setSelectedCampaign(campaign);
+    setSelectedCategory(null);
+    setSelectedItem(null);
+  }, []);
+
+  const handleCategorySelect = useCallback((category) => {
+    setSelectedCategory(category);
+    setSelectedItem(null);
+  }, []);
+
+  const handleItemSelect = useCallback((item) => {
+    setSelectedItem(item);
+    setShowModal(true);
+  }, []);
+
+  const handleQuantityChange = useCallback((e) => {
+    const value = Math.max(1, Number(e.target.value));
+    setQuantity(value);
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setShowModal(false);
+    setSelectedItem(null);
+    setQuantity(DEFAULT_QUANTITY);
+  }, []);
+
+  const handleConfirmPurchase = useCallback(() => {
+    if (!isValidSelection) {
+      toast.error("يرجى التأكد من اختيار جميع البيانات المطلوبة");
+      return;
     }
-  };
 
-  return (
-    <div className="px-6">
-      <h1 className="text-3xl font-bold text-[var(--color-primary-base)]">
+    const paymentData = preparePaymentData();
+    if (!paymentData) {
+      toast.error("حدث خطأ في إعداد بيانات الدفع");
+      return;
+    }
+
+    navigate('/payment', { state: { donationData: paymentData } });
+    closeModal();
+  }, [isValidSelection, preparePaymentData, navigate, closeModal]);
+
+  // Modal configuration
+  const modalConfig = useMemo(() => {
+    if (!selectedItem) return null;
+
+    return {
+      title: "تأكيد شراء كوبون",
+      description: `سيتم الانتقال إلى صفحة الدفع لشراء كوبون: ${selectedItem.name}`,
+      bulletPoints: [
+        `عنوان الكوبون: كوبون ${selectedItem.name}`,
+        `تفاصيل الكوبون: حملة ${selectedCampaign?.type} • فئة ${selectedCategory?.name} • السعر: ${selectedItem.price} ج.م`,
+        `سعر الكوبون: ${selectedItem.price} جنيه`,
+        `إجمالي المبلغ: ${totalAmount} جنيه`,
+      ],
+      inputProps: {
+        value: quantity,
+        onChange: handleQuantityChange,
+        type: "number",
+        placeholder: "أدخل الكمية",
+        min: 1,
+      },
+      warningText: "سيتم تحويلك إلى صفحة الدفع لإكمال عملية الشراء.",
+      confirmText: "الانتقال للدفع",
+      cancelText: "إغلاق",
+    };
+  }, [selectedItem, selectedCampaign, selectedCategory, totalAmount, quantity, handleQuantityChange]);
+
+  // Render sections
+  const renderCampaignSection = () => (
+    <section>
+      <h1 className="text-3xl font-bold text-[var(--color-primary-base)] mb-6">
         الحملات
       </h1>
-
-      {/* حملات */}
       <CardsLayout>
         {campaignsData.map((campaign) => (
           <SelectableCard
             key={campaign.id}
             item={campaign}
             active={selectedCampaign?.id === campaign.id}
-            onClick={() => {
-              setSelectedCampaign(campaign);
-              setSelectedCategory(null);
-            }}
+            onClick={() => handleCampaignSelect(campaign)}
           >
             <div>نوع الحملة: {campaign.type}</div>
           </SelectableCard>
         ))}
       </CardsLayout>
+    </section>
+  );
 
-      {/* فئات */}
-      {selectedCampaign?.categories?.length > 0 && (
-        <>
-          <h3 className="mt-6 text-xl font-semibold text-[var(--color-primary-base)]">
-            إختر فئة
-          </h3>
-          <CardsLayout>
-            {selectedCampaign.categories.map((cat) => (
-              <SelectableCard
-                key={cat.id}
-                item={cat}
-                active={selectedCategory?.id === cat.id}
-                onClick={() => setSelectedCategory(cat)}
-              />
-            ))}
-          </CardsLayout>
-        </>
-      )}
+  const renderCategorySection = () => {
+    if (!selectedCampaign?.categories?.length) return null;
 
-      {/* عناصر */}
-      {selectedCategory && (
-        <>
-          <h4 className="mt-6 text-md font-semibold text-[var(--color-primary-base)]">
-            العناصر في {selectedCategory.name}:
-          </h4>
-          <CardsLayout>
-            {selectedCategory.items.map((item) => (
-              <CampaignItemCard
-                key={item.id}
-                item={item}
-                onSelect={(i) => {
-                  setSelectedItem(i);
-                  setShowPopup(true);
-                }}
-              />
-            ))}
-          </CardsLayout>
-        </>
-      )}
+    return (
+      <section className="mt-8">
+        <h2 className="text-xl font-semibold text-[var(--color-primary-base)] mb-4">
+          إختر فئة
+        </h2>
+        <CardsLayout>
+          {selectedCampaign.categories.map((category) => (
+            <SelectableCard
+              key={category.id}
+              item={category}
+              active={selectedCategory?.id === category.id}
+              onClick={() => handleCategorySelect(category)}
+            />
+          ))}
+        </CardsLayout>
+      </section>
+    );
+  };
 
-      {/* مودال */}
-      {showPopup && selectedItem && (
-        <ConfirmModal
-          title="تأكيد شراء كوبون"
-          description={`سيتم شراء كوبون للعنصر: ${selectedItem.name}`}
-          bulletPoints={[
-            `عنوان الكوبون: كوبون ${selectedItem.name}`,
-            `تفاصيل الكوبون: حملة ${selectedCampaign?.type} • فئة ${selectedCategory?.name} • السعر: ${selectedItem.price} ج.م`,
-            `سعر الكوبون: ${selectedItem.price} جنيه`,
-          ]}
-          showInput={true}
-          inputProps={{
-            value: quantity,
-            onChange: (e) => setQuantity(Number(e.target.value)),
-            type: "number",
-            placeholder: "أدخل الكمية",
-            min: 1,
-          }}
-          warningText="يرجى التأكد من صحة البيانات قبل التأكيد."
-          confirmText="تأكيد"
-          cancelText="إغلاق"
-          onConfirm={confirmPurchase}
-          onClose={closePopup}
-          isLoading={isLoading}
-        />
-      )}
+  const renderItemsSection = () => {
+    if (!selectedCategory) return null;
+
+    return (
+      <section className="mt-8">
+        <h3 className="text-lg font-semibold text-[var(--color-primary-base)] mb-4">
+          العناصر في {selectedCategory.name}:
+        </h3>
+        <CardsLayout>
+          {selectedCategory.items.map((item) => (
+            <CampaignItemCard
+              key={item.id}
+              item={item}
+              onSelect={handleItemSelect}
+            />
+          ))}
+        </CardsLayout>
+      </section>
+    );
+  };
+
+  const renderModal = () => {
+    if (!showModal || !selectedItem || !modalConfig) return null;
+
+    return (
+      <ConfirmModal
+        {...modalConfig}
+        showInput={true}
+        onConfirm={handleConfirmPurchase}
+        onClose={closeModal}
+        isLoading={false}
+      />
+    );
+  };
+
+  return (
+    <div className="px-6 space-y-8">
+      {renderCampaignSection()}
+      {renderCategorySection()}
+      {renderItemsSection()}
+      {renderModal()}
     </div>
   );
 }

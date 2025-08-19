@@ -274,37 +274,47 @@ const CouponCard = ({ newCoupon }) => {
         </div>
 
         {/* صورة + progress bar clip */}
-        <div className="mb-2">
-          <div className="relative w-full sm:aspect-[4/3] md:aspect-[16/9] xl:aspect-[21/9] rounded-lg border border-[var(--color-bg-divider)] overflow-hidden">
-            {newCoupon.attachedFiles ? (
-              <img
-                src={newCoupon.attachedFiles}
-                alt="attachment"
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center bg-[var(--color-primary-disabled)] text-[var(--color-bg-muted-text)]">
-                <ImageIcon size={48} />
-              </div>
-            )}
-          </div>
-        </div>
+<div className="mb-2">
+  <div className="relative w-full sm:aspect-[4/3] md:aspect-[16/9] xl:aspect-[21/9] rounded-lg border border-[var(--color-bg-divider)] overflow-hidden">
+    {/* اللابل في أول الكارد */}
+    <p className="absolute top-2 left-2 bg-white/80 text-[var(--color-primary-base)] font-bold text-xs sm:text-sm px-2 py-1 rounded-md shadow">
+      عدد الكوبونات المتاحة: {stock - totalCouponUsed}
+    </p>
 
-        {/* العنوان وعدد الكوبونات */}
-        <div className="flex flex-col gap-2 mb-2">
-          <h2 className="font-bold text-xl sm:text-2xl text-[var(--color-primary-base)] line-clamp-2">
-            {newCoupon.title || "عنوان الكوبون"}
-          </h2>
-          <p className="text-sm text-[var(--color-bg-text-dark)] line-clamp-2">
-            النوع: <strong>{newCoupon.type}</strong>
-          </p>
-          <p className="text-sm text-[var(--color-bg-text-dark)] line-clamp-2">
-            {newCoupon.details || "تفاصيل الكوبون..."}
-          </p>
-          <p className="w-full text-[var(--color-primary-base)] border border-[var(--color-bg-divider)] px-4 py-2 rounded font-bold text-sm sm:text-base text-center">
-            عدد الكوبونات المتاحة: {stock - totalCouponUsed}
-          </p>
-        </div>
+    {newCoupon.attachedFiles ? (
+      <img
+        src={newCoupon.attachedFiles}
+        alt="attachment"
+        className="w-full h-full object-cover"
+      />
+    ) : (
+      <div className="w-full h-full flex items-center justify-center bg-[var(--color-primary-disabled)] text-[var(--color-bg-muted-text)]">
+        <ImageIcon size={48} />
+      </div>
+    )}
+  </div>
+</div>
+
+{/* العنوان وعدد الكوبونات */}
+<div className="flex flex-col gap-2 mb-2">
+  <h2 className="font-bold text-xl sm:text-2xl text-[var(--color-primary-base)] line-clamp-2">
+    {newCoupon.title || "عنوان الكوبون"}
+  </h2>
+  <p className="text-sm text-[var(--color-bg-text-dark)] line-clamp-2">
+    النوع: <strong>{newCoupon.type}</strong>
+  </p>
+  <div className="text-sm text-[var(--color-bg-text-dark)] space-y-1">
+    {newCoupon.details ? (
+      newCoupon.details.split('•').map((detail, index) => (
+        <p key={index} className="leading-relaxed">
+          {detail.trim()}
+        </p>
+      ))
+    ) : (
+      <p>تفاصيل الكوبون...</p>
+    )}
+  </div>
+</div>
 
         {/* أزرار الإستخدام */}
         {role === "مستفيد" && (
