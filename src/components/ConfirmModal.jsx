@@ -47,11 +47,6 @@ const ConfirmModal = ({
           </div>
           {showInput && (
             <div className="mt-3">
-              <label
-                htmlFor={inputProps.id || "inputField"}
-                className="block text-sm mb-1 text-[var(--color-primary-base)]">
-                {inputProps.label || "أدخل القيمة"}
-              </label>
               <InputField {...inputProps} />
             </div>
           )}

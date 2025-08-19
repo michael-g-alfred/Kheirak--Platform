@@ -100,7 +100,7 @@ export default function SignInForm() {
 
   return (
     <FormLayout formTitle={"تسجيل الدخول"}>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
         {/* البريد الإلكتروني */}
         <InputField
           label="البريد الإلكتروني"
@@ -123,7 +123,7 @@ export default function SignInForm() {
         {/* زر الدخول */}
         <SubmitButton buttonTitle="تسجيل الدخول" isLoading={isLoading} />
         <div className="text-center">
-          <div className="flex items-center gap-4 mb-4">
+          <div className="flex items-center gap-4 mb-2">
             <Divider flexGrow />{" "}
             <span className="text-[var(--color-bg-muted-text)] text-md">
               أو
