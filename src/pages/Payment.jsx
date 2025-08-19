@@ -19,7 +19,7 @@ import "./Payment.css";
 // Initialize Stripe
 // To use this, create a .env file in your project root and add:
 // VITE_STRIPE_PUBLISHABLE_KEY=pk_test_your_actual_key_here
-const stripePublishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "pk_test_your_publishable_key_here";
+const stripePublishableKey = "pk_test_51Rw3aJKqx1jQOopCOqMxQzaDYgoO4cgAyhjElDvwD5a3iHZ87MW3o54apgr5qpgtPNWVRgBhAlPR92Fph6X8dhGX00DBTr4ltD";
 const stripePromise = loadStripe(stripePublishableKey);
 
 export default function Payment() {
@@ -316,16 +316,45 @@ export default function Payment() {
                 <h4 className="font-medium text-[var(--color-primary-base)] mb-2">
                   {donationData.postTitle}
                 </h4>
-                <p className="text-sm text-[var(--color-bg-text-dark)] mb-2">
-                  {donationData.postDetails}
-                </p>
+                <div className="text-sm text-[var(--color-bg-text-dark)] mb-2 space-y-1">
+                  {donationData.postDetails ? (
+                    donationData.postDetails.split('•').map((detail, index) => (
+                      <p key={index} className="leading-relaxed">
+                        {detail.trim()}
+                      </p>
+                    ))
+                  ) : (
+                    <p>تفاصيل الطلب...</p>
+                  )}
+                </div>
                 <p className="text-xs text-[var(--color-bg-muted-text)]">
                   لصالح: {donationData.recipient.name}
                 </p>
               </div>
               
+              {/* Show quantity and unit price for campaigns */}
+              {donationData.campaignData && (
+                <>
+                  <div className="cart-row">
+                    <span className="text-[var(--color-bg-text-dark)]">الكمية</span>
+                    <span className="text-[var(--color-primary-base)] font-medium">
+                      {donationData.campaignData.quantity}
+                    </span>
+                  </div>
+                  
+                  <div className="cart-row">
+                    <span className="text-[var(--color-bg-text-dark)]">سعر الكوبون الواحد</span>
+                    <span className="text-[var(--color-primary-base)] font-medium">
+                      {donationData.campaignData.price.toLocaleString()} ج.م
+                    </span>
+                  </div>
+                </>
+              )}
+              
               <div className="cart-row">
-                <span className="text-[var(--color-bg-text-dark)]">مبلغ التبرع</span>
+                <span className="text-[var(--color-bg-text-dark)]">
+                  {donationData.campaignData ? 'إجمالي المبلغ' : 'مبلغ التبرع'}
+                </span>
                 <span className="text-[var(--color-primary-base)] font-medium">
                   {donationData.donationAmount.toLocaleString()} ج.م
                 </span>
