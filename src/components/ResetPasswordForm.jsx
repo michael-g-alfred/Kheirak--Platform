@@ -70,11 +70,18 @@ export default function ResetPasswordForm() {
   };
 
   return (
-    <FormLayout formTitle={"إعادة تعيين كلمة المرور"}>
-      <p className="mb-4 text-gray-600 text-sm">
+    <FormLayout formTitle="إعادة تعيين كلمة المرور">
+      {/* وصف البريد للقارئات الصوتية */}
+      <p
+        className="mb-4 text-[var(--color-bg-text-dark)] text-sm"
+        aria-live="polite">
         البريد المرتبط: <span className="font-bold">{email}</span>
       </p>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="space-y-3"
+        aria-label="نموذج إعادة تعيين كلمة المرور">
         <InputField
           label="كلمة المرور الجديدة"
           id="password"
@@ -82,7 +89,10 @@ export default function ResetPasswordForm() {
           placeholder="••••••••"
           register={register("password")}
           error={errors.password}
+          aria-required="true"
+          aria-invalid={errors.password ? "true" : "false"}
         />
+
         <InputField
           label="تأكيد كلمة المرور الجديدة"
           id="confirmPassword"
@@ -90,8 +100,15 @@ export default function ResetPasswordForm() {
           placeholder="••••••••"
           register={register("confirmPassword")}
           error={errors.confirmPassword}
+          aria-required="true"
+          aria-invalid={errors.confirmPassword ? "true" : "false"}
         />
-        <SubmitButton buttonTitle="حفظ كلمة المرور" isLoading={isLoading} />
+
+        <SubmitButton
+          buttonTitle="حفظ كلمة المرور"
+          isLoading={isLoading}
+          aria-label="حفظ كلمة المرور الجديدة"
+        />
       </form>
     </FormLayout>
   );

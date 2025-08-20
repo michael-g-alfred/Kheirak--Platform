@@ -19,7 +19,7 @@ export default function Registration() {
         <main
           role="main"
           aria-label="نموذج التسجيل"
-          className="flex flex-col lg:flex-row items-center justify-center gap-8 p-4 lg:p-0 max-w-7xl mx-auto">
+          className="flex flex-col-reverse lg:flex-row items-center justify-center gap-8 p-4 lg:p-0 max-w-7xl mx-auto">
           {/* الفورم */}
           <div className="w-full lg:w-1/2 px-2 lg:px-4">
             {isLogin ? (
@@ -42,10 +42,9 @@ export default function Registration() {
                   {isLogin ? "إنشاء حساب" : "تسجيل الدخول"}
                 </button>
               </p>
-            </div>{" "}
+            </div>
           </div>
-
-          {/* صورة على الجانب */}
+          {/* الصورة على الجانب أو فوق */}
           <div className="w-full lg:w-1/2 flex justify-center mt-4 lg:mt-0 px-2 lg:px-4">
             <img
               src={WelcomeImage}

@@ -11,8 +11,8 @@ import Registration from "../pages/Registration";
 import ChooseRole from "../pages/ChooseRole";
 import LogoIcon from "../icons/LogoIcon";
 import AdminMessages from "../pages/AdminMessages";
-import ForgotPasswordForm from "../components/ForgotPasswordForm";
-import ResetPasswordForm from "../components/ResetPasswordForm";
+import ForgotPassword from "../pages/ForgotPassword";
+import ResetPassword from "../pages/ResetPassword";
 const Home = lazy(() => import("../pages/Home"));
 const Posts = lazy(() => import("../pages/Posts"));
 const Coupons = lazy(() => import("../pages/Coupons"));
@@ -53,13 +53,10 @@ export default function AppRoutes() {
             <LogoIcon />
           </div>
         </div>
-      }
-    >
+      }>
       <Routes>
         <Route path="/choose-role" element={<ChooseRole />} />
         <Route path="/" element={<Home />}>
-          <Route path="/forgot-password" element={<ForgotPasswordForm />} />
-          <Route path="/reset-password" element={<ResetPasswordForm />} />
           <Route path="posts" element={<Posts />} />
           <Route path="coupons" element={<Coupons />} />
           <Route
@@ -71,6 +68,8 @@ export default function AppRoutes() {
             }
           />
         </Route>
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/about" element={<About />} />
         <Route path="/services" element={<Services />} />
         <Route path="/portfolio" element={<Portfolio />} />
