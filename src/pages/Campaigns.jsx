@@ -1,14 +1,6 @@
 import { useState } from "react";
-import { db } from "../Firebase/Firebase";
-import {
-  collection,
-  doc,
-  setDoc,
-  serverTimestamp,
-  addDoc,
-} from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
-import { toast } from "react-hot-toast";
 import { campaignsData } from "../data/campaignsData";
 import CardsLayout from "../layouts/CardsLayout";
 import SelectableCard from "../components/SelectableCard";
@@ -21,76 +13,69 @@ export default function Campaigns() {
   const [selectedItem, setSelectedItem] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [showPopup, setShowPopup] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const { currentUser, userName } = useAuth();
+  const navigate = useNavigate();
 
   const closePopup = () => {
     setShowPopup(false);
     setSelectedItem(null);
   };
 
-  const confirmPurchase = async () => {
+  const confirmPurchase = () => {
     if (!selectedCampaign || !selectedCategory || !selectedItem) return;
-    setIsLoading(true);
-    try {
-      const couponsCol = collection(db, "Coupons");
-      const docRef = doc(couponsCol);
 
-      const newCoupon = {
-        id: docRef.id,
-        title: `كوبون ${selectedItem.name}`,
-        details: `حملة: ${selectedCampaign.type} • فئة: ${selectedCategory.name} • السعر: ${selectedItem.price} ج.م`,
-        type: selectedCampaign.type,
-        attachedFiles: selectedItem.image || "",
-        stock: parseFloat(quantity),
-        totalCouponUsed: 0,
-        status: "قيد المراجعة",
-        timestamp: serverTimestamp(),
-        submittedBy: {
-          userName: userName || currentUser?.email || "مستخدم",
-          userId: currentUser?.uid || "anonymous",
-          email: currentUser?.email || "unknown@kheirak",
-          userPhoto: currentUser?.photoURL || "",
-        },
-        meta: {
-          campaignId: selectedCampaign.id,
-          campaignName: selectedCampaign.name,
-          categoryId: selectedCategory.id,
-          categoryName: selectedCategory.name,
-          itemId: selectedItem.id,
-          itemName: selectedItem.name,
-          price: selectedItem.price,
-          buyerEmail: currentUser?.email || "unknown@kheirak",
-        },
-      };
+    // Calculate total amount based on item price and quantity
+    const totalAmount = selectedItem.price * quantity;
 
-      await setDoc(docRef, newCoupon);
+    // Prepare coupon data to be created after successful payment
+    const couponData = {
+      title: `كوبون ${selectedItem.name}`,
+      details: `حملة: ${selectedCampaign.type} • فئة: ${selectedCategory.name} • السعر: ${selectedItem.price} ج.م`,
+      type: selectedCampaign.type,
+      attachedFiles: selectedItem.image || "",
+      stock: parseFloat(quantity),
+      totalCouponUsed: 0,
+      status: "قيد المراجعة",
+      submittedBy: {
+        userName: userName || currentUser?.email || "مستخدم",
+        userId: currentUser?.uid || "anonymous",
+        email: currentUser?.email || "unknown@kheirak",
+        userPhoto: currentUser?.photoURL || "",
+      },
+      meta: {
+        campaignId: selectedCampaign.id,
+        campaignName: selectedCampaign.name,
+        categoryId: selectedCategory.id,
+        categoryName: selectedCategory.name,
+        itemId: selectedItem.id,
+        itemName: selectedItem.name,
+        price: selectedItem.price,
+        buyerEmail: currentUser?.email || "unknown@kheirak",
+      },
+    };
 
-      if (currentUser?.email) {
-        await addDoc(
-          collection(
-            db,
-            "Notifications",
-            currentUser.email,
-            "user_Notifications"
-          ),
-          {
-            title: "تم إنشاء حملتك",
-            message: `تم إنشاء حملة ${selectedItem.name} وهي الآن قيد المراجعة`,
-            imageUrl: selectedItem.image || "",
-            imageAlt: selectedItem.name,
-            timestamp: Date.now(),
-          }
-        );
-      }
+    // Prepare donation data for payment page
+    const donationData = {
+      donationAmount: totalAmount,
+      donationType: "campaign_coupon",
+      campaignInfo: {
+        campaign: selectedCampaign,
+        category: selectedCategory,
+        item: selectedItem,
+        quantity: quantity,
+      },
+      couponData: couponData,
+    };
 
-      toast.success(`تم شراء ${selectedItem.name} بنجاح وهي الآن قيد المراجعة`);
-      closePopup();
-    } catch {
-      toast.error("حدث خطأ أثناء العملية");
-    } finally {
-      setIsLoading(false);
-    }
+    // Close the modal
+    closePopup();
+
+    // Navigate to payment page with the donation data
+    navigate("/payment", {
+      state: {
+        donationData: donationData,
+      },
+    });
   };
 
   return (
@@ -163,7 +148,7 @@ export default function Campaigns() {
           bulletPoints={[
             `عنوان الكوبون: كوبون ${selectedItem.name}`,
             `تفاصيل الكوبون: حملة ${selectedCampaign?.type} • فئة ${selectedCategory?.name} • السعر: ${selectedItem.price} ج.م`,
-            `سعر الكوبون: ${selectedItem.price} جنيه`,
+            `سعر الكوبون: ${selectedItem.price * quantity} جنيه (${quantity} × ${selectedItem.price})`,
           ]}
           showInput={true}
           inputProps={{
@@ -173,12 +158,11 @@ export default function Campaigns() {
             placeholder: "أدخل الكمية",
             min: 1,
           }}
-          warningText="يرجى التأكد من صحة البيانات قبل التأكيد."
-          confirmText="تأكيد"
+          warningText="سيتم توجيهك إلى صفحة الدفع لإتمام عملية الشراء."
+          confirmText="متابعة للدفع"
           cancelText="إغلاق"
           onConfirm={confirmPurchase}
           onClose={closePopup}
-          isLoading={isLoading}
         />
       )}
     </div>
