@@ -122,32 +122,28 @@ export default function SignInForm() {
         />
         {/* زر الدخول */}
         <SubmitButton buttonTitle="تسجيل الدخول" isLoading={isLoading} />
-        <div className="text-center">
-          <div className="flex items-center gap-4 mb-2">
-            <Divider flexGrow />{" "}
+        <div className="w-full flex flex-col gap-2">
+          <div className="flex items-center gap-4">
+            <Divider flexGrow />
             <span className="text-[var(--color-bg-muted-text)] text-md">
               أو
             </span>
-            <Divider flexGrow />{" "}
+            <Divider flexGrow />
           </div>
           <button
             type="button"
             onClick={handleGoogleSignIn}
             disabled={isLoading}
-            className="w-full flex items-center justify-center gap-2 px-6 py-2 text-[var(--color-primary-base)] border border-[var(--color-bg-divider)] rounded-lg cursor-pointer disabled:cursor-not-allowed disabled:bg-[var(--color-primary-disabled)] focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)]"
-          >
+            className="w-full flex items-center justify-center gap-2 px-6 py-2 text-[var(--color-primary-base)] border border-[var(--color-bg-divider)] rounded-lg cursor-pointer disabled:cursor-not-allowed disabled:bg-[var(--color-primary-disabled)] focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)]">
             <span>التسجيل بإستخدام جوجل</span>
             <img src={GoogleIcon} alt="Google" className="w-5 h-5" />
           </button>
-          <div className="text-center mt-5">
-            <button
-              type="button"
-              onClick={() => navigate("/forgot-password")}
-              className="text-m text-[var(--color-primary-base)] hover:underline"
-            >
-              نسيت كلمة المرور؟
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => navigate("/forgot-password")}
+            className="w-full flex justify-center items-center text-[var(--color-primary-base)] underline font-bold px-2 py-1 rounded cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)] text-sm">
+            نسيت كلمة المرور؟
+          </button>
         </div>
       </form>
     </FormLayout>
