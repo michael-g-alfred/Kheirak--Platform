@@ -9,13 +9,16 @@ import ChatAi from "./components/ChatAi";
 export default function App() {
   return (
     <>
-
       <Toaster position="bottom-center" />
       <BrowserRouter>
         <AuthProvider>
           <Navbar />
           {/* your existing layout */}
-      <ChatAi apiBase={import.meta.env.VITE_COPILOT_API || "http://localhost:5004"} />
+          <ChatAi
+            apiBase={
+              import.meta.env.VITE_COPILOT_API || "http://localhost:5004"
+            }
+          />
           <AppRoutes />
           <Footer />
         </AuthProvider>

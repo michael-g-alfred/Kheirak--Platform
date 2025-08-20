@@ -1,11 +1,18 @@
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
+import CommentIcon from "../icons/CommentIcon";
+import SubmitButton from "./SubmitButton";
+import Loader from "./Loader";
 
 export default function ChatAi({ apiBase = "http://localhost:5004" }) {
   const [messages, setMessages] = useState([
-    { role: "assistant", content: "Hi! I’m Khairak Copilot. How can I help?" }
+    {
+      role: "assistant",
+      content: "مرحباً! أنا مساعد منصة خِيرُكَ الذكى. كيف يمكنني المساعدة؟",
+    },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
   const listRef = useRef(null);
 
   const ASK_URL = useMemo(() => `${apiBase}/api/chat`, [apiBase]);
@@ -18,7 +25,7 @@ export default function ChatAi({ apiBase = "http://localhost:5004" }) {
       .slice(-6)
       .map(({ role, content }) => ({ role, content }));
 
-    setMessages(prev => [...prev, { role: "user", content: q }]);
+    setMessages((prev) => [...prev, { role: "user", content: q }]);
     setInput("");
     setLoading(true);
 
@@ -26,28 +33,36 @@ export default function ChatAi({ apiBase = "http://localhost:5004" }) {
       const response = await fetch(ASK_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: q, chat: chatForApi })
+        body: JSON.stringify({ message: q, chat: chatForApi }),
       });
 
       const data = await response.json();
 
       if (!response.ok) throw new Error(data?.error || "API error");
 
-      setMessages(prev => [
+      setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: data.answer || data.choices?.[0]?.message?.content || "No response" }
+        {
+          role: "assistant",
+          content:
+            data.answer || data.choices?.[0]?.message?.content || "لا يوجد رد",
+        },
       ]);
     } catch (err) {
       console.error(err);
-      setMessages(prev => [
+      setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "Sorry, I had a problem answering. Please try again." }
+        {
+          role: "assistant",
+          content: "عذرًا، حدثت مشكلة أثناء الإجابة. من فضلك حاول مرة أخرى.",
+        },
       ]);
     } finally {
       setLoading(false);
-      setTimeout(() => {
-        listRef.current?.lastElementChild?.scrollIntoView({ behavior: "smooth" });
-      }, 0);
+      listRef.current?.lastElementChild?.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
     }
   }
 
@@ -58,114 +73,120 @@ export default function ChatAi({ apiBase = "http://localhost:5004" }) {
     }
   }
 
+  // ⛔ منع سكرول الصفحة الخارجية عند فتح الشات
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
+
   return (
-    <div style={styles.wrapper}>
-      <div style={styles.header}>Khairak Copilot</div>
+    <>
+      {/* الزر العائم */}
+      <button
+        className={`fixed bottom-4 right-4 w-16 h-16 rounded-full 
+    bg-[var(--color-bg-card-dark)] border-[var(--color-bg-divider)] 
+    flex justify-center items-center 
+    hover:bg-[var(--color-primary-base)] text-[var(--color-primary-base)] 
+    hover:text-[var(--color-bg-text)] z-[9999]
+    ${loading ? "border-2" : "border"}
+    ${loading ? "halo-glow" : ""}
+    ${loading ? "animate-pulse-glow" : ""}`}
+        onClick={() => setOpen(!open)}
+        aria-label={open ? "إغلاق محادثة خِيرُكَ" : "فتح محادثة خِيرُكَ"}
+        aria-expanded={open}
+        aria-controls="khairak-chat-window">
+        {loading ? (
+          <Loader size={30} />
+        ) : (
+          <CommentIcon size={30} aria-hidden="true" />
+        )}
+      </button>
 
-      <div style={styles.messages} ref={listRef}>
-        {messages.map((m, i) => (
+      {/* نافذة الشات */}
+      {open && (
+        <>
+          {/* الـ backdrop */}
           <div
-            key={i}
-            style={{
-              ...styles.message,
-              ...(m.role === "user" ? styles.user : styles.assistant)
-            }}
-          >
-            {m.content}
-          </div>
-        ))}
-        {loading && <div style={styles.typing}>…typing</div>}
-      </div>
+            className="fixed inset-0 flex items-center justify-center bg-gray-500/20 backdrop-blur-xs z-[9998]"
+            onClick={() => setOpen(false)}
+            role="presentation"
+            aria-hidden="true"></div>
 
-      <div style={styles.inputRow}>
-        <textarea
-          style={styles.input}
-          value={input}
-          onChange={e => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Ask anything…"
-          rows={2}
-        />
-        <button style={styles.sendBtn} onClick={send} disabled={loading}>
-          Send
-        </button>
-      </div>
-    </div>
+          <div
+            id="khairak-chat-window"
+            className="flex flex-col h-100 w-120 aspect-square fixed bottom-22 right-4 border border-[var(--color-bg-divider)] rounded-lg bg-[var(--color-bg-card)] overflow-hidden z-[9999]"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="khairak-chat-title">
+            <div
+              id="khairak-chat-title"
+              className="px-4 py-2 font-semibold text-[var(--color-bg-text)] bg-[var(--color-primary-base)] border-b-2  border-[var(--color-bg-divider)]">
+              مساعد خِيرُكَ الذكي
+            </div>
+
+            {/* منطقة الرسائل */}
+            <div
+              className="flex-1 overflow-y-auto p-4 space-y-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+              ref={listRef}
+              role="log"
+              aria-live="polite"
+              aria-relevant="additions text">
+              {messages.map((m, i) => (
+                <div
+                  key={i}
+                  className={`px-3 py-2 rounded max-w-[90%] whitespace-pre-wrap ${
+                    m.role === "user"
+                      ? "ml-auto bg-[var(--color-primary-base)] text-[var(--color-bg-text)]"
+                      : "mr-auto bg-[var(--color-bg-card-dark)] text-[var(--color-bg-text-dark)]"
+                  }`}
+                  role="note"
+                  aria-label={
+                    m.role === "user" ? "رسالتك" : "رد المساعد الذكي"
+                  }>
+                  {m.content}
+                </div>
+              ))}
+              {loading && (
+                <div
+                  dir="rtl"
+                  className="text-sm text-[var(--color-bg-text-dark)] italic"
+                  role="status"
+                  aria-live="assertive">
+                  …المساعد يكتب الآن
+                </div>
+              )}
+            </div>
+
+            {/* إدخال الرسالة */}
+            <div className="flex items-center justify-center gap-2 border-t border-[var(--color-bg-divider)] p-2">
+              <label htmlFor="chat-input" className="sr-only">
+                اكتب رسالتك
+              </label>
+              <input
+                id="chat-input"
+                className="w-full h-full border border-[var(--color-bg-divider)] rounded-lg px-2 text-[var(--color-bg-text-dark)] text-right align-middle focus:outline-none focus:ring-2 focus:ring-offset-0 focus:ring-[var(--color-primary-base)]"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="اسألني أي شيء..."
+                aria-label="اكتب رسالتك هنا"
+              />
+              <SubmitButton
+                buttonTitle={"إرسال"}
+                disabled={loading}
+                onClick={send}
+                aria-label="إرسال الرسالة"
+              />
+            </div>
+          </div>
+        </>
+      )}
+    </>
   );
 }
-
-const styles = {
-  wrapper: {
-    position: "fixed",
-    bottom: 16,
-    right: 16,
-    width: 340,
-    maxHeight: 520,
-    background: "#fff",
-    border: "1px solid #ddd",
-    borderRadius: 12,
-    boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
-    display: "flex",
-    flexDirection: "column",
-    overflow: "hidden",
-    fontFamily: "system-ui, sans-serif",
-    zIndex: 9999
-  },
-  header: {
-    padding: "10px 12px",
-    fontWeight: 700,
-    borderBottom: "1px solid #eee",
-    background: "#fafafa"
-  },
-  messages: {
-    padding: 12,
-    gap: 8,
-    display: "flex",
-    flexDirection: "column",
-    overflowY: "auto",
-    minHeight: 180
-  },
-  message: {
-    padding: "8px 12px",
-    borderRadius: 8,
-    maxWidth: "80%",
-    wordBreak: "break-word"
-  },
-  user: {
-    alignSelf: "flex-end",
-    backgroundColor: "#007bff",
-    color: "#fff"
-  },
-  assistant: {
-    alignSelf: "flex-start",
-    backgroundColor: "#f1f0f0",
-    color: "#333"
-  },
-  typing: {
-    fontStyle: "italic",
-    fontSize: 14,
-    color: "#888"
-  },
-  inputRow: {
-    display: "flex",
-    borderTop: "1px solid #eee"
-  },
-  input: {
-    flex: 1,
-    padding: 8,
-    border: "none",
-    outline: "none",
-    resize: "none",
-    fontFamily: "inherit",
-    fontSize: 14
-  },
-  sendBtn: {
-    padding: "0 16px",
-    border: "none",
-    backgroundColor: "#007bff",
-    color: "#fff",
-    cursor: "pointer"
-  }
-};
-
-
