@@ -76,15 +76,20 @@ export default function OrgProfile() {
               status={coupon.status}>
               <div className="text-md text-[var(--color-bg-text-dark)] space-y-1 text-right">
                 <p>
-                  <strong>عدد الكوبونات الكلي:</strong> {coupon.stock}
+                  <strong>عدد الكوبونات الكلي:</strong>
+                  {coupon.stock != null ? coupon.stock : "غير معرف"}
                 </p>
                 <p>
-                  <strong>عدد المستخدم منها:</strong>{" "}
-                  {coupon.totalCouponUsed || 0}
+                  <strong>عدد المستخدم منها:</strong>
+                  {coupon.totalCouponUsed != null
+                    ? coupon.totalCouponUsed
+                    : "غير معرف"}
                 </p>
                 <p>
                   <strong>عدد المتبقي:</strong>{" "}
-                  {(coupon.stock || 0) - (coupon.totalCouponUsed || 0)}
+                  {coupon.stock != null && coupon.totalCouponUsed != null
+                    ? coupon.stock - coupon.totalCouponUsed
+                    : "غير معرف"}
                 </p>
                 <p className="mt-4 w-full">
                   <strong>الحالة: </strong>

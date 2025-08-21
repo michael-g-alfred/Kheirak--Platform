@@ -36,6 +36,7 @@ function PostReview({ statusFilter = "الكل" }) {
   if (isLoading) {
     return <Loader />;
   }
+
   return (
     <>
       {filteredPosts.length > 0 ? (
@@ -49,16 +50,17 @@ function PostReview({ statusFilter = "الكل" }) {
                 <div className="text-md text-[var(--color-bg-text-dark)] space-y-1 text-right">
                   <p>
                     <strong>الجهة: </strong>{" "}
-                    {post.submittedBy?.userName || "غير محدد"}
+                    {post.submittedBy?.userName || "غير معرف"}
                   </p>
                   <p>
-                    <strong>نوع الطلب: </strong> {post.type || "غير محدد"}
+                    <strong>نوع الطلب: </strong> {post.type || "غير معرف"}
                   </p>
                   <p className="line-clamp-3">
-                    <strong>تفاصيل الطلب: </strong> {post.details}
+                    <strong>تفاصيل الطلب: </strong> {post.details || "غير معرف"}
                   </p>
                   <p>
-                    <strong>المبلغ المطلوب: </strong> {post.amount}
+                    <strong>المبلغ المطلوب: </strong>{" "}
+                    {post.amount != null ? post.amount : "غير معرف"}
                   </p>
                   <p>
                     <strong>المرفقات: </strong>
@@ -87,7 +89,7 @@ function PostReview({ statusFilter = "الكل" }) {
                         </a>
                       )
                     ) : (
-                      "لا يوجد"
+                      "غير معرف"
                     )}
                   </p>
                   <p className="mt-4 w-full">
@@ -96,7 +98,7 @@ function PostReview({ statusFilter = "الكل" }) {
                       className={`${getStatusColor(
                         post.status
                       )} w-full font-bold py-0.125 px-2 rounded`}>
-                      {post.status}
+                      {post.status || "غير معرف"}
                     </span>
                   </p>
                 </div>

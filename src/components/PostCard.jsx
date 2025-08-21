@@ -3,7 +3,14 @@ import { useAuth } from "../context/authContext";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import CardLayout from "../layouts/CardLayout";
-import { doc, onSnapshot } from "firebase/firestore";
+import {
+  doc,
+  onSnapshot,
+  updateDoc,
+  arrayUnion,
+  getDoc,
+  setDoc,
+} from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { db } from "../Firebase/Firebase";
 import { toast } from "react-hot-toast";
@@ -12,9 +19,8 @@ import ConfirmModal from "./ConfirmModal";
 import ImageIcon from "../icons/ImageIcon";
 import Divider from "./Divider";
 import { motion } from "framer-motion";
-import { updateDoc, arrayUnion, getDoc } from "firebase/firestore";
-import { setDoc } from "firebase/firestore";
-import { categoryPartners } from "../data/categories";
+import { categoryPartners as importedCategoryPartners } from "../data/categories";
+const categoryPartners = importedCategoryPartners || {};
 
 const PostCard = ({ newPost }) => {
   const [showPopup, setShowPopup] = useState(false);
@@ -23,6 +29,13 @@ const PostCard = ({ newPost }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const { role } = useAuth();
+
+  const submittedByUserName = newPost.submittedBy?.userName || "غير معرف";
+  const submittedByEmail = newPost.submittedBy?.email || "غير معرف";
+  const submittedByUid = newPost.submittedBy?.uid || "غير معرف";
+  const postTitle = newPost.title || "غير معرف";
+  const postDetails = newPost.details || "غير معرف";
+  const postType = newPost.type || "غير معرف";
 
   useEffect(() => {
     if (!newPost?.id) return;
@@ -126,17 +139,17 @@ const PostCard = ({ newPost }) => {
 
       await setDoc(donorNotifRef, {
         title: "شكرًا على تبرعك 💚",
-        message: `لقد تبرعت بمبلغ ${selectedAmount} :جنيه للطلب ${newPost.title}`,
+        message: `لقد تبرعت بمبلغ ${selectedAmount} :جنيه للطلب ${postTitle}`,
         timestamp: new Date().toISOString(),
         read: false,
         userId: user.uid,
       });
 
-      if (newPost?.submittedBy?.email) {
+      if (submittedByEmail !== "غير معرف") {
         const ownerNotifRef = doc(
           db,
           "Notifications",
-          newPost.submittedBy.email,
+          submittedByEmail,
           "user_Notifications",
           `${Date.now() + 1}`
         );
@@ -148,7 +161,7 @@ const PostCard = ({ newPost }) => {
           } تبرع لك بمبلغ ${selectedAmount} جنيه.`,
           timestamp: new Date().toISOString(),
           read: false,
-          userId: newPost.submittedBy?.uid || "unknown",
+          userId: submittedByUid,
         });
       }
 
@@ -174,23 +187,23 @@ const PostCard = ({ newPost }) => {
 
           await setDoc(notificationRef, {
             title: "شكرًا على تبرعك 💚",
-            message: `شكراً لك! تم الوصول لهدف التبرع للطلب: ${newPost.title}.`,
+            message: `شكراً لك! تم الوصول لهدف التبرع للطلب: ${postTitle}.`,
             timestamp: new Date().toISOString(),
             read: false,
             userId: uid,
           });
         }
 
-        if (newPost?.submittedBy?.email) {
-          const partners = categoryPartners[newPost.type] || [];
+        if (submittedByEmail !== "غير معرف") {
+          const partners = categoryPartners[postType] || [];
           const partnersList = partners.length
             ? partners.join("، ")
             : "أحد نقاط التوزيع المعتمدة";
 
           const qrData = JSON.stringify({
             postId: newPost.id,
-            title: newPost.title,
-            type: newPost.type,
+            title: postTitle,
+            type: postType,
             amount,
             totalDonated: newTotal,
             submittedBy: newPost.submittedBy,
@@ -203,18 +216,18 @@ const PostCard = ({ newPost }) => {
           const qrNotificationRef = doc(
             db,
             "Notifications",
-            newPost.submittedBy.email,
+            submittedByEmail,
             "user_Notifications",
             `${Date.now() + 2}`
           );
 
           await setDoc(qrNotificationRef, {
             title: "اكتمل جمع التبرعات 🎉",
-            message: `تم اكتمال جمع التبرعات لطلبك "${newPost.title}". هذا هو رمز الاستجابة السريعة الذي يحتوي على تفاصيل الطلب. يمكن التوجهة إلى أحد شركائنا (${partnersList}) لاستلام الخدمة.`,
+            message: `تم اكتمال جمع التبرعات لطلبك "${postTitle}". هذا هو رمز الاستجابة السريعة الذي يحتوي على تفاصيل الطلب. يمكن التوجهة إلى أحد شركائنا (${partnersList}) لاستلام الخدمة.`,
             imageUrl: qrCodeURL,
             timestamp: new Date().toISOString(),
             read: false,
-            userId: newPost.submittedBy?.uid || "unknown",
+            userId: submittedByUid,
           });
         }
       }
@@ -226,6 +239,7 @@ const PostCard = ({ newPost }) => {
     setIsLoading(false);
     closePopup();
   };
+
   return (
     <>
       <CardLayout>
@@ -245,7 +259,7 @@ const PostCard = ({ newPost }) => {
             </div>
             <div className="flex flex-col items-start flex-1">
               <span className="font-bold text-lg text-[var(--color-primary-base)]">
-                {newPost.submittedBy?.userName || "اسم المستخدم"}
+                {submittedByUserName}
               </span>
               <span className="text-xs text-[var(--color-bg-text-dark)]">
                 {formattedTime}
@@ -282,10 +296,10 @@ const PostCard = ({ newPost }) => {
           {/* العنوان والمبلغ */}
           <div className="flex flex-col gap-2">
             <h2 className="font-bold text-xl sm:text-2xl text-[var(--color-primary-base)] line-clamp-2 text-center">
-              {newPost.title || "عنوان الطلب"}
+              {postTitle}
             </h2>
             <p className="text-sm text-[var(--color-bg-text-dark)] line-clamp-2">
-              {newPost.details || "تفاصيل الطلب..."}
+              {postDetails}
             </p>
             <Divider my={0} />
             <span className="text-[var(--color-primary-base)] rounded font-medium text-md text-right">
@@ -372,12 +386,12 @@ ${
       {showPopup && (
         <ConfirmModal
           title={`تأكيد تحويل ${selectedAmount} ج.م`}
-          description={`سيتم خصم مبلغ ${selectedAmount} ج.م من رصيدك لصالح الطلب: ${newPost.title}`}
+          description={`سيتم خصم مبلغ ${selectedAmount} ج.م من رصيدك لصالح الطلب: ${postTitle}`}
           bulletPoints={[
-            `تفاصيل الطلب: ${newPost.details}`,
+            `تفاصيل الطلب: ${postDetails}`,
             `المبلغ الكلي المطلوب: ${amount} ج.م`,
-            `صاحب البوست: ${newPost.submittedBy.userName}`,
-            `البريد الإلكتروني: ${newPost.submittedBy.email}`,
+            `صاحب البوست: ${submittedByUserName}`,
+            `البريد الإلكتروني: ${submittedByEmail}`,
           ]}
           showInput={false}
           warningText="يرجى التأكد من صحة المبلغ قبل التأكيد."

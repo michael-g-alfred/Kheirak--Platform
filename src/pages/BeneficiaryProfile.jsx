@@ -80,20 +80,20 @@ export default function BeneficiaryProfile() {
                 status={post.status}>
                 <div className="text-md text-[var(--color-bg-text-dark)] space-y-1 text-right">
                   <p>
-                    <strong>نوع الطلب: </strong> {post.type}
+                    <strong>نوع الطلب: </strong> {post.type || "غير معرف"}
                   </p>
                   <p className="line-clamp-3">
-                    <strong>تفاصيل الطلب: </strong> {post.details}
+                    <strong>تفاصيل الطلب: </strong> {post.details || "غير معرف"}
                     <p>
                       <strong>المبلغ المطلوب: </strong>
                       <span className="text-[var(--color-primary-base)]">
-                        {post.amount} ج.م
+                        {post.amount != null ? post.amount : "غير معرف"} ج.م
                       </span>
                     </p>
                     <p>
                       <strong>إجمالي التبرعات: </strong>
                       <span className="text-[var(--color-primary-base)]">
-                        {totalReceived} ج.م
+                        {totalReceived != null ? totalReceived : "غير معرف"} ج.م
                       </span>
                     </p>
                   </p>
@@ -103,7 +103,7 @@ export default function BeneficiaryProfile() {
                       className={`${getStatusColor(
                         post.status
                       )} w-full font-bold py-0.125 px-2 rounded`}>
-                      {post.status}
+                      {post.status || "غير معرف"}
                     </span>
                   </p>
                 </div>

@@ -268,7 +268,7 @@ const CouponCard = ({ newCoupon }) => {
             </div>
             <div className="flex flex-col items-start flex-1">
               <span className="font-bold text-lg text-[var(--color-primary-base)]">
-                {newCoupon.submittedBy?.userName || "اسم المستخدم"}
+                {newCoupon.submittedBy?.userName || "غير معرف"}
               </span>
               <span className="text-xs text-[var(--color-bg-text-dark)]">
                 {formattedTime}
@@ -294,17 +294,20 @@ const CouponCard = ({ newCoupon }) => {
           {/* العنوان وعدد الكوبونات */}
           <div className="flex flex-col gap-2">
             <h2 className="text-center font-bold text-xl sm:text-2xl text-[var(--color-primary-base)] line-clamp-2">
-              {newCoupon.title || "عنوان الكوبون"}
+              {newCoupon.title || "غير معرف"}
             </h2>
             <p className="text-sm text-[var(--color-bg-text-dark)] line-clamp-2">
-              النوع: <strong>{newCoupon.type}</strong>
+              النوع: <strong>{newCoupon.type || "غير معرف"}</strong>
             </p>
             <p className="text-sm text-[var(--color-bg-text-dark)] line-clamp-2">
-              {newCoupon.details || "تفاصيل الكوبون..."}
+              {newCoupon.details || "غير معرف"}
             </p>
 
             <p className="w-full text-[var(--color-primary-base)] bg-[var(--color-bg-card-dark)] px-4 py-2 font-bold text-sm sm:text-base text-center rounded-full">
-              عدد الكوبونات المتاحة: {stock - totalCouponUsed}
+              عدد الكوبونات المتاحة:{" "}
+              {stock != null && totalCouponUsed != null
+                ? stock - totalCouponUsed
+                : "غير معرف"}
             </p>
           </div>
 
@@ -331,12 +334,14 @@ const CouponCard = ({ newCoupon }) => {
           <ConfirmModal
             title="تأكيد استخدام كوبون"
             description={`سيتم استخدام ${1} كوبون من الجهة: ${
-              newCoupon.submittedBy?.userName
+              newCoupon.submittedBy?.userName || "غير معرف"
             }`}
             bulletPoints={[
-              `عنوان الكوبون: ${newCoupon.title}`,
-              `تفاصيل الكوبون: ${newCoupon.details}`,
-              `البريد الإلكتروني للجهة: ${newCoupon.submittedBy.email}`,
+              `عنوان الكوبون: ${newCoupon.title || "غير معرف"}`,
+              `تفاصيل الكوبون: ${newCoupon.details || "غير معرف"}`,
+              `البريد الإلكتروني للجهة: ${
+                newCoupon.submittedBy?.email || "غير معرف"
+              }`,
             ]}
             showInput={false}
             warningText="يرجى التأكد من صحة البيانات قبل التأكيد."

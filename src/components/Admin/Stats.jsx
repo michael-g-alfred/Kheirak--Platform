@@ -13,26 +13,51 @@ export default function Stats() {
     <>
       <CardsLayout
         list={[
-          { title: "عدد المستفيدين", description: stats.users || "0" },
-          { title: "عدد المتبرعين", description: stats.donors || "0" },
-          { title: "عدد المؤسسات", description: stats.orgs || "0" },
-          { title: "عدد الطلبات", description: stats.requests || "0" },
+          {
+            title: "عدد المستفيدين",
+            description: stats.users != null ? stats.users : "غير معرف",
+          },
+          {
+            title: "عدد المتبرعين",
+            description: stats.donors != null ? stats.donors : "غير معرف",
+          },
+          {
+            title: "عدد المؤسسات",
+            description: stats.orgs != null ? stats.orgs : "غير معرف",
+          },
+          {
+            title: "عدد الطلبات",
+            description: stats.requests != null ? stats.requests : "غير معرف",
+          },
           {
             title: "عدد الطلبات المكتملة",
-            description: stats.completedRequests || "0",
+            description:
+              stats.completedRequests != null
+                ? stats.completedRequests
+                : "غير معرف",
           },
           {
             title: "عدد الطلبات الغير مكتملة",
-            description: stats.pendingRequests || "0",
+            description:
+              stats.pendingRequests != null
+                ? stats.pendingRequests
+                : "غير معرف",
           },
-          { title: "عدد الكوبونات", description: stats.coupons || "0" },
+          {
+            title: "عدد الكوبونات",
+            description: stats.coupons != null ? stats.coupons : "غير معرف",
+          },
           {
             title: "عدد الكوبونات المكتملة",
-            description: stats.completedCoupons || "0",
+            description:
+              stats.completedCoupons != null
+                ? stats.completedCoupons
+                : "غير معرف",
           },
           {
             title: "عدد الكوبونات الغير مكتملة",
-            description: stats.pendingCoupons || "0",
+            description:
+              stats.pendingCoupons != null ? stats.pendingCoupons : "غير معرف",
           },
         ]}
       />

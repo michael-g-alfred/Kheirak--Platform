@@ -50,16 +50,18 @@ function CouponReview({ statusFilter = "الكل" }) {
                 <div className="text-md text-[var(--color-bg-text-dark)] space-y-1 text-right">
                   <p>
                     <strong>الجهة: </strong>{" "}
-                    {coupon.submittedBy?.userName || "غير محدد"}
+                    {coupon.submittedBy?.userName || "غير معرف"}
                   </p>
                   <p>
-                    <strong>نوع الكوبون: </strong> {coupon.type}
+                    <strong>نوع الكوبون: </strong> {coupon.type || "غير معرف"}
                   </p>
                   <p className="line-clamp-3">
-                    <strong>تفاصيل الكوبون: </strong> {coupon.details}
+                    <strong>تفاصيل الكوبون: </strong>{" "}
+                    {coupon.details || "غير معرف"}
                   </p>
                   <p>
-                    <strong>عدد الكوبونات المتاحة:</strong> {coupon.stock}
+                    <strong>عدد الكوبونات المتاحة:</strong>{" "}
+                    {coupon.stock != null ? coupon.stock : "غير معرف"}
                   </p>
                   <p>
                     <strong>المرفقات: </strong>
@@ -88,7 +90,7 @@ function CouponReview({ statusFilter = "الكل" }) {
                         </a>
                       )
                     ) : (
-                      "لا يوجد"
+                      "غير معرف"
                     )}
                   </p>
                   <p className="mt-4 w-full">
@@ -97,7 +99,7 @@ function CouponReview({ statusFilter = "الكل" }) {
                       className={`${getStatusColor(
                         coupon.status
                       )} w-full font-bold py-0.125 px-2 rounded`}>
-                      {coupon.status}
+                      {coupon.status || "غير معرف"}
                     </span>
                   </p>
                 </div>

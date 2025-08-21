@@ -59,15 +59,15 @@ export default function DonorProfile() {
                 <div className="text-md text-[var(--color-bg-text-dark)] space-y-1 text-right">
                   <p>
                     <strong>الجهة:</strong>{" "}
-                    {post.submittedBy?.userName || "غير محدد"}
+                    {post.submittedBy?.userName || "غير معرف"}
                   </p>
                   <p>
-                    <strong>نوع الطلب:</strong> {post.type || "غير محدد"}
+                    <strong>نوع الطلب:</strong> {post.type || "غير معرف"}
                   </p>
                   <p>
-                    <strong>المبلغ المتبرع به:</strong>{" "}
+                    <strong>المبلغ المتبرع به:</strong>
                     <span className="text-[var(--color-primary-base)]">
-                      {totalDonated} ج.م
+                      {totalDonated || "غير معرف"} ج.م
                     </span>
                   </p>
                   <p className="mt-4 w-full">
@@ -76,7 +76,7 @@ export default function DonorProfile() {
                       className={`${getStatusColor(
                         post.status
                       )} w-full font-bold py-0.125 px-2 rounded`}>
-                      {post.status}
+                      {post.status || "غير معرف"}
                     </span>
                   </p>
                 </div>
@@ -103,18 +103,23 @@ export default function DonorProfile() {
               <div className="text-md text-[var(--color-bg-text-dark)] space-y-1 text-right">
                 <p>
                   <strong>تفاصيل الكوبون:</strong>{" "}
-                  {coupon.details || "غير متوفر"}
+                  {coupon.details || "غير معرف"}
                 </p>
                 <p>
-                  <strong>عدد الكوبونات الكلي:</strong> {coupon.stock}
+                  <strong>عدد الكوبونات الكلي: </strong>
+                  {coupon.stock != null ? coupon.stock : "غير معرف"}
                 </p>
                 <p>
-                  <strong>عدد المستخدم منها:</strong>{" "}
-                  {coupon.totalCouponUsed || 0}
+                  <strong>عدد المستخدم منها: </strong>
+                  {coupon.totalCouponUsed != null
+                    ? coupon.totalCouponUsed
+                    : "غير معرف"}
                 </p>
                 <p>
-                  <strong>عدد المتبقي:</strong>{" "}
-                  {(coupon.stock || 0) - (coupon.totalCouponUsed || 0)}
+                  <strong>عدد المتبقي: </strong>
+                  {coupon.stock != null && coupon.totalCouponUsed != null
+                    ? coupon.stock - coupon.totalCouponUsed
+                    : "غير معرف"}
                 </p>
                 <p className="mt-4 w-full">
                   <strong>الحالة: </strong>
@@ -122,7 +127,7 @@ export default function DonorProfile() {
                     className={`${getStatusColor(
                       coupon.status
                     )} w-full font-bold py-0.125 px-2 rounded`}>
-                    {coupon.status}
+                    {coupon.status || "غير معرف"}
                   </span>
                 </p>
               </div>

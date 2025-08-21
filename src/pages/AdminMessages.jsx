@@ -36,9 +36,15 @@ export default function AdminMessages() {
 
   const filteredMessages = messages.filter(
     (msg) =>
-      msg.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      msg.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      msg.message?.toLowerCase().includes(searchTerm.toLowerCase())
+      (msg.name || "غير معرف")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      (msg.email || "غير معرف")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      (msg.message || "غير معرف")
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase())
   );
 
   const {
@@ -105,32 +111,27 @@ export default function AdminMessages() {
                 key={msg.id}
                 title={
                   <div className="flex items-center gap-2">
-                    {msg.name}
+                    {msg.name || "غير معرف"}
                     {!msg.read && (
-                      <span className="text-xs bg-[var(--color-warning-dark-plus)]  text-[var(--color-bg-text)] px-3 py-1 rounded">
+                      <span className="text-xs bg-[var(--color-warning-dark-plus)] text-[var(--color-bg-text)] px-3 py-1 rounded">
                         غير مقروء
                       </span>
                     )}
                   </div>
                 }>
-                {msg.email && (
-                  <p className="flex items-center gap-2">
-                    <MailIcon /> {msg.email}
-                  </p>
-                )}
-                {msg.phone && (
-                  <p className="flex items-center gap-2">
-                    <PhoneIcon /> {msg.phone}
-                  </p>
-                )}
                 <p className="flex items-center gap-2">
-                  <CommentIcon />
-                  {msg.message}
+                  <MailIcon /> {msg.email || "غير معرف"}
+                </p>
+                <p className="flex items-center gap-2">
+                  <PhoneIcon /> {msg.phone || "غير معرف"}
+                </p>
+                <p className="flex items-center gap-2">
+                  <CommentIcon /> {msg.message || "غير معرف"}
                 </p>
                 <p className="text-xs text-[var(--color-bg-muted-text)] mt-2">
                   {msg.timestamp
                     ? new Date(msg.timestamp.toDate()).toLocaleString("ar-EG")
-                    : ""}
+                    : "غير معرف"}
                 </p>
                 <div className="flex gap-2 mt-3">
                   {!msg.read ? (
