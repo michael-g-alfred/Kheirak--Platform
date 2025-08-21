@@ -11,18 +11,22 @@ import {
   setDoc,
   collection,
   serverTimestamp,
-  addDoc
+  addDoc,
 } from "firebase/firestore";
 import { db } from "../Firebase/Firebase";
 import InputField from "../components/InputField";
 import SubmitButton from "../components/SubmitButton";
 import PaymentModal from "../components/PaymentModal";
-import "./Payment.css";
+import PageLayout from "../layouts/PageLayout";
+import FormLayout from "../layouts/FormLayout";
+import Loader from "../components/Loader";
+import Divider from "../components/Divider";
 
 // Initialize Stripe
 // To use this, create a .env file in your project root and add:
 // VITE_STRIPE_PUBLISHABLE_KEY=pk_test_your_actual_key_here
-const stripePublishableKey = "pk_test_51Rw3aJKqx1jQOopCOqMxQzaDYgoO4cgAyhjElDvwD5a3iHZ87MW3o54apgr5qpgtPNWVRgBhAlPR92Fph6X8dhGX00DBTr4ltD";
+const stripePublishableKey =
+  "pk_test_51Rw3aJKqx1jQOopCOqMxQzaDYgoO4cgAyhjElDvwD5a3iHZ87MW3o54apgr5qpgtPNWVRgBhAlPR92Fph6X8dhGX00DBTr4ltD";
 const stripePromise = loadStripe(stripePublishableKey);
 
 export default function Payment() {
@@ -30,7 +34,7 @@ export default function Payment() {
   const location = useLocation();
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [donationData, setDonationData] = useState(null);
-  
+
   const [form, setForm] = useState({
     cardNumber: "",
     expiry: "",
@@ -59,13 +63,13 @@ export default function Payment() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     // Validate required fields
     if (!form.firstName || !form.lastName) {
       toast.error("يرجى إدخال الاسم الأول واسم العائلة");
       return;
     }
-    
+
     // Show Stripe payment modal
     setShowPaymentModal(true);
   };
@@ -102,9 +106,12 @@ export default function Payment() {
   const handleCampaignCouponPurchase = async () => {
     // Show success message for coupon purchase
     toast.dismiss();
-    toast.success(`تم شراء الكوبون بنجاح! دفعت ${donationData.donationAmount} ج.م`, {
-      duration: 3000,
-    });
+    toast.success(
+      `تم شراء الكوبون بنجاح! دفعت ${donationData.donationAmount} ج.م`,
+      {
+        duration: 3000,
+      }
+    );
 
     // Try to create coupon in database
     try {
@@ -120,7 +127,10 @@ export default function Payment() {
       await setDoc(docRef, newCoupon);
 
       // Send notification to user about coupon creation
-      if (donationData.couponData.submittedBy.email && donationData.couponData.submittedBy.email !== "unknown@kheirak") {
+      if (
+        donationData.couponData.submittedBy.email &&
+        donationData.couponData.submittedBy.email !== "unknown@kheirak"
+      ) {
         await addDoc(
           collection(
             db,
@@ -137,36 +147,34 @@ export default function Payment() {
           }
         );
       }
-
     } catch (error) {
       console.error("Database update error (payment was successful):", error);
-      toast.error("تم الدفع بنجاح ولكن حدث خطأ في إنشاء الكوبون. يرجى التواصل مع الدعم.");
+      toast.error(
+        "تم الدفع بنجاح ولكن حدث خطأ في إنشاء الكوبون. يرجى التواصل مع الدعم."
+      );
     }
-
-    // Redirect to campaigns page after toast duration
-    setTimeout(() => {
-      navigate("/campaigns");
-    }, 3000);
   };
 
   const handleRegularDonation = async () => {
     // Show success message for regular donation
     toast.dismiss();
-    toast.success(` تم الدفع والتبرع بنجاح! تبرعت بـ ${donationData.donationAmount} ج.م`, {
-      duration: 3000,
-    });
+    toast.success(
+      ` تم الدفع والتبرع بنجاح! تبرعت بـ ${donationData.donationAmount} ج.م`,
+      {
+        duration: 3000,
+      }
+    );
 
     // Try to update database in the background
     try {
-      
-      const { 
-        postId, 
-        donationAmount, 
-        totalRequired, 
-        currentTotal, 
-        donor, 
+      const {
+        postId,
+        donationAmount,
+        totalRequired,
+        currentTotal,
+        donor,
         recipient,
-        postTitle 
+        postTitle,
       } = donationData;
 
       const newTotal = currentTotal + donationAmount;
@@ -289,16 +297,10 @@ export default function Payment() {
           });
         }
       }
-
     } catch (error) {
       // Silently log the error but don't show error to user since payment succeeded
       console.error("Database update error (payment was successful):", error);
     }
-
-    // Always redirect to home after toast duration
-    setTimeout(() => {
-      navigate("/");
-    }, 3000);
   };
 
   const handlePaymentError = (error) => {
@@ -310,15 +312,11 @@ export default function Payment() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg-base)] py-8">
-      <div className="payment-container" dir="rtl">
-        {/* فورم الدفع */}
-        <form className="payment-form" onSubmit={handleSubmit}>
-          <h2 className="text-2xl font-bold text-[var(--color-primary-base)] mb-6">
-            أدخل بيانات الدفع
-          </h2>
-
-          <div className="form-row">
+    <PageLayout>
+      {/* فورم الدفع وملخص السلة في شبكة */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-2">
+        <FormLayout formTitle={"أدخل بيانات الدفع"}>
+          <form className="space-y-2" onSubmit={handleSubmit}>
             <InputField
               label="الاسم الأول"
               id="firstName"
@@ -337,48 +335,36 @@ export default function Payment() {
               placeholder="اسم العائلة"
               required
             />
-          </div>
-
-          <div className="mb-4">
-            <label className="block mb-2 text-[var(--color-primary-base)] font-medium">
-              الدولة / المنطقة
-            </label>
-            <select 
-              name="country" 
-              value={form.country} 
+            <InputField
+              label="الدولة / المنطقة"
+              id="country"
+              name="country"
+              select={true}
+              value={form.country}
               onChange={handleChange}
-              className="w-full px-4 py-2 rounded-lg border-1 bg-[var(--color-bg-base)] text-[var(--color-primary-base)] border-[var(--color-bg-divider)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary-base)]"
-            >
-              <option value="مصر">مصر</option>
-              <option value="الولايات المتحدة">الولايات المتحدة</option>
-              <option value="المملكة المتحدة">المملكة المتحدة</option>
-              <option value="الإمارات">الإمارات</option>
-            </select>
-          </div>
+              options={[
+                { label: "مصر", value: "مصر" },
+                { label: "الولايات المتحدة", value: "الولايات المتحدة" },
+                { label: "المملكة المتحدة", value: "المملكة المتحدة" },
+                { label: "الإمارات", value: "الإمارات" },
+              ]}
+            />
 
-          <InputField
-            label="الرقم الضريبي (اختياري)"
-            id="vatId"
-            name="vatId"
-            value={form.vatId}
-            onChange={handleChange}
-            placeholder="أدخل الرقم الضريبي"
-          />
+            <SubmitButton buttonTitle="متابعة للدفع" />
+          </form>
+        </FormLayout>
 
-          <SubmitButton buttonTitle="متابعة للدفع" />
-        </form>
-
-        {/* ملخص السلة */}
-        <div className="cart-summary">
-          <h2 className="text-xl font-bold text-[var(--color-primary-base)] mb-4">
-            {donationData?.donationType === "campaign_coupon" ? "شراء كوبون" : "تبرع لحملة"}
-          </h2>
-
+        <FormLayout
+          formTitle={
+            donationData?.donationType === "campaign_coupon"
+              ? "شراء كوبون"
+              : "تبرع لحملة"
+          }>
           {donationData ? (
             <div className="space-y-3 mb-6">
               {donationData.donationType === "campaign_coupon" ? (
                 // Campaign coupon summary
-                <div className="mb-4 p-3 bg-[var(--color-bg-base)] rounded-lg border border-[var(--color-bg-divider)]">
+                <div className="mb-4 p-3 rounded-lg border border-[var(--color-bg-divider)]">
                   <h4 className="font-medium text-[var(--color-primary-base)] mb-2">
                     كوبون {donationData.campaignInfo.item.name}
                   </h4>
@@ -396,13 +382,15 @@ export default function Payment() {
                   </h4>
                   <div className="text-sm text-[var(--color-bg-text-dark)] mb-2 space-y-1">
                     {donationData.postDetails ? (
-                      donationData.postDetails.split('•').map((detail, index) => (
-                        <p key={index} className="leading-relaxed">
-                          {detail.trim()}
-                        </p>
-                      ))
+                      donationData.postDetails
+                        .split("•")
+                        .map((detail, index) => (
+                          <p key={index} className="leading-relaxed">
+                            {detail.trim()}
+                          </p>
+                        ))
                     ) : (
-                      <p>تفاصيل الطلب...</p>
+                      <p>غير معرف</p>
                     )}
                   </div>
                   <p className="text-xs text-[var(--color-bg-muted-text)]">
@@ -410,67 +398,60 @@ export default function Payment() {
                   </p>
                 </div>
               )}
+              <Divider />
 
               {/* Show quantity and unit price for campaign coupons */}
               {donationData.donationType === "campaign_coupon" && (
-                <>
-                  <div className="cart-row">
-                    <span className="text-[var(--color-bg-text-dark)]">الكمية</span>
+                <div className="flex flex-col gap-2">
+                  <div className="flex justify-between">
+                    <span className="text-[var(--color-bg-text-dark)]">
+                      الكمية
+                    </span>
                     <span className="text-[var(--color-primary-base)] font-medium">
                       {donationData.campaignInfo.quantity}
                     </span>
                   </div>
 
-                  <div className="cart-row">
-                    <span className="text-[var(--color-bg-text-dark)]">سعر الكوبون الواحد</span>
+                  <div className="flex justify-between">
+                    <span className="text-[var(--color-bg-text-dark)]">
+                      سعر الكوبون الواحد
+                    </span>
                     <span className="text-[var(--color-primary-base)] font-medium">
-                      {donationData.campaignInfo.item.price.toLocaleString()} ج.م
+                      {donationData.campaignInfo.item.price.toLocaleString()}{" "}
+                      ج.م
                     </span>
                   </div>
-                </>
-              )}
-
-              <div className="cart-row">
-                <span className="text-[var(--color-bg-text-dark)]">
-                  {donationData.donationType === "campaign_coupon" ? 'إجمالي المبلغ' : 'مبلغ التبرع'}
-                </span>
-                <span className="text-[var(--color-primary-base)] font-medium">
-                  {donationData.donationAmount.toLocaleString()} ج.م
-                </span>
-              </div>
-
-              <hr className="border-[var(--color-bg-divider)]" />
-
-              {/* Show progress only for regular donations */}
-              {donationData.donationType !== "campaign_coupon" && (
-                <div className="cart-row">
-                  <span className="text-xs text-[var(--color-bg-muted-text)]">
-                    التقدم: {donationData.currentTotal.toLocaleString()} / {donationData.totalRequired.toLocaleString()} ج.م
-                  </span>
-                  <span className="text-xs text-[var(--color-bg-muted-text)]">
-                    {Math.round((donationData.currentTotal / donationData.totalRequired) * 100)}%
-                  </span>
+                  <div className="flex justify-between">
+                    <span className="text-[var(--color-bg-text-dark)]">
+                      {donationData.donationType === "campaign_coupon"
+                        ? "إجمالي المبلغ"
+                        : "مبلغ التبرع"}
+                    </span>
+                    <span className="text-[var(--color-primary-base)] font-medium">
+                      {donationData.donationAmount.toLocaleString()} ج.م
+                    </span>
+                  </div>
                 </div>
               )}
             </div>
           ) : (
-            <div className="space-y-3 mb-6">
-              <div className="cart-row">
-                <span className="text-[var(--color-bg-text-dark)]">جاري التحميل...</span>
-              </div>
-            </div>
+            <Loader />
           )}
-          
-          <div className="cart-row total">
-            <h3 className="text-lg font-bold text-[var(--color-primary-base)]">الإجمالي:</h3>
+
+          <Divider />
+
+          <div className="flex justify-between">
             <h3 className="text-lg font-bold text-[var(--color-primary-base)]">
-              {donationData 
+              الإجمالي:
+            </h3>
+            <h3 className="text-lg font-bold text-[var(--color-primary-base)]">
+              {donationData
                 ? donationData.donationAmount.toLocaleString()
-                : "0"
-              } ج.م
+                : "0"}{" "}
+              ج.م
             </h3>
           </div>
-        </div>
+        </FormLayout>
       </div>
 
       {/* Stripe Payment Modal */}
@@ -490,6 +471,6 @@ export default function Payment() {
           />
         </Elements>
       )}
-    </div>
+    </PageLayout>
   );
 }

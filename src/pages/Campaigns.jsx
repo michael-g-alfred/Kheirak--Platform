@@ -35,7 +35,7 @@ export default function Campaigns() {
       attachedFiles: selectedItem.image || "",
       stock: parseFloat(quantity),
       totalCouponUsed: 0,
-      status: "قيد المراجعة",
+      status: "مقبول",
       submittedBy: {
         userName: userName || currentUser?.email || "مستخدم",
         userId: currentUser?.uid || "anonymous",
@@ -143,12 +143,14 @@ export default function Campaigns() {
       {/* مودال */}
       {showPopup && selectedItem && (
         <ConfirmModal
-          title="تأكيد شراء كوبون"
+          title={`تأكيد شراء كوبون - بقيمة ${selectedItem.price * quantity} جنيه`}
           description={`سيتم شراء كوبون للعنصر: ${selectedItem.name}`}
           bulletPoints={[
             `عنوان الكوبون: كوبون ${selectedItem.name}`,
             `تفاصيل الكوبون: حملة ${selectedCampaign?.type} • فئة ${selectedCategory?.name} • السعر: ${selectedItem.price} ج.م`,
-            `سعر الكوبون: ${selectedItem.price * quantity} جنيه (${quantity} × ${selectedItem.price})`,
+            `سعر الكوبون: ${
+              selectedItem.price * quantity
+            } جنيه (${quantity} × ${selectedItem.price})`,
           ]}
           showInput={true}
           inputProps={{
